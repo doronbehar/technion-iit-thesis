@@ -30,7 +30,7 @@ following.
 
 \subsection{Trapping}\label{trapping}
 
-% Frequencies..., pseudo, Mathieu...
+% Frequencies..., pseudo, Mathieu..., offset
 
 Our ion's trap design is based upon Jila's..
 
@@ -42,12 +42,23 @@ cooler (Yb/Ca/Be)
 % Mention the relation of intensity to mW/cm^2
 % Mention theory best explained at Dan Steck's stuff.
 % Explain how
+% LCApproximate, attenuation
 
-\subsection{Technical}
+\subsection{Miscellaneous}
 
-Cooling, stabilizing time, rf divisor
+To fully define a simulation, one has to define a few more parameters. Two of which are related to the timeline and are referred to as cooling and stabilizing time. The cooling time period has trivial meaning and increasing it can be interesting but naturally the price is higher computing resources demands. The stabilization time is the time since $t=0$ up to the point where the LASER cooling force enters. For researching cooling parameters, and for most initial temperatures, there is no need for more then $5-7\mathrm{ms}$ of stabilizing time, just to let the thermodynamic instabilities of the initial conditions minimize. Figure \ref{TODO1} can serve as a good example in which the width of $T(t)$ before the LASER cooling starts decreases enough after $5 \mathrm{ms}$.
 
-% Mention the challenge of initializing the system in a thermodynamic stable condition
+\label{TODO1}
+
+Another usage for varying the stabilization time, is for measuring the eigenfrequencies of the trap, with a cooling time of $0$, and all cooling parameters irrelevant. 
+
+Another fairly technical parameter is the finesse of the time division. As further justified in subsection \ref{temperature-secular-approx}, we want to always divide the simulation to an integer number of RF cycles. Since the RF frequency is also the highest frequency of the system, the natural thing to do is to divide each RF cycle to an integer number of steps, and this slightly arbitrary parameter is called the RF divisor. There is no theory that predicts an optimal RF divisor, and still this is a rather important technical detail:
+
+One can perform many simulations with a certain RF divisor, and only in a specific simulation, in a specific advanced time, notice a certain ion has experienced a non-physically strong Coulomb force, causing it to fly way very far away, making the temperatures measurements noisy throughout the rest of the simulation, and hence essentially incorrect. With way too low RF divisors the temperatures measurements will be noisy and incorrect from the start. After a few months of optimizing this parameter, a value for the RF divisor was stabilized around $\sim 1500$. To further tighten the demand of the RF division's independence from potential numerical errors, a prime number was chosen to be the RF divisor.\cite{primesieve} More examples demonstrating effects of low RF divisors, and hence proving convergence for RF divisors $\sim 1500$, are available in section \ref{initial-conditions-thermodynamic-stability}.
+% TODO: The above ref may need to be updated.
+
+Lastly, the initial conditions were obtained using a random number generator with a specific seed. Each seed integer represents a reproducible set of initial conditions, given the algorithm distributing positions and velocities stays the same. To decouple the (small) effects of initial conditions upon the results, the same simulations but with different seeds were ran, and in most results displayed this dimension was averaged over.
+
 % Put all the onenote's technical challenges related content here
 
 \section{Output Result Types}
@@ -80,7 +91,7 @@ Another approach, is to integrate over a solid angle of $\mathbf{u}$ in the prob
 
 Which has a variance equal to $K_\text{B} T/m \cdot (3 - 8/\pi)$, and a squared mean equal to $K_\text{B} T/m \cdot 8/\pi$, thus providing 2 more methods to calculate a temperature given a \texttt{(N,3)} shaped array of either positions or velocities.
 
-\subsection{Temperature Under the Secular Approximation}
+\subsection{Temperature Under the Secular Approximation}\label{temperature-secular-approx}
 
 In addition to the velocities and/or positions choice of random variable(s), and in addition to the above probabilistic model approaches, one has to decide how to imitate the secular approximation computationally. The physical justification for doing it, is the fact that in a crystal phase (which we aim achieving), the movement of the ions is strongly coupled to the RF field which we have direct control over. Essentially the model states that the collective movement due to the RF field is predictable and so well defined, that it is not a random variable.
 
