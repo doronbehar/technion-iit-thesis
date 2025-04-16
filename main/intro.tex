@@ -43,15 +43,83 @@ cooler (Yb/Ca/Be)
 % Mention theory best explained at Dan Steck's stuff.
 % Explain how
 
-\subsection{Technical}\label{technical}
+\subsection{Technical}
 
 Cooling, stabilizing time, rf divisor
 
 % Mention the challenge of initializing the system in a thermodynamic stable condition
 % Put all the onenote's technical challenges related content here
 
-\section{Output Result Types}\label{output-result-types}
+\section{Output Result Types}
 
-% What kind of scalar results from the measurements are of interest to us? T_final, T_middle etc, mention also the cloud sizes and the relation to the experiment's measurement methods
-% Naturally, explain the behavior of the cooling regimes etc.
+Naturally, the main result that interests us is the temperature. Which is essentially a common measure for the average kinetic energy, and in our case, since we use a VMI, it is a measure of the velocities' distribution's width. A physically related property of our ion clouds is the size, that can be measured per axis simply via a \texttt{std}. As for the temperatures, there are a few more ways to measure them, laid out below. 
 
+\subsection{Temperature's Random Variables}
+
+Under the approximated treatment of the Ion trap's potential as a perfect harmonic potential, and with the long range Coulomb potential neglected, one can treat the positions analogously, and hence almost identically to the velocities. This is done by multiplying each particle's position $x_i$ in the $i$'th axis, by $2\pi f_i x_i$, where $f_i$ is the secular frequency of the Ion trap in the $i$'th axis.\footnote{Although not implied by an existence of an additional index besides $i$, there is a different, non-trivial set of $f_i$ secular frequencies per particle species, as described in section \ref{trapping}.}
+% TODO: Make sure the above ref is specific as possible
+
+% TODO: Use labels per these temperatures related subsections, and \ref to them in the technical part of the thesis.
+\subsection{Temperature's Probabilistic Methods}
+
+Given $N$ particles, which were 'measured' during the computer simulation in a certain time, an array of shape \texttt{(N,3)} is obtained for either velocities or positions, with positions scaled by the proper secular frequencies as described above. The question of how to compute a temperature given such an array has multiple legitimate answers. To layout all available answers we'll denote the random variable $u_i \in \{v_i, 2\pi f_i x_i\}$ for axis $i$. The $i$'th slice of length \texttt{N} from the above \texttt{(N,3)} shaped array is a distribution of the $u_i$ random variable.
+
+One simple answer which is most intuitive in the context of VMI based measurements is to simply compute $m \mathrm{Var}(u_i)/K_\text{B}$, as derived from the Maxwell-Boltzmann distribution expression:
+
+\begin{equation}
+	f(\mathbf{u}) \mathrm{d}^{3}\mathbf{u} = \left[\frac{m}{2\pi k_{\text{B}}T}\right]^{3/2}\,\exp \left(-{\frac {m u^{2}}{2K_\text{B} T}}\right) \mathrm{d}^{3}\mathbf{u}
+	\label{eq:3DmaxwellBoltzmann}
+\end{equation}
+
+Another approach, is to integrate over a solid angle of $\mathbf{u}$ in the probabilistic model above, and write a speeds-like distribution function:
+
+\begin{equation}
+	f(|\mathbf{u}|) = \left[{\frac{m}{2\pi K_\text{B} T}}\right]^{3/2} 4\pi |\mathbf{u}|^{2}\exp\left(-{\frac{m |\mathbf{u}|^{2}}{2k_{\text{B}}T}}\right)
+	\label{eq:SpeedsMaxwellBoltzmann}
+\end{equation}
+
+Which has a variance equal to $K_\text{B} T/m \cdot (3 - 8/\pi)$, and a squared mean equal to $K_\text{B} T/m \cdot 8/\pi$, thus providing 2 more methods to calculate a temperature given a \texttt{(N,3)} shaped array of either positions or velocities.
+
+\subsection{Temperature Under the Secular Approximation}
+
+In addition to the velocities and/or positions choice of random variable(s), and in addition to the above probabilistic model approaches, one has to decide how to imitate the secular approximation computationally. The physical justification for doing it, is the fact that in a crystal phase (which we aim achieving), the movement of the ions is strongly coupled to the RF field which we have direct control over. Essentially the model states that the collective movement due to the RF field is predictable and so well defined, that it is not a random variable.
+
+Experimentally speaking, we are capable of measuring positions and velocities always at the beginning/end of each RF cycle, and hence always use an integer number of RF cycles. This is the simplest and probably the only way of implementing a secular approximation experimentally, and it should work best for ions that have formed a crystal. In the following, we'll describe what other techniques are available to a computer simulation that might help achieve time dependent, secularly approximated temperature measurements.\footnote{There's also a technical motivation to imitate some kind of secular approximation when measuring temperatures, and that is reducing the amount of disk writes required when simulating $\sim 3,000$ RF cycles divided to $\sim 1500$ time steps. Reducing the amount of disk writes not only reduces disk usage of simulation result files, but also speeds up the total time required for simulating.}
+
+% TODO: Cite stuff from zothero regarding RF averaging..
+Besides sampling the velocities and positions in the beginning of each RF cycle, many simulations based research found in literature average over an RF period each particle's per-axis velocity, and then construct a temperature. You might hope that the same can be done for $2\pi f_i x_i$, but apparently, even for ion clouds initiated in a thermal gas phase equilibrium in temperatures as low as $5\mathrm{K}$, each particle reaches many spatial areas of the trap, and it's RF averaged position produce (incorrect) temperatures in the $\mathrm{\mu K}$ regime! This proves that this approach is not accurate also for the velocities, at least for gas like phases, as it suggests that ions go through a big part of the phase-space. Never the less, I decided to do save the RF averaged velocities (but not the positions) to the disk during simulations, and the software displaying the simulation results provides the option to use this data.
+
+Another interesting RF cycles related option, is to sample the velocities and positions in the middle of each RF cycle - where the kinetic energy induces by the RF field should be at it's peak. The difference from the energies in the beginning of the RF cycles may help extract the RF motion energy. This data was also saved for both positions and velocities, for consistency.
+
+\subsection{Temperatures Options Summary}\label{temperatures-options-summary}
+
+The above temperatures related options are modeled in software as 3 dimensions with the names and symbolic optional values as defined in table \ref{tbl:T_methods}
+
+\begin{table}
+\begin{tabular}{l||l|l|l|l|l}
+Dimension   & \multicolumn{5}{c}{Optional values}\\
+\hline\hline
+ \texttt{T\_coord}   & $\vec{v}$                                    & \multicolumn{2}{l}{$\overrightarrow{\omega x}$} \\
+\hline
+\texttt{T\_rf\_type} & $\left\langle\circlearrowright\right\rangle$ & $\mathrm{min}\left(\circlearrowright\right)$ & \multicolumn{2}{l}{$\mathrm{max}\left(\circlearrowright\right)$} \\
+\hline
+\texttt{T\_method}  & $\mathrm{Ave}\left(|u|\right)^2(\pi/8)$      & $\mathrm{Var}\left(|u|\right)/(3 - 8/\pi)$   & $\mathrm{Var}\left(u_x\right)$               & $\mathrm{Var}\left(u_y\right)$ & $\mathrm{Var}\left(u_z\right)$ \\
+\hline
+\end{tabular}
+\caption{Ways to measure temperatures, obtained from a generalized maxwell-Boltzmann model}
+\label{tbl:T_methods}
+\end{table}
+
+Where $\circlearrowright$ marks an RF cycle, and $\left\langle\circlearrowright\right\rangle$ marks an average over RF cycle. The functions $\mathrm{Ave}$ and $\mathrm{Var}$ operate upon a 1 dimensional array of length $N$ - the number of particles sampled.
+
+Lastly, we can select specific, multiple temperature values and average over the different methods, coordinates and RF methods. A common example is to take the positions and velocities sampled in the beginning of each RF cycle ($\mathrm{min}\left(\circlearrowright\right)$), and calculate the temperature according to all the \texttt{T\_method}s. Whatever specific \texttt{T\_coord}s / \texttt{T\_rf\_type}s / \texttt{T\_method}s were chosen, the code analyzing and displaying the simulation results averages over these dimensions while keeping the time dependence of course.\footnote{Technically, the temperatures obtained from the RF averaged ($\left\langle\circlearrowright\right\rangle$) positions ($\overrightarrow{\omega x}$) are considered \texttt{NaN} and hence ignored.}
+
+\subsection{Further Summarizing Analyzes}
+
+Up until now we discussed time dependent properties of our ion clouds - the per spatial axis size and the various temperatures. We can also summarize these results to obtain various measures of how fast did we cool our ions, and how much smaller did the cloud get due to the LASER cooling etc. This is termed both in the code and here as summarized results.
+
+The simplest summarized result type is the temperature/size after the cooling process, which is defined (slightly arbitrarily) as the average temperature/size of the ion cloud in the last 1/4 of the time before cooling or before the end. The first \textit{part} is referred to as \textit{stabilizing part} and the later \textit{cooling part}. The standard deviation of the temperature/size in each such \textit{part} defines the uncertainty for each such summarized measurement. The size measurement, both in the time dependent form and in the summarized form depends on the spatial axis (x,y,z), and the temperatures, in either the summarized or time dependent form, depend on the 3 dimensions described in subsection \ref{temperatures-options-summary}.
+
+Another summarized measurement is the cooling frequency, defined (for simplicity, only for temperatures) as follows: Given a $T(t)$ defined using any of the parameters of subsection \ref{temperatures-options-summary}, we take $Log(T(t)/\mathrm{kelvin})$, and apply a continuous piecewise linear fit\cite{pwlf}, with 2 segments. This gives 2 cooling frequencies in the units of $\mathrm{kHz}$ that depend on a dimension referred to as \texttt{regime}. This design choice stems from the observation that in many simulations most of the ion cloud is cooled quickly and efficiently whereas afterwards the rest of the cooling happens in a mixed thermodynamic phase of an ion crystal (massive and highly charged) with a gas of ions surrounding it. The initial, faster and more efficient part of the cooling process corresponds to the 1st segment of exponential temperature decay, and the rest of the cooling is significantly slower, and hence invite defining a 2nd segment of cooling.
+
+Lastly, only for verifying the frequencies expected from the Mathieu equations of the ion trap, as explained in subsection \ref{trapping}, we define the following analysis referred to as the \textit{cloud's frequencies}: Given the time dependent positions of all ions, we average over the ions to get the cloud's center position (still time and spatial axis dependent). With it, we can take the Fourier transform and get the dominant frequency via \texttt{scipy.signal.find\_peaks}\cite{scipy}, or simply via \texttt{numpy.argmax}\cite{numpy}. If the collective movement is very harmonic (due to e.g collective offset in which the ion cloud was intentionally placed in the $t=0$), a fit for a $\cos(2\pi f x_i + \phi)$ can be attempted, and the fit's frequency is the dominant frequency of movement. The time range of the simulation dictates the uncertainty in the dominant frequency obtained via a Fourier transform, and the dominant frequency of the fit produces uncertainties via the covariance matrix returned by \texttt{scipy.optimize.curve\_fit}.
