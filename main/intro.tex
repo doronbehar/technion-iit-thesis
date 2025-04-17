@@ -1,19 +1,19 @@
-\chapter{Introduction}\label{chap:intro}
+\chapter{Introduction}
 
 % Slightly copy from Itay Erez's thesis? Or simply cite it?
 % Explain in more detail about our candidates and from there talk about IVR
 
 
-\section{What are Chiral Molecules?}\label{what-are-chiral-molecules}
+\section{What are Chiral Molecules?}
 
-\section{Our Experimental Scheme}\label{our-experimental-scheme}
+\section{Our Experimental Scheme}
 
 % Explain about our the general scheme, or cite something?
 % Explain about our ion trap in details, especially details relevant to the velocity / kinetic energy resolution required and hence the maximal temperatures required.
 % Show the level diagram for Yb+ and from there justify the need for a 935nm LASER 
 % Comparison to typical molecular ion trapping setups
 
-\section{All Trapping \& Cooling Parameters}\label{all-trapping-cooling-parameters}
+\section{All Trapping \& Cooling Parameters}
 
 The experimental scheme described above justifies optimizing the cooling
 process, and hence invite the main effort and research topic of this
@@ -28,13 +28,13 @@ and cooling parameters in real life to the simulation's code is detailed
 in the subsections below, along with the technical parameters subsection
 following.
 
-\subsection{Trapping}\label{trapping}
+\subsection{Trapping}\label{ssec:params-trapping}
 
 % Frequencies..., pseudo, Mathieu..., offset
 
 Our ion's trap design is based upon Jila's..
 
-\subsection{Cooling}\label{cooling}
+\subsection{Cooling}
 
 Detuning and intensity were barely studied in previous research\ldots,
 cooler (Yb/Ca/Be)
@@ -50,11 +50,11 @@ To fully define a simulation, one has to define a few more parameters. Two of wh
 
 \label{TODO1}
 
-Another usage for varying the stabilization time, is for measuring the eigenfrequencies of the trap, with a cooling time of $0$, and all cooling parameters irrelevant. 
+Another usage for varying the stabilization time, is for measuring the eigenfrequencies of the trap, without cooling ($0$ cooling time), and all cooling parameters irrelevant. 
 
-Another fairly technical parameter is the finesse of the time division. As further justified in subsection \ref{temperature-secular-approx}, we want to always divide the simulation to an integer number of RF cycles. Since the RF frequency is also the highest frequency of the system, the natural thing to do is to divide each RF cycle to an integer number of steps, and this slightly arbitrary parameter is called the RF divisor. There is no theory that predicts an optimal RF divisor, and still this is a rather important technical detail:
+Another fairly technical parameter is the finesse of the time division. As further justified in subsection \ref{ssec:T_rf_type}, we want to always divide the simulation to an integer number of RF cycles. Since the RF frequency is also the highest frequency of the system, the natural thing to do is to divide each RF cycle to an integer number of steps, and this slightly arbitrary parameter is called the RF divisor. There is no theory that predicts an optimal RF divisor, and still this is a rather important technical detail:
 
-One can perform many simulations with a certain RF divisor, and only in a specific simulation, in a specific advanced time, notice a certain ion has experienced a non-physically strong Coulomb force, causing it to fly way very far away, making the temperatures measurements noisy throughout the rest of the simulation, and hence essentially incorrect. With way too low RF divisors the temperatures measurements will be noisy and incorrect from the start. After a few months of optimizing this parameter, a value for the RF divisor was stabilized around $\sim 1500$. To further tighten the demand of the RF division's independence from potential numerical errors, a prime number was chosen to be the RF divisor.\cite{primesieve} More examples demonstrating effects of low RF divisors, and hence proving convergence for RF divisors $\sim 1500$, are available in section \ref{initial-conditions-thermodynamic-stability}.
+One can perform many simulations with a certain RF divisor, and only in a specific simulation, in a specific advanced time, notice a certain ion has experienced a non-physically strong Coulomb force, causing it to fly way very far away, making the temperatures measurements noisy throughout the rest of the simulation, and hence essentially incorrect. With way too low RF divisors the temperatures measurements will be noisy and incorrect from the start. After a few months of optimizing this parameter, a value for the RF divisor was stabilized around $\sim 1500$. To further tighten the demand of the RF division's independence from potential numerical errors, a prime number was chosen to be the RF divisor.\cite{primesieve} More examples demonstrating effects of low RF divisors, and hence proving convergence for RF divisors $\sim 1500$, are available in section \ref{sec:init-conditions}.
 % TODO: The above ref may need to be updated.
 
 Lastly, the initial conditions were obtained using a random number generator with a specific seed. Each seed integer represents a reproducible set of initial conditions, given the algorithm distributing positions and velocities stays the same. To decouple the (small) effects of initial conditions upon the results, the same simulations but with different seeds were ran, and in most results displayed this dimension was averaged over.
@@ -67,7 +67,7 @@ Naturally, the main result that interests us is the temperature. Which is essent
 
 \subsection{Temperature's Random Variables}
 
-Under the approximated treatment of the Ion trap's potential as a perfect harmonic potential, and with the long range Coulomb potential neglected, one can treat the positions analogously, and hence almost identically to the velocities. This is done by multiplying each particle's position $x_i$ in the $i$'th axis, by $2\pi f_i x_i$, where $f_i$ is the secular frequency of the Ion trap in the $i$'th axis.\footnote{Although not implied by an existence of an additional index besides $i$, there is a different, non-trivial set of $f_i$ secular frequencies per particle species, as described in section \ref{trapping}.}
+Under the approximated treatment of the Ion trap's potential as a perfect harmonic potential, and with the long range Coulomb potential neglected, one can treat the positions analogously, and hence almost identically to the velocities. This is done by multiplying each particle's position $x_i$ in the $i$'th axis, by $2\pi f_i x_i$, where $f_i$ is the secular frequency of the Ion trap in the $i$'th axis.\footnote{Although not implied by an existence of an additional index besides $i$, there is a different, non-trivial set of $f_i$ secular frequencies per particle species, as described in section \ref{ssec:params-trapping}.}
 % TODO: Make sure the above ref is specific as possible
 
 % TODO: Use labels per these temperatures related subsections, and \ref to them in the technical part of the thesis.
@@ -79,19 +79,17 @@ One simple answer which is most intuitive in the context of VMI based measuremen
 
 \begin{equation}
 	f(\mathbf{u}) \mathrm{d}^{3}\mathbf{u} = \left[\frac{m}{2\pi k_{\text{B}}T}\right]^{3/2}\,\exp \left(-{\frac {m u^{2}}{2K_\text{B} T}}\right) \mathrm{d}^{3}\mathbf{u}
-	\label{eq:3DmaxwellBoltzmann}
 \end{equation}
 
 Another approach, is to integrate over a solid angle of $\mathbf{u}$ in the probabilistic model above, and write a speeds-like distribution function:
 
 \begin{equation}
 	f(|\mathbf{u}|) = \left[{\frac{m}{2\pi K_\text{B} T}}\right]^{3/2} 4\pi |\mathbf{u}|^{2}\exp\left(-{\frac{m |\mathbf{u}|^{2}}{2k_{\text{B}}T}}\right)
-	\label{eq:SpeedsMaxwellBoltzmann}
 \end{equation}
 
 Which has a variance equal to $K_\text{B} T/m \cdot (3 - 8/\pi)$, and a squared mean equal to $K_\text{B} T/m \cdot 8/\pi$, thus providing 2 more methods to calculate a temperature given a \texttt{(N,3)} shaped array of either positions or velocities.
 
-\subsection{Temperature Under the Secular Approximation}\label{temperature-secular-approx}
+\subsection{Temperature Under the Secular Approximation}\label{ssec:T_rf_type}
 
 In addition to the velocities and/or positions choice of random variable(s), and in addition to the above probabilistic model approaches, one has to decide how to imitate the secular approximation computationally. The physical justification for doing it, is the fact that in a crystal phase (which we aim achieving), the movement of the ions is strongly coupled to the RF field which we have direct control over. Essentially the model states that the collective movement due to the RF field is predictable and so well defined, that it is not a random variable.
 
@@ -102,7 +100,7 @@ Besides sampling the velocities and positions in the beginning of each RF cycle,
 
 Another interesting RF cycles related option, is to sample the velocities and positions in the middle of each RF cycle - where the kinetic energy induces by the RF field should be at it's peak. The difference from the energies in the beginning of the RF cycles may help extract the RF motion energy. This data was also saved for both positions and velocities, for consistency.
 
-\subsection{Temperatures Options Summary}\label{temperatures-options-summary}
+\subsection{Temperatures Options Summary}\label{ssec:T-options-summery}
 
 The above temperatures related options are modeled in software as 3 dimensions with the names and symbolic optional values as defined in table \ref{tbl:T_methods}
 
@@ -129,8 +127,8 @@ Lastly, we can select specific, multiple temperature values and average over the
 
 Up until now we discussed time dependent properties of our ion clouds - the per spatial axis size and the various temperatures. We can also summarize these results to obtain various measures of how fast did we cool our ions, and how much smaller did the cloud get due to the LASER cooling etc. This is termed both in the code and here as summarized results.
 
-The simplest summarized result type is the temperature/size after the cooling process, which is defined (slightly arbitrarily) as the average temperature/size of the ion cloud in the last 1/4 of the time before cooling or before the end. The first \textit{part} is referred to as \textit{stabilizing part} and the later \textit{cooling part}. The standard deviation of the temperature/size in each such \textit{part} defines the uncertainty for each such summarized measurement. The size measurement, both in the time dependent form and in the summarized form depends on the spatial axis (x,y,z), and the temperatures, in either the summarized or time dependent form, depend on the 3 dimensions described in subsection \ref{temperatures-options-summary}.
+The simplest summarized result type is the temperature/size after the cooling process, which is defined (slightly arbitrarily) as the average temperature/size of the ion cloud in the last 1/4 of the time before cooling or before the end. The first \textit{part} is referred to as \textit{stabilizing part} and the later \textit{cooling part}. The standard deviation of the temperature/size in each such \textit{part} defines the uncertainty for each such summarized measurement. The size measurement, both in the time dependent form and in the summarized form depends on the spatial axis (x,y,z), and the temperatures, in either the summarized or time dependent form, depend on the 3 dimensions described in subsection \ref{ssec:T-options-summery}.
 
-Another summarized measurement is the cooling frequency, defined (for simplicity, only for temperatures) as follows: Given a $T(t)$ defined using any of the parameters of subsection \ref{temperatures-options-summary}, we take $Log(T(t)/\mathrm{kelvin})$, and apply a continuous piecewise linear fit\cite{pwlf}, with 2 segments. This gives 2 cooling frequencies in the units of $\mathrm{kHz}$ that depend on a dimension referred to as \texttt{regime}. This design choice stems from the observation that in many simulations most of the ion cloud is cooled quickly and efficiently whereas afterwards the rest of the cooling happens in a mixed thermodynamic phase of an ion crystal (massive and highly charged) with a gas of ions surrounding it. The initial, faster and more efficient part of the cooling process corresponds to the 1st segment of exponential temperature decay, and the rest of the cooling is significantly slower, and hence invite defining a 2nd segment of cooling.
+Another summarized measurement is the cooling frequency, defined (for simplicity, only for temperatures) as follows: Given a $T(t)$ defined using any of the parameters of subsection \ref{ssec:T-options-summery}, we take $Log(T(t)/\mathrm{kelvin})$, and apply a continuous piecewise linear fit\cite{pwlf}, with 2 segments. This gives 2 cooling frequencies in the units of $\mathrm{kHz}$ that depend on a dimension referred to as \texttt{regime}. This design choice stems from the observation that in many simulations most of the ion cloud is cooled quickly and efficiently whereas afterwards the rest of the cooling happens in a mixed thermodynamic phase of an ion crystal (massive and highly charged) with a gas of ions surrounding it. The initial, faster and more efficient part of the cooling process corresponds to the 1st segment of exponential temperature decay, and the rest of the cooling is significantly slower, and hence invite defining a 2nd segment of cooling.
 
-Lastly, only for verifying the frequencies expected from the Mathieu equations of the ion trap, as explained in subsection \ref{trapping}, we define the following analysis referred to as the \textit{cloud's frequencies}: Given the time dependent positions of all ions, we average over the ions to get the cloud's center position (still time and spatial axis dependent). With it, we can take the Fourier transform and get the dominant frequency via \texttt{scipy.signal.find\_peaks}\cite{scipy}, or simply via \texttt{numpy.argmax}\cite{numpy}. If the collective movement is very harmonic (due to e.g collective offset in which the ion cloud was intentionally placed in the $t=0$), a fit for a $\cos(2\pi f x_i + \phi)$ can be attempted, and the fit's frequency is the dominant frequency of movement. The time range of the simulation dictates the uncertainty in the dominant frequency obtained via a Fourier transform, and the dominant frequency of the fit produces uncertainties via the covariance matrix returned by \texttt{scipy.optimize.curve\_fit}.
+Lastly, only for verifying the frequencies expected from the Mathieu equations of the ion trap, as explained in subsection \ref{ssec:params-trapping}, we define the following analysis referred to as the \textit{cloud's frequencies}: Given the time dependent positions of all ions, we average over the ions to get the cloud's center position (still time and spatial axis dependent). With it, we can take the Fourier transform and get the dominant frequency via \texttt{scipy.signal.find\_peaks}\cite{scipy}, or simply via \texttt{numpy.argmax}\cite{numpy}. If the collective movement is very harmonic (due to e.g collective offset in which the ion cloud was intentionally placed in the $t=0$), a fit for a $\cos(2\pi f x_i + \phi)$ can be attempted, and the fit's frequency is the dominant frequency of movement. The time range of the simulation dictates the uncertainty in the dominant frequency obtained via a Fourier transform, and the dominant frequency of the fit produces uncertainties via the covariance matrix returned by \texttt{scipy.optimize.curve\_fit}.
