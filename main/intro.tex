@@ -44,7 +44,7 @@ cooler (Yb/Ca/Be)
 % Explain how
 % LCApproximate, attenuation
 
-\subsection{Miscellaneous}
+\subsection{Time Periods}
 
 To fully define a simulation, one has to define a few more parameters. Two of which are related to the timeline and are referred to as cooling and stabilizing time. The cooling time period has trivial meaning and increasing it can be interesting but naturally the price is higher computing resources demands. The stabilization time is the time since $t=0$ up to the point where the LASER cooling force enters. For researching cooling parameters, and for most initial temperatures, there is no need for more then $5-7\mathrm{ms}$ of stabilizing time, just to let the thermodynamic instabilities of the initial conditions minimize. Figure \ref{TODO1} can serve as a good example in which the width of $T(t)$ before the LASER cooling starts decreases enough after $5 \mathrm{ms}$.
 
@@ -52,10 +52,14 @@ To fully define a simulation, one has to define a few more parameters. Two of wh
 
 Another usage for varying the stabilization time, is for measuring the eigenfrequencies of the trap, without cooling ($0$ cooling time), and all cooling parameters irrelevant.
 
+\subsection{Time Dividing Finesse}
+
 Another fairly technical parameter is the finesse of the time division. As further justified in subsection \ref{ssec:T_rf_type}, we want to always divide the simulation to an integer number of RF cycles. Since the RF frequency is also the highest frequency of the system, the natural thing to do is to divide each RF cycle to an integer number of steps, and this slightly arbitrary parameter is called the RF divisor. There is no theory that predicts an optimal RF divisor, and still this is a rather important technical detail:
 
 One can perform many simulations with a certain RF divisor, and only in a specific simulation, in a specific advanced time, notice a certain ion has experienced a non-physically strong Coulomb force, causing it to fly way very far away, making the temperatures measurements noisy throughout the rest of the simulation, and hence essentially incorrect. With way too low RF divisors the temperatures measurements will be noisy and incorrect from the start. After a few months of optimizing this parameter, a value for the RF divisor was stabilized around $\sim 1500$. To further tighten the demand of the RF division's independence from potential numerical errors, a prime number was chosen.\cite{primesieve} More examples demonstrating effects of low RF divisors, and hence proving convergence for RF divisors $\sim 1500$, are available in section \ref{sec:init-conditions}.
 % TODO: The above ref may need to be updated.
+
+\subsection{Initial Conditions}
 
 Lastly, the initial conditions were obtained using a random number generator with a specific seed. Each seed integer represents a reproducible set of initial conditions, given the algorithm distributing positions and velocities stays the same. To decouple the (small) effects of initial conditions upon the results, the same simulations but with different seeds were ran, and in most results displayed this dimension was averaged over.
 
