@@ -53,15 +53,106 @@ Altogether, we have 5 equations, and 6 unknowns. The last equation required to d
 % TODO: Add a citation for an example of a q_z = 0 in literature, and better explain why this is justified for us too.
 This slightly arbitrary equation is weakly justified for most ion traps observed in literature. In our trap design too, it makes sense because...
 
+% TODO: Consider writing a more thorough derivation in the Computational Challenges chapter
+
 \subsection{Cooling}
 
-Detuning and intensity were barely studied in previous research\ldots,
-cooler (Yb/Ca/Be)
+The theory of LASER cooling is well established for 2-level systems. The semi-classical model implemented in the simulations presented in this work is explained well in literature\cite{TannoudjiCooling,SteckCooling} and can be expressed as follows:
 
-% Mention the relation of intensity to mW/cm^2
-% Mention theory best explained at Dan Steck's stuff.
-% Explain how
-% LCApproximate, attenuation
+\begin{equation}
+	\mathbf{F}(\mathbf{v}) = \frac{h \pi \gamma \hat{k}}{\lambda} \cdot \frac{\omega^2/2}{1/4 + \omega^2/2 + (d - \hat{k}\cdot\mathbf{v}/\lambda/\gamma)^2}
+\end{equation}
+
+Where:
+
+\begin{itemize}
+	\item $h$ is Planck's constant.
+	\item $\hat{k}$ is the LASER's spatial direction.
+	\item $\lambda$ is the cooling transition.
+	\item $\gamma$, is the cooling transition's lifetime in Hz dimensions. The more commonly used $\mathrm{rad}/\mathrm{s}$ scaled lifetime is usually denoted as $\Gamma = 2\pi \gamma$.
+	\item $d$ is the LASER's detuning normalized to $\Gamma/2\pi$. Sometimes the not normalized detuning in the dimensions of $\mathrm{rad}/\mathrm{sec}$ is denoted as $\delta$ and with it we can denote $d \equiv \delta/\Gamma$.
+	\item $\mathbf{v}$ is the velocity of the cooled Atom.
+	\item $\omega$ is the LASER's Rabi frequency normalized to $\Gamma/2\pi$. Very similarly to $d$ and $\delta$ the following can be stated: $\omega \equiv \Omega/\Gamma$.
+\end{itemize}
+
+Taking the Taylor expansion of the above expression in powers of the dimensionless velocity $\hat{k}\cdot\mathbf{v}/\lambda/\gamma$, the 0th and 1st order components are:
+
+% TODO: Verify in Mathematica the following:
+\begin{equation}
+	\frac{h \pi \gamma \hat{k}}{\lambda} \cdot \frac{\omega^2/2}{1/4 + \omega^2/2 + d^2} \left(
+		1 + \frac{2d}{1/4 + \omega^2/2 + d^2} \cdot \hat{k}\cdot\mathbf{v}/\lambda/\gamma
+	\right)
+	\label{eq:laser-cool-taylor-force}
+\end{equation}
+
+To understand the effect of the 0th order force component, let's observe a simplistic system of a 1 dimensional harmonic oscillator with a damping force of the form above:
+
+\begin{equation}
+	\ddot{x} = - \omega_{sec}^2 x + F_0/m - 2 \xi \omega_{sec} \dot{x}
+\end{equation}
+
+Where $\omega_{sec}$ is the secular frequency well defined by our trap as explained in subsection \ref{ssec:params-trapping} and $\xi$ is derived from the 1st order force component in expression \ref{eq:laser-cool-taylor-force}. The well known solution is of the form: 
+
+\begin{equation}
+	x(t) = \frac{F_0}{m \omega_{sec}^2} + A e^{-\xi \omega_{sec} t} \sin(\sqrt{1-\xi^2}\ \omega_{sec} t + \phi)
+\end{equation}
+
+Where $A$ and $\phi$ are determined by initial conditions. The steady state's offset from the origin $F_0/m\omega_{sec}^2$ in the case of a LASER cooling force equals:
+
+\begin{equation}
+x_o = \frac{h \pi \gamma}{\lambda}\cdot\frac{\omega^2/2}{1/4+\omega^2/2 + d^2} \cdot\frac{1}{m \omega_{sec}^2}
+\end{equation}
+
+If we'll take:
+
+\begin{itemize}
+	\item Secular frequency $\omega_{sec}$ in the order of magnitude of $\sim 2\pi\cdot 1.5\mathrm{kHz}$.
+	\item LASER intensity of $\omega \equiv \Omega/\Gamma = 1$. % TODO: Consider writing a footnote or something mentioning what is the relation to actual mW/cm^2 \footnote{The relation}
+	\item A common LASER detuning of $d \equiv \delta/\Gamma = 1/2$. % TODO: Cite or footnote why is this considered common.
+	\item \ce{Yb^+} and the cooling transition at $c/\lambda = 811.2891 \mathrm{THz}$ with the linewidth $\Gamma/2\pi \equiv \gamma = 19.6 \mathrm{MHz}$. % TODO: \cite{YbCoolingThesis} Anthony Ransford's thesis
+\end{itemize}
+
+% TODO: Is this really true?
+We'd get $x_o \approx 2.1 \mathrm{mm}$, where the trap's harmonic region is of about $25 \mathrm{mm}$ from the origin. This offset is might not be very significant for only LASER cooling a single ion like \ce{Yb^+}, but sympathetic cooling will suffer from this offset, as the target molecule won't experience an identical offsetting force, and would not collide frequently enough with the cooling and lose energy this way. Naturally increasing the secular frequencies of the trap greatly reduces this offset, but our trap's design doesn't allow much higher secular frequencies.
+
+% TODO: Ask Yuval whether more references for using counter-propagating beams would be useful here:
+As suggested in a more classical LASER cooling model presented by Dan Steck\cite{SteckClassicalCooling}, we can use 2 counter propagating LASER beams, that will apply 2 forces which sum up to $\mathbf{F}(\mathbf{v}) - \mathbf{F}(-\mathbf{v})$, forming an odd function, with no 0th order Taylor coefficient. Creating 2 such counter-propagating beams in experiment is simply done with a mirror. However, the vacuum chamber's windows induce an small attenuation on the intensity, as illustrated in figure \ref{fig:windows-attenuation}.
+
+\begin{figure}[h!]
+	\begin{center}
+		\includegraphics[width=0.95\textwidth]{graphics/windows-attenuation.pdf}
+	\end{center}
+	\caption{The effect of the Vaccum Chamber's windows' attenuation upon the LASER cooling intensities.}\label{fig:windows-attenuation}
+\end{figure}
+
+Since $\omega \equiv \Omega/\Gamma$ and $I \propto \Omega^2$, if we'd define\footnote{The experimentalist's most intuitive measurement is to measure $I_2/I_0$, but it should be equal $I_4/I_1$ assuming all windows are made of identical glass, and the intensity lost in the mirror is 0.} $\alpha \equiv I_4/I_1$, the actual force we are imposed to apply upon our ions is:
+
+\begin{equation}
+	\mathbf{F}(\mathbf{v}, \omega) - \mathbf{F}(-\mathbf{v}, \sqrt{\alpha}\omega)
+\end{equation}
+
+Causing a slight imperfect oddness (with respect to $\mathbf{v}$) of the force, depending on the windows attenuation parameter $\alpha$.
+
+\subsubsection{Summery}
+
+This is a good place to pause and list all the simulation parameters we collected from the theory above:
+
+\begin{itemize}
+	\item The LASER cooled ion. Current experimental efforts as well as all simulations presented focus on \ce{Yb^+}, but in principal this parameter is not hard-coded, and choosing an ion and a cooling transition is effectively choosing: $\lambda$, $\gamma$ and the mass $m$.\footnote{Cooling transitions and line-widths were taken from \cite{CoolingBeParameters,CoolingCaParameters1,CoolingCaParameters2}
+		% TODO: \cite also https://campbellgroup.physics.ucla.edu/papers/AnthonyRansfordThesis.pdf
+	}
+	\item The normalized LASER's intensity $\omega \equiv \Omega/\Gamma$.
+	\item The normalized LASER's detuning $d \equiv \delta/\Gamma$.
+	\item The spatial direction(s) of the LASER(s). This can be parameterized by a list of $(\theta, \phi)$ pairs - a pair per LASER, defining each LASER's $\hat{k}$ using a spherical coordinates transformation.
+	\item Whether to use the approximated Taylor expression with only the 0th \& 1st terms. This is not really a physical simulation parameter, but it was studied because I couldn't find simulations simulations in literature not using the approximation.
+	% TODO: Verify the above claim!
+	\item The Vacuum chamber's windows' attenuation. Our experiment's attenuation is $\alpha = 0.7$, and most simulations use this value.\footnote{Besides 
+	% TODO: \ref{fig:windows-attenuation-effect} in the results
+	}
+\end{itemize}
+
+% TODO: Cite Arik Akerman's lecture notes or a certain book and write this equation.
+Lastly, the non-trivial relation of the Rabi frequency $\Omega$ to the actual LASER intensity, is worth mentioning. Based upon
 
 \subsection{Time Periods}
 
