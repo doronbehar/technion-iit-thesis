@@ -138,21 +138,22 @@ Causing a slight imperfect oddness (with respect to $\mathbf{v}$) of the force, 
 This is a good place to pause and list all the simulation parameters we collected from the theory above:
 
 \begin{itemize}
-	\item The LASER cooled ion. Current experimental efforts as well as all simulations presented focus on \ce{Yb^+}, but in principal this parameter is not hard-coded, and choosing an ion and a cooling transition is effectively choosing: $\lambda$, $\gamma$ and the mass $m$.\footnote{Cooling transitions and line-widths were taken from \cite{CoolingBeParameters,CoolingCaParameters1,CoolingCaParameters2}
-		% TODO: \cite also https://campbellgroup.physics.ucla.edu/papers/AnthonyRansfordThesis.pdf
-	}
+	\item The LASER cooled ion. Current experimental efforts as well as all simulations presented focus on \ce{Yb^+}, but in principal this parameter is not hard-coded, and choosing an ion and a cooling transition is effectively choosing: $\lambda$, $\gamma$ and the mass $m$.\footnote{Cooling transitions and line-widths were taken from \cite{CoolingBeParameters,CoolingCaParameters1,CoolingCaParameters2,RansfordThesis}}
 	\item The normalized LASER's intensity $\omega \equiv \Omega/\Gamma$.
 	\item The normalized LASER's detuning $d \equiv \delta/\Gamma$.
 	\item The spatial direction(s) of the LASER(s). This can be parameterized by a list of $(\theta, \phi)$ pairs - a pair per LASER, defining each LASER's $\hat{k}$ using a spherical coordinates transformation.
 	\item Whether to use the approximated Taylor expression with only the 0th \& 1st terms. This is not really a physical simulation parameter, but it was studied because I couldn't find simulations simulations in literature not using the approximation.
 	% TODO: Verify the above claim!
-	\item The Vacuum chamber's windows' attenuation. Our experiment's attenuation is $\alpha = 0.7$, and most simulations use this value.\footnote{Besides 
+	\item The Vacuum chamber's windows' attenuation. Our experiment's attenuation is $\alpha = 0.7$, and most simulations use this value.\footnote{Besides figure ... which displays it's effect.}
 	% TODO: \ref{fig:windows-attenuation-effect} in the results
-	}
 \end{itemize}
 
-% TODO: Cite Arik Akerman's lecture notes or a certain book and write this equation.
-Lastly, the non-trivial relation of the Rabi frequency $\Omega$ to the actual LASER intensity, is worth mentioning. Based upon
+Lastly, the relation of the Rabi frequency $\Omega$ to the actual LASER intensity\cite{CJFootOmega2I}, is worth mentioning\footnote{The software is capable of displaying $\omega$ dependence in the scale of the intensity $I$, but this behavior wasn't activated in the results presented.}:
+% TODO: Make sure the above footnote is correct
+
+\begin{equation}
+	I = \frac{2\pi h c \Gamma}{3 \lambda^3} \cdot \left(\frac{\Omega}{\Gamma}\right)^2
+\end{equation}
 
 \subsection{Time Periods}
 
