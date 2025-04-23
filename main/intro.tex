@@ -139,12 +139,12 @@ Causing a slight imperfect oddness (with respect to $\mathbf{v}$) of the force, 
 This is a good place to pause and list all the simulation parameters we collected from the theory above:
 
 \begin{itemize}
-	\item The LASER cooled ion. Current experimental efforts as well as all simulations presented focus on \ce{Yb^+}, but in principal this parameter is not hard-coded, and choosing an ion and a cooling transition is effectively choosing: $\lambda$, $\gamma$ and the mass $m$.\footnote{Cooling transitions and line-widths were taken from \cite{CoolingBeParameters,CoolingCaParameters1,CoolingCaParameters2,RansfordThesis,RadiumData}}
+	\item The LASER cooled ion. Choosing an ion and a cooling transition is effectively choosing $\lambda$, $\gamma$ and the mass $m$.\footnote{Cooling transitions and line-widths were taken from \cite{CoolingBeParameters,CoolingCaParameters1,CoolingCaParameters2,RansfordThesis,RadiumData}}. Current experimental efforts as well as all simulations presented focus on \ce{Yb^+}, but in principal this parameter is not hard-coded, and 
 	\item The normalized LASER's intensity $\omega \equiv \Omega/\Gamma$.
 	\item The normalized LASER's detuning $d \equiv \delta/\Gamma$.
 	\item The spatial direction(s) of the LASER(s). This can be parameterized by a list of $(\theta, \phi)$ pairs - a pair per LASER, defining each LASER's $\hat{k}$ using a spherical coordinates transformation.
-	\item Whether to use the approximated Taylor expression with only the 0th \& 1st terms. This is not really a physical simulation parameter, but it was studied because I couldn't find simulations simulations in literature not using the approximation.
-	% TODO: Verify the above claim!
+	% TODO: Consider whether adding this
+	%\item Whether to use the approximated Taylor expression with only the 1st order term. This is not really a physical simulation parameter, but it was studied because I couldn't find simulations simulations in literature not using the approximation.
 	\item The Vacuum chamber's windows' attenuation. Our experiment's attenuation is $\alpha = 0.7$, and most simulations use this value.\footnote{Besides figure ... which displays it's effect.}
 	% TODO: \ref{fig:windows-attenuation-effect} in the results
 \end{itemize}
