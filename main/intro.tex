@@ -75,12 +75,11 @@ Where:
 	\item $\omega$ is the LASER's Rabi frequency normalized to $\Gamma/2\pi$. Very similarly to $d$ and $\delta$ the following can be stated: $\omega \equiv \Omega/\Gamma$.
 \end{itemize}
 
-Taking the Taylor expansion of the above expression in powers of the dimensionless velocity $\hat{k}\cdot\mathbf{v}/\lambda/\gamma$, the 0th and 1st order components are:
+In principal, there is a Taylor expansion for the above expression for low $\mathbf{v}/\lambda/\gamma$. Let's observe this expansion for a slightly simplified, 1 spatial dimensional form of the force - with $\mathbf{v} = (v,0,0)$ and $\hat{k} = (1,0,0)$:
 
-% TODO: Verify in Mathematica the following:
 \begin{equation}
-	\frac{h \pi \gamma \hat{k}}{\lambda} \cdot \frac{\omega^2/2}{1/4 + \omega^2/2 + d^2} \left(
-		1 + \frac{2d}{1/4 + \omega^2/2 + d^2} \cdot \hat{k}\cdot\mathbf{v}/\lambda/\gamma
+	\frac{h \pi \gamma}{\lambda} \cdot \frac{\omega^2/2}{1/4 + \omega^2/2 + d^2} \left(
+		1 + \frac{2d}{1/4 + \omega^2/2 + d^2} \cdot v/\lambda/\gamma
 	\right)
 	\label{eq:laser-cool-taylor-force}
 \end{equation}
@@ -113,7 +112,9 @@ If we'll take:
 \end{itemize}
 
 % TODO: Is this really true?
-We'd get $x_o \approx 2.1 \mathrm{mm}$, where the trap's harmonic region is of about $25 \mathrm{mm}$ from the origin. This offset is might not be very significant for only LASER cooling a single ion like \ce{Yb^+}, but sympathetic cooling will suffer from this offset, as the target molecule won't experience an identical offsetting force, and would not collide frequently enough with the cooling and lose energy this way. Naturally increasing the secular frequencies of the trap greatly reduces this offset, but our trap's design doesn't allow much higher secular frequencies.
+We'd get $x_o \approx 2.1 \mathrm{mm}$, where the trap's harmonic region is of about $25 \mathrm{mm}$ from the origin. This offset might not be very significant for only LASER cooling a single ion like \ce{Yb^+}, but sympathetic cooling will suffer from this offset, as the target molecule won't experience an identical offsetting force, and would not collide frequently enough with the cooling and lose energy this way. Naturally increasing the secular frequencies of the trap greatly reduces this offset, but our trap's design doesn't allow much higher secular frequencies.
+
+% TODO: Consider citing and discuss a bit about what kind of forces other people use in simulations - discuss with Yuval about the fact the real expression for any \hat{k} and \mathbf{v} includes many cross-terms and looks very messy.
 
 % TODO: Ask Yuval whether more references for using counter-propagating beams would be useful here:
 As suggested in a more classical LASER cooling model presented by Dan Steck\cite{SteckClassicalCooling}, we can use 2 counter propagating LASER beams, that will apply 2 forces which sum up to $\mathbf{F}(\mathbf{v}) - \mathbf{F}(-\mathbf{v})$, forming an odd function, with no 0th order Taylor coefficient. Creating 2 such counter-propagating beams in experiment is simply done with a mirror. However, the vacuum chamber's windows induce an small attenuation on the intensity, as illustrated in figure \ref{fig:windows-attenuation}.
