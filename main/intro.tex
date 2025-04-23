@@ -61,6 +61,7 @@ The theory of LASER cooling is well established for 2-level systems. The semi-cl
 
 \begin{equation}
 	\mathbf{F}(\mathbf{v}) = \frac{h \pi \gamma \hat{k}}{\lambda} \cdot \frac{\omega^2/2}{1/4 + \omega^2/2 + (d - \hat{k}\cdot\mathbf{v}/\lambda/\gamma)^2}
+	\label{eq:laser-cool-force}
 \end{equation}
 
 Where:
@@ -133,6 +134,39 @@ Since $\omega \equiv \Omega/\Gamma$ and $I \propto \Omega^2$, if we'd define\foo
 \end{equation}
 
 Causing a slight imperfect oddness (with respect to $\mathbf{v}$) of the force, depending on the windows attenuation parameter $\alpha$.
+
+\subsubsection{Expected Behavior of Detuning \& Intensity parameters}
+
+Without simulating, it is interesting to wonder: What would be the ideal detuning ($\delta$) and intensity ($\Omega$) given an ion cloud in temperature $T$? This depends upon the dependence of the effectiveness of the LASER cooling force. As for the detuning, the intuitive answer would be:
+
+\begin{equation}
+	d_{opt} = \frac{\sqrt{K_\text{B} T/m}}{\lambda\gamma}
+	\label{eq:back-of-envelope-detuning-T}
+\end{equation}
+
+Such that the most common velocity $v = \sqrt{K_\text{B} T/m}$, along with this detuning, is minimizing the denominator of the force expression \ref{eq:laser-cool-force}. As for the optimal intensity, there is no clear answer that the force expression yields. A generalized way to answer the question laid out here is to ask:
+
+Given a Maxwell-Boltzmann distribution of velocities, for which $d$ and $\omega$ is the overlap integral \ref{eq:laser-cool-overlap-integral} maximized?
+
+\begin{equation}
+	\int_{-\infty}^\infty\,\mathrm{d}v\exp\left(-\frac{m v^2}{2 K_\text{B} T}\right) \sum_\pm \frac{\pm\omega^2}{1/4 + \omega^2/4 + (d \mp v\lambda\gamma)^2}
+    % np.sum([
+    %     pm * omega_frac**2/(.25 + omega_frac**2/4 + (delta_frac - pm * u)**2)
+    %     for pm in [+1, -1]
+    % ]) * np.exp(-u**2/2/velocity_scale/temperature)
+	\label{eq:laser-cool-overlap-integral}
+\end{equation}
+
+Where the $\pm$ summation is implementing the counter propagating beams. Figure \ref{fig:laser-cool-optimal-overlap} presents the results of the maximisation for a wide range of temperatures. The resemblance of the intuitive 'back of the envelope' guess of expression \ref{eq:back-of-envelope-detuning-T} to the overlap based solution is satisfactory.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.95\textwidth]{graphics/laser_cool_overlap.pdf}
+	\end{center}
+	\caption{Optimal LASER cooling parameters calculated for a general ion cloud, using a maximisation of integral \ref{eq:laser-cool-overlap-integral}. The 'Back of the envelope' line is of \ref{eq:back-of-envelope-detuning-T}. The maximisation was done using \texttt{scipy.optimize.minimize} with \texttt{method='TNC'}. Similar results were obtained with other optimization methods.}\label{fig:laser-cool-optimal-overlap}
+\end{figure}
+
+This result can be used to optimize the cooling process via changing the detuning \& intensity of the cooling LASERs dynamically. Writing an algorithm that would play with the detuning \& intensity to optimize the cooling according to intermediate temperature measurements could be an interesting topic for further research, either via simulations or directly in experiment.
 
 \subsubsection{Summery}
 
