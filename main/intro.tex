@@ -115,12 +115,12 @@ If we'll take:
 \end{itemize}
 
 % TODO: Is this really true?
-We'd get $x_o \approx 2.1 \mathrm{mm}$, where the trap's harmonic region is of about $25 \mathrm{mm}$ from the origin. This offset might not be very significant for only LASER cooling a single ion like \ce{Yb^+}, but sympathetic cooling will suffer from this offset, as the target molecule won't experience an identical offsetting force, and would not collide frequently enough with the cooling and lose energy this way. Naturally increasing the secular frequencies of the trap greatly reduces this offset, but our trap's design doesn't allow much higher secular frequencies.
+We'd get $x_o \approx 2.1 \mathrm{mm}$, where the trap's harmonic region is of about $25 \mathrm{mm}$ from the origin. This offset might not be very significant for only LASER cooling a single ion like \ce{Yb^+}, but sympathetic cooling will suffer from this offset, as the target molecule won't experience an identical offsetting force, and would not collide frequently enough with the cooling ion and therefor will not lose kinetic energy. Naturally increasing the secular frequencies of the trap greatly reduces this offset, but our trap's design doesn't allow much higher secular frequencies.
 
 % TODO: Consider citing and discuss a bit about what kind of forces other people use in simulations - discuss with Yuval about the fact the real expression for any \hat{k} and \mathbf{v} includes many cross-terms and looks very messy.
 
 % TODO: Ask Yuval whether more references for using counter-propagating beams would be useful here:
-As suggested in a more classical LASER cooling model presented by Dan Steck\cite{SteckClassicalCooling}, we can use 2 counter propagating LASER beams, that will apply 2 forces which sum up to $\mathbf{F}(\mathbf{v}) - \mathbf{F}(-\mathbf{v})$, forming an odd function, with no 0th order Taylor coefficient. Creating 2 such counter-propagating beams in experiment is simply done with a mirror. However, the vacuum chamber's windows induce an small attenuation on the intensity, as illustrated in figure \ref{fig:windows-attenuation}.
+As suggested in a more classical LASER cooling model presented by Dan Steck\cite{SteckClassicalCooling}, we can use 2 counter propagating LASER beams, that will apply 2 forces which sum up to $\mathbf{F}(\mathbf{v}) - \mathbf{F}(-\mathbf{v})$, forming an odd function in $\mathbf{v}$, with no 0th order component. Creating 2 such counter-propagating beams in experiment is simply done with a mirror. However, the vacuum chamber's windows induce a small attenuation on the intensity, as illustrated in figure \ref{fig:windows-attenuation}.
 
 \begin{figure}[h!]
 	\begin{center}
@@ -146,20 +146,16 @@ Without simulating, it is interesting to wonder: What would be the ideal detunin
 	\label{eq:back-of-envelope-detuning-T}
 \end{equation}
 
-Such that the most common velocity $v = \sqrt{K_\text{B} T/m}$, along with this detuning, is minimizing the denominator of the force expression \ref{eq:laser-cool-force}. As for the optimal intensity, there is no clear answer that the force expression yields. A generalized way to answer the question laid out here is to ask:
+Such that the most common velocity $v = \sqrt{K_\text{B} T/m}$, along with this detuning, is minimizing the denominator of force expression \ref{eq:laser-cool-force}. As for the optimal intensity, there is no clear answer that the force expression yields. A generalized way to answer the question laid out here is to ask:
 
 Given a Maxwell-Boltzmann distribution of velocities, for which $d$ and $\omega$ is the overlap integral \ref{eq:laser-cool-overlap-integral} maximized?
 
 \begin{equation}
 	\int_{-\infty}^\infty\,\mathrm{d}v\exp\left(-\frac{m v^2}{2 K_\text{B} T}\right) \sum_\pm \frac{\pm\omega^2}{1/4 + \omega^2/4 + (d \mp v\lambda\gamma)^2}
-    % np.sum([
-    %     pm * omega_frac**2/(.25 + omega_frac**2/4 + (delta_frac - pm * u)**2)
-    %     for pm in [+1, -1]
-    % ]) * np.exp(-u**2/2/velocity_scale/temperature)
 	\label{eq:laser-cool-overlap-integral}
 \end{equation}
 
-Where the $\pm$ summation is implementing the counter propagating beams force summation. Figure \ref{fig:laser-cool-optimal-overlap} presents the results of the maximisation for a wide range of temperatures. The resemblance of the intuitive 'back of the envelope' guess of expression \ref{eq:back-of-envelope-detuning-T} to the overlap based solution is satisfactory.
+Where the $\pm$ summation is implementing the counter propagating beams force summation. Figure \ref{fig:laser-cool-optimal-overlap} presents the results of the maximisation for a wide range of temperatures. The resemblance of the intuitive 'back of the envelope' guess of expression \ref{eq:back-of-envelope-detuning-T} to the overlap-integral based solution is satisfactory.
 
 \begin{figure}
 	\begin{center}
