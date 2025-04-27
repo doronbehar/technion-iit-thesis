@@ -26,7 +26,7 @@ In contrast to SIMION\cite{SIMION}, and possibly many more electrodynamics simul
 The basic form of the electric field in axis $i \in {x,y,z}$, inserted in the simulations is of the following form:
 
 \begin{equation}
-	E_i = (a_i + q_i \cos(2\pi f_{rf} t)) x_i
+	E_i = (a_i + q_i \cos(2\pi f_\mathrm{rf} t)) x_i
 	\label{eq:mathieu-source}
 \end{equation}
 
@@ -39,7 +39,7 @@ Hence, it was decided to avoid justifying a relation of the analytical expressio
 	\label{eq:gamma_n-relation}
 \end{equation}
 
-Where $\beta_i \equiv 2 f_{\mathrm{secular}(i)}/f_{rf}$ is the normalized secular frequency, $\tilde{a}_i/a_i = \tilde{q_i}/q_i = \alpha$ is a constant factor, and $\gamma_n$ are vector elements of a non-trivial solution to the infinite system of equations. Additionally the following 2 Laplace equations must be satisfied too:
+Where $\beta_i \equiv 2 f_{\mathrm{secular}(i)}/f_\mathrm{rf}$ is the normalized secular frequency, $\tilde{a}_i/a_i = \tilde{q_i}/q_i = \alpha$ is a constant factor, and $\gamma_n$ are vector elements of a non-trivial solution to the infinite system of equations. Additionally the following 2 Laplace equations must be satisfied too:
 
 \begin{equation}
 	\sum_{i\in{x,y,z}} a_i = \sum_{i\in{x,y,z}} q_i = 0
@@ -55,7 +55,7 @@ Altogether, we have 5 equations, and 6 unknowns. The last equation required to d
 % TODO: Add a citation for an example of a q_z = 0 in literature, and better explain why this is justified for us too.
 This slightly arbitrary equation is weakly justified for most ion traps observed in literature. In our trap design too, it makes sense because...
 
-The Trapping related parameters we have so far $f_{rf}$, $\mathbf{f}_{sec}$ (a secular frequency per spatial dimension), and of course the mass of the sympathetically cooling ion that dictates electrical fields needed to be applied, and subection \ref{ssec:non-trivial-mass-dep} lists a few 2 more boolean parameters that are out of scope for the introduction.
+The Trapping related parameters we have so far $f_\mathrm{rf}$, $\mathbf{f}_{sec}$ (a secular frequency per spatial dimension), and of course the mass of the sympathetically cooling ion that dictates electrical fields needed to be applied, and subection \ref{ssec:non-trivial-mass-dep} lists a few 2 more boolean parameters that are out of scope for the introduction.
 
 \subsection{Cooling}
 
@@ -278,6 +278,6 @@ Up until now we discussed time dependent properties of our ion clouds - the per 
 
 The simplest summarized result type is the temperature/size after the cooling process, which is defined (slightly arbitrarily) as the average temperature/size of the ion cloud in the last 1/4 of the time before cooling or before the end. The first \textit{part} is referred to as \textit{stabilizing part} and the later \textit{cooling part}. The standard deviation of the temperature/size in each such \textit{part} defines the uncertainty for each such summarized measurement. The size measurement, both in the time dependent form and in the summarized form depends on the spatial axis (x,y,z), and the temperatures, in either the summarized or time dependent form, depend on the 3 dimensions described in subsection \ref{ssec:T-options-summery}.
 
-Another summarized measurement is the cooling frequency, defined (for simplicity, only for temperatures) as follows: Given a $T(t)$ defined using any of the parameters of subsection \ref{ssec:T-options-summery}, we take $Log(T(t)/\mathrm{kelvin})$, and apply a continuous piecewise linear fit\cite{pwlf}, with 2 segments. This gives 2 cooling frequencies in the units of $\mathrm{kHz}$ that depend on a dimension referred to as \texttt{regime}. This design choice stems from the observation that in many simulations most of the ion cloud is cooled quickly and efficiently whereas afterwards the rest of the cooling happens in a mixed thermodynamic phase of an ion crystal (massive and highly charged) with a gas of ions surrounding it. The initial, faster and more efficient part of the cooling process corresponds to the 1st segment of exponential temperature decay, and the rest of the cooling is significantly slower, and hence invite defining a 2nd segment of cooling.
+Another summarized measurement is the cooling frequency, defined (for simplicity, only for temperatures) as follows: Given a $T(t)$ defined using any of the parameters of subsection \ref{ssec:T-options-summery}, we take $\mathrm{Log}(T(t)/\mathrm{kelvin})$, and apply a continuous piecewise linear fit\cite{pwlf}, with 2 segments. This gives 2 cooling frequencies in the units of $\mathrm{kHz}$ that depend on a dimension referred to as \texttt{regime}. This design choice stems from the observation that in many simulations most of the ion cloud is cooled quickly and efficiently whereas afterwards the rest of the cooling happens in a mixed thermodynamic phase of an ion crystal (massive and highly charged) with a gas of ions surrounding it. The initial, faster and more efficient part of the cooling process corresponds to the 1st segment of exponential temperature decay, and the rest of the cooling is significantly slower, and hence invite defining a 2nd segment of cooling.
 
 Lastly, only for verifying the frequencies expected from the Mathieu equations of the ion trap, as explained in subsection \ref{ssec:params-trapping}, we define the following analysis referred to as the \textit{cloud's frequencies}: Given the time dependent positions of all ions, we average over the ions to get the cloud's center position (still time and spatial axis dependent). With it, we can take the Fourier transform and get the dominant frequency via \texttt{scipy.signal.find\_peaks}\cite{scipy}, or simply via \texttt{numpy.argmax}\cite{numpy}. If the collective movement is very harmonic (due to e.g collective offset in which the ion cloud was intentionally placed at $t=0$), a fit for a $\cos(2\pi f x_i + \phi)$ can be attempted, and the fit's frequency is the dominant frequency of movement. The time range of the simulation dictates the uncertainty in the dominant frequency obtained via a Fourier transform, and the dominant frequency of the fit produces uncertainties via the covariance matrix returned by \texttt{scipy.optimize.curve\_fit}.
