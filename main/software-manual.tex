@@ -1,2 +1,244 @@
 \chapter{Simulation Software Manual \& Technical Details}
 
+The repository of the software code is available online at: \url{https://gitlab.com/doronbehar/lab-ion-trap-simulations}
+
+The repository consists of several Python executable scripts, each with a different role. The main important scripts are \texttt{sim.py} and \texttt{plot.py}. Running \texttt{./sim.py} creates a set of \texttt{.h5} suffixed files (in HDF5\cite{HDF5} format), and running \texttt{./plot.py} with the \texttt{.h5} files as arguments opens an interactive window as depicted in figure \ref{fig:software-plot-example}.
+
+Most other scripts in the repository implement functionalities required for simulating, and can also be executed as standalone scripts as well. Executing them tests the functionality they implement, sometimes via printing numbers, and sometimes via opening complex interactive plots like in figures \ref{fig:mathieu-mass-dep} \& \ref{fig:pure-mathieu-coefficients}. The following sections will simply describe each script, hopefully in an order that will make it easy to understand the complete architecture of the repository.
+
+\section{\texttt{flake.nix}: Setting up a Development Environment}
+
+Before we'll begin describing the actual Python scripts, it is important to setup a proper development environment for running the scripts. The best software I'd recommend for any task for managing a development environment on a per-project basis, is the package manager \textit{Nix}\cite{Nix}. Nix is a functional package manager\cite{NixThesis}, meaning it is capable of producing (packages and) development environments from a pure set of inputs. The intention is to increase the likelihood that the resulted development environment will be reproducible\cite{SoftwareReproducitilityThesis} on any computer running Nix.
+
+The main file that defines the development environment is \texttt{flake.nix}. If you have \texttt{nix} installed you should be able to run \texttt{nix develop}\footnote{Don't forget to enable the (currently, as of writing) \texttt{experimental-features = nix-command flakes}. See the relevant \href{https://nix.dev/manual/nix/stable/contributing/experimental-features}{Nix' Manual page} for more details.} in a command line shell and enter a Bash shell that would be capable of running any script in the repository just like I did - with the same versions of Python dependencies, and same LAMMPS version and build variant.
+
+Don't decry these development environment instructions. Many crucial details and features in the Python scripts depend on specially built variants of the Python dependencies. Worth noting, are:
+
+\begin{itemize}
+	\item 2 pretty important Matplotlib patches linked in \texttt{flake.nix}. Without 1 of them, \texttt{./plot.py} won't work at all.
+	\item An unreleased version of a Python dependency called \texttt{pint}, including another patch for it not accepted upstream.
+	\item The \texttt{lammps} package built with very specific CMake flags that make the simulations run faster.
+	\item A TeXLive distribution with specific dependencies that are necessary to create all the LaTeX generated texts in the plots.
+\end{itemize}
+
+Nix can be installed on Darwin, and any GNU/Linux distribution, including \href{https://learn.microsoft.com/en-us/windows/wsl/install}{Windows' Subsystem for Linux} (WSL). I personally used \href{https://github.com/nix-community/NixOS-WSL}{NixOS on (WSL)} on the office's computer, with \href{https://gitlab.com/doronbehar/nixos-configs/-/blob/b540a8fef332ff64d0ae52a67ef96758b7d2b396/flake.nix#L104-134}{this} OS configuration, which also includes a few NVIDIA hardware settings which might be relevant if you want to actually enjoy GPU support by LAMMPS. The fact the operating system's settings are declared and are reproducible just as the development environment, is another outstanding feature of Nix.
+
+To reduce the hassle of running \texttt{nix develop} every time you enter the repository's directory, I recommend using \href{https://direnv.net/}{\texttt{direnv}}, which is also supported on the same platforms as Nix. The following sections assume you have a working development environment set up.
+
+\section{\texttt{sim.py}}
+
+\texttt{sim.py} is the script that actually calls LAMMPS' shared object\footnote{Also referred to as \texttt{DLL} in MS windows terminology.}, and runs the simulation, while also saving the results into a set of \texttt{.h5} files. The full set of available command line options is printed when you run \texttt{./sim.py --help}, and is explained in general in this section.
+
+\subsection{Parameters}
+
+The total amount of simulation parameters is approximately 22. Most of them are of type float, some are booleans, and some are integers. Although some of the parameters are constants for most simulations, simply iterating the multi-dimensional space of the rest of the parameters is incomprehensible computationally. The sensible thing to do instead is to study the effects of a few parameters one by one, while other parameters are constant.
+
+\texttt{./sim.py} is basically built with a command line option per parameter, enabling you to choose which parameters to scan. When a simulation parameter's command line option is not specified, either a specific, default single value is used, or a large set of parameter values are scanned. Hence, practically speaking you are forced to choose specific single values of some parameters, and the parameters neglected from the command, or given multiple values are the parameters scanned over, such that the scans are of 2-3 dimensions most of the time.
+
+\subsubsection{Scanning-Enabled Parameters}\label{sssec:manual/multi-value-params}
+
+Most of the float typed parameters' possible values are defined in \texttt{PARAMETERS\_INFO} defined in \texttt{physical\_constants.py}, along with complementary metadata per parameter. For example the set of initial temperatures is marked as \texttt{T\_init}, and possible values are $[5,10,20,40,80]\mathrm{K}$, defined using \texttt{numpy.geomspace}. Similar ranges are defined for other parameters.
+
+When you run \texttt{./sim.py} and you want to choose specific values of a certain float like parameter, you use the indices of the array's values defined in \texttt{PARAMETERS\_INFO}. For example to scan the initial temperatures $[10,40]\mathrm{K}$, you would use \texttt{--T\_init 1 3}. If you want to specify a certain range of values, you can use Bash shell syntax to choose e.g $[5,10,20]\mathrm{K}$ with \texttt{--T\_init \{0..2\}}, which simply is expanded by Bash to \texttt{--T\_init 0 1 2}.
+
+To view all available parameters and their values, \texttt{./sim.py --list} can be used, which lists all available parameters to the terminal in 2 tables. Tables \ref{tbl:sim-list-most} and \ref{tbl:sim-list-amounts} serve as a LaTeX copy of these tables. Eventually, to run scans with a sensible amount of varying parameters (2-3 dimensions), you'd need to write \texttt{./sim.py} commands with lots of options, every time. This could be a nightmare without using Shell command line history, accessible with the keyboard's up-arrows. For a more versatile and efficient command line history browsing, I'd recommend using \href{https://github.com/junegunn/fzf}{fzf} with \href{https://github.com/junegunn/fzf/blob/d24b58ef3fc6d6d2c43e07a44e0f757b9bdfbeff/shell/key-bindings.bash#L133-L136}{this Bash configuration.}
+
+Lastly, the \texttt{--seed} parameter allows one to choose a specific random number generation (positive integer) seed. Multiple values are treated as multiple initial conditions to perform - hence increasing the dimensionality of the scan. A negative integer argument like e.g \texttt{--seed=-5}, means 'take 5 random seed integers'.
+
+\subsubsection{Single value Parameters}\label{sssec:manual/single-value-params}
+
+The following parameters always get a single value, even if not specified explicitly on the command line:
+
+\begin{itemize}% \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}\setlength{\parsep}{0pt}
+    \item \texttt{--naive-freqs} (boolean): Put forces that generate $\sqrt{m_1/m_2}$ secular frequencies (default: False)
+    \item \texttt{--micromotion} (boolean): Enable RF like micromotion (default: True)
+    \item \texttt{--cooler \{Be,Ca,Yb,Ra\}}: Which cooler ion to use (default: [\ce{Yb}])
+    \item \texttt{--time-stabilizing}: How much time before cooling (default: [$5.0 \mathrm{ms}$])
+    \item \texttt{--time-cooling}: How much time after cooling (default: [$15 \mathrm{ms}$])
+    \item \texttt{--rf-divisor}: How many timesteps to put in a single RF cycle (default: [1597]), see also section \ref{sec:comp/convergence}.
+    \item \texttt{--windows-attenuation}: By what fraction the intensity decreases after passing 2 windows (default: [0.7])
+	% TODO: Consider whether maybe this should be deleted 
+    \item \texttt{--approximate-laser-force} (boolean): Simulate LASER cooling with the approximated $\alpha \cdot v$-like expression
+    \item \texttt{--offset x[mm] y[mm] z[mm]}: Put the ion cloud in an offset from the center (default: [0.0, 0.0, 0.0])
+\end{itemize}
+
+\texttt{./sim.py} doesn't allow scanning over values of these parameters. However if you really want to you can use GNU's \texttt{parallel}\cite{GNUParallel} program to iterate such values artificially. Below are a few example usages:
+
+\begin{verbatim}
+  parallel --tmux \
+    ./sim.py \
+      --x_secular_freq 16 --y_secular_freq 16  --z_secular_freq 2 \
+      --rf_freq 2 \
+      --omega 7 --delta 13 --laserAngles 22 
+      --cloud 10 --total 9 \
+      --T_init 1 \
+      --seed {90..93} \
+      --time-stabilizing 15 --time-cooling 0.1 \
+      --rf-divisor ::: 1301 1381 1427 1523 1583
+\end{verbatim}
+
+This command tests the effect of the RF divisors on the stability and convergence (see \ref{sec:comp/convergence}). Note that \texttt{--seed \{90..93\}} is expanded by the shell and eventually interpreted as \texttt{--seed 90 91 92 93}, which means: Run each simulation with 4 different initial conditions defined by the seeds $90-93$. Using a constant set of seeds, and not \texttt{-seed=-4}, makes sure that every process initiated by GNU \texttt{parallel} will use the same 4 initial conditions, and not 4 randomly picked initial condition seeds (picked by each \texttt{./sim.py} process).
+
+\begin{verbatim}
+  parallel --tmux \
+    ./sim.py \
+      --x_secular_freq 16 --y_secular_freq 16  --z_secular_freq 2 \
+      --rf_freq 2 \
+      --omega 7 --delta 13 --laserAngles 22 
+      --cloud 10 --total 9 \
+      --T_init 1 \
+      --seed {90..93} \
+      --time-stabilizing 15 --time-cooling 0.1 \
+    ::: --{no-,}naive-freqs ::: --{no-,}micromotion
+\end{verbatim}
+
+In the above, the $2\times 2$ boolean matrix of \texttt{naive\_freq} and \texttt{micromotion} is measured. A similar command was used to generate figure \ref{fig:LAMMPS_summarized_naive_freqs-micromotion}. The \texttt{\{no-,\}OPTION} syntax is expanded by the shell to \texttt{--no-OPTION --OPTION}, and GNU \texttt{parallel} runs 1 \texttt{./sim.py} process with \texttt{--no-OPTION} and another with \texttt{--OPTION}, and does the same for the other list of arguments appearing after the 2nd \texttt{:::}.
+
+\subsubsection{Other command line options}
+
+Besides the obvious \texttt{--help} option, a few more non physical options of \texttt{./sim.py} are of worth noting:
+
+\begin{itemize}
+	\item \texttt{--date}: When creating a \texttt{.h5} file, part of the file's name includes by default a date string. Useful when you want to use a string easier to remember, such that it'd be easy for you to locate these particular simulation scan later.
+	\item \texttt{--coulomb}: When simulating, measure the coulomb energies into a separate group. This data can be plotted in a separate figure window with \texttt{./plot.py --show-coulomb}.
+	\item \texttt{--high-resolution}: When simulating, extract the velocities and the positions every simulation step, and not only in the beginning of every RF cycle. NOTE this makes the simulation run much slower due to slow excessive disk writing.
+	\item \texttt{--list}: Don't actually simulate, only list the available parameters. Essentially prints into the terminal tables \ref{tbl:sim-list-most} and \ref{tbl:sim-list-amounts}.
+	\item \texttt{--cores}: How many CPU cores to use when distributing jobs, defaults to 8. See \ref{ssec:manual/parallelized-simulating} for more details.
+\end{itemize}
+
+\subsection{Managing Simulation Parameters with \texttt{xarray}}
+
+Since we have so many simulation parameters, and we are interested in manipulate their results in various ways, it can be incomprehensibly hard to do it with traditional multi-dimensional Numpy arrays. Almost all of the repository uses \texttt{xarray}\cite{xarray} to manage arrays of 2 dimensions and more. With \texttt{xarray} you can be absolutely sure you are performing operations on the right dimensions, no matter how they are ordered internally.
+
+Additionally, \texttt{xarray} array-like objects can be saved to files of various formats, like HDF5\cite{HDF5}, \textit{Zarr}\footnote{\url{https://zarr.readthedocs.io/en/stable/}} and more. Specifically in this project, the HDF5 format was picked, because:
+
+\begin{itemize}
+	\item (Like Zarr), it has a concept of Groups, allowing you to save the xarray objects into 1 group, and other data in another group.
+	\item In comparison to Zarr, HDF5 files are single files, and not directories, making them less prone to corruption due to cloud storage sync conflicts, and manual recursive copying issues.
+	\item Can be faster then Zarr when reading data that needs to be read fast enough for animations like in figure \ref{fig:software-plot-example}.
+\end{itemize}
+
+There are also a few worth noting advantages of Zarr over HDF5:
+
+\begin{itemize}
+	\item The parallel writing support, which could have been an advantage for subsection \ref{ssec:manual/parallelized-simulating}.
+	\item Somewhat related to the above advantage, and also explained in subsection \ref{ssec:HDF5-measurements-format}, appending simulation data like positions and velocities can be done a bit more efficiently with Zarr, as this operation doesn't require extending the file and make sure all the pointers in the file point to the correct place.
+\end{itemize}
+
+These Zarr advantages were realized in a late part of the research period, and were not assessed thoroughly.\footnote{Also due to rough edges with the Zarr $2.18 \rightarrow 3.0$ version update, that happened around that time.}
+
+The format in which simulations results were saved is described below:
+
+\begin{itemize}
+	\item Each scan of parameters is saved to a single HDF5 file.
+	\item The main description of the parameters scanned is defined via an \texttt{xarray.Dataset} saved into a group named \texttt{ranges}.
+	\item Each dimension in the dataset is named like the parameters in tables \ref{tbl:sim-list-most} and \ref{tbl:sim-list-amounts} and as described in \ref{sssec:manual/single-value-params}.
+	\item Each scanning point, has a hash, calculated\footnote{Using \href{https://zepworks.com/deepdiff/current/deephash.html}{DeepHash}.} from the dictionary of input parameters values.
+	\item The hash is part of the saved \texttt{ranges} dataset, and it serves as a link to actual simulation measurements of that set of input parameters.
+	\item Per hash \texttt{h}, the HDF5 group \texttt{measurements/\{h\}} holds all the simulation's raw results, in a hierarchical format described in the next section.
+\end{itemize}
+
+\subsection{\texttt{measurements/} HDF5 groups format}\label{ssec:HDF5-measurements-format}
+
+The raw simulations results are not suitable to be modelled in an xarray object. They are calculated much more dynamically, and include much more data in comparison to the \texttt{xarray.Dataset} saved in the \texttt{ranges} HDF5 group, and hence invite a more dynamic format that allows appending and truncating data without loading it all into memory. The next subsections describe the HDF5 'paths' to the HDF5 datasets.\footnote{Note the slightly confusing terminology: An \href{https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html}{\texttt{xarray.Dataset}} is not an \href{https://docs.h5py.org/en/stable/high/dataset.html}{HDF5 dataset} - these are 2 completely different Python objects.}
+
+\subsubsection{\texttt{times}}
+
+The first direct HDF5 dataset in the measurement group: A simple, usually\footnote{Why not always? See section \ref{ssec:sim_continue}} linearly spaced time stamps, that always starts with 0, and is appended floating point numbers as the simulation's time proceeds.
+
+\subsubsection{\texttt{mass=AMU} HDF5 Datasets}
+
+Since we are interested in measuring every ion species separately, every HDF5 group described in the next subsections, contains at least 1 HDF5 dataset in a path that ends with \texttt{mass=174}\footnote{For \ce{Yb^+}} or \texttt{mass=222}\footnote{For \ce{CHDBrI^+}}, depending upon the parameters \texttt{cloud} (from \ref{sssec:manual/multi-value-params}) \& \texttt{--cooler} (from \ref{sssec:manual/single-value-params}). If the multiplication of \texttt{cloud}$\times$\texttt{total} $<1$, there is only 1 mass. Note that table \ref{tbl:sim-list-amounts} also makes it possible to simulate with only a cooler mass - when \texttt{cloud} = 1.
+
+\subsubsection{\texttt{positions} prefixed Groups}
+
+There are 3 types of positions arrays, each with shape \texttt{(M, N, 3)}, where \texttt{N} is the number of ions of that species, and \texttt{M} is the number of time samples. They are saved under the following groups:
+
+\begin{itemize}
+	\item \texttt{positions\_rf\_min}: The positions measured when the RF oscillation is at it's minimum.
+	\item \texttt{positions\_rf\_max}: The positions measured when the RF oscillation is at it's maximum - at the middle time step of the oscillation.
+	\item \texttt{positions}: The positions measured in every timestep sampled. Unless \texttt{--high-resolution} is used, the arrays in this group are identical to those saved to \texttt{positions\_rf\_min}.
+\end{itemize}
+
+\subsubsection{\texttt{velocities} prefixed Groups}
+
+Very similarly to the \texttt{positions} prefixed groups, there are \texttt{velocities} and \texttt{velocities\_rf\_\{min,max\}} groups. An additional group named \texttt{velocities\_rf\_averaged} is also saved, and it includes the per particle velocities averaged over an RF cycle, as described in \ref{ssec:T_rf_type}.
+
+\subsubsection{The \texttt{temperatures} Group of Groups}
+
+Per every \texttt{velocities} and \texttt{positions} related group of HDF5 Datasets, multiple 1 dimensional HDF5 datasets of length \texttt{M} are saved into the \texttt{temperatures} group. Given a \texttt{T\_coord} \& \texttt{T\_rf\_type}, there are 5 \texttt{T\_method}s one can use to get a temperature, as described in subsection \ref{ssec:T_method} and table \ref{tbl:T_methods}. The full template of the paths to these per mass HDF5 datasets, under the \texttt{measurements/\{h\}} group, is:
+
+\begin{verbatim}
+temperatures/{T_coord}_rf_{T_rf_type}_{T_method}/mass={AMU}
+\end{verbatim}
+
+Note that no \texttt{temperatures/potisions\_rf\_averaged*} datasets are saved, as explained in \ref{ssec:T-options-summery}.
+
+\subsection{Scan Parallelizing Algorithm (\texttt{parallel\_hdf5\_splitting.py})}\label{ssec:manual/parallelized-simulating}
+
+Running a single simulation of $20-30\mathrm{ms}$ can take $\approx 30 \mathrm{min}$. Hence scanning can obviously take days, depending on the dimensionality of the scan. A great way to speed up such scans is via distributing scanning points to different CPU cores. The algorithm described below, implemented in \texttt{parallel\_hdf5\_splitting.py}\footnote{Was implemented with \url{https://claude.ai}.}, is in charge of deciding how to distribute the scanning points to CPU cores.
+
+The splitting algorithm is best explained using examples. In table \ref{tbl:--cores-splitting-examples}, $C$ is the argument given to \texttt{./sim.py --cores}, that defaults to the number of CPU cores on the machine (usually $8$ or $16$). $C^*$ is the resulted number of CPU cores the scan is distributed to, decided by the algorithm ($C^* \leq C$).
+
+\begin{table}
+  \centering
+  \begin{tabular}{cccc}
+    \toprule
+    \textbf{Original Shape} & $\mathbf{C}$ & $\mathbf{C^*}$ & \textbf{Each Core's Shape} \\
+    \midrule
+    $(7, 3)$                         & $7$  & $\%$ & $(1, 3)$ \\
+    $(7, 3)$                         & $8$  & $7$  & $(1, 3)$ \\
+    $(5, 4)$                         & $5$  & $\%$ & $(1, 4)$ \\
+    $(3, 4)$                         & $6$  & $\%$ & $(1, 2)$ \\
+    $(12, 7)$                        & $7$  & $\%$ & $(12, 1)$ \\
+    $(12, 8)$                        & $8$  & $\%$ & $(12, 1)$ \\
+    $(12, 6)$                        & $8$  & $\%$ & $(4, 2)$ \\
+    $(4, 5, 6)$                      & $10$ & $\%$ & $(2, 5, 1)^*$ \\
+    $(2, 3, 4)$                      & $8$  & $\%$ & $(1, 3, 1)$ \\
+    $(1, 1, 1, 1, 7, 8, 2)$          & $7$  & $\%$ & $(1, 1, 1, 1, 1, 8, 2)$ \\
+    $(1, 1, 1, 1, 9, 4, 5, 1, 1, 1)$ & $9$  & $\%$ & $(1, 1, 1, 1, 1, 4, 5, 1, 1, 1)$ \\
+    $(1, 1, 1, 1, 9, 4, 5, 1, 1, 1)$ & $15$ & $15$ & $(1, 1, 1, 1, 3, 4, 1, 1, 1, 1)$ \\
+    $(100, 100)$                     & $25$ & $\%$ & $(20, 20)^*$ \\
+    $(11, 13)$                       & $11$ & $\%$ & $(1, 13)$ \\
+    $(11, 13)$                       & $10$ & $1$  & $(11, 13)$ \\
+    \bottomrule
+  \end{tabular}
+  \caption{Test cases for \texttt{./sim.py} splitting function. $C^* = \%$ means $C^* = C$, as in most of the cases. A shape superscripted with ${}^*$ is marking a shape which is 1 solution of the algorithm among a few more valid solutions possible.}
+  \label{tbl:--cores-splitting-examples}
+\end{table}
+
+The definition of $C^*$ is simple to explain in general: If we'll denote $T$ to be the total number of scanning points, $C^*$ is the highest divisor of $T$ such that $C^* <= C$.
+
+\section{\texttt{sim\_continue.py}}\label{ssec:sim_continue}
+
+% TODO: \cite{GNUParallel}
+
+\section{\texttt{sim-homogenize.py}}
+
+\section{\texttt{time-plot.py}}
+
+\section{\texttt{plot.py}}
+
+\section{\texttt{h5doctor.py}}
+
+\section{Helpers, not Dealing Directly with Simulations}
+
+\section{Reference Tables \& Figures}
+
+% TODO: Get this figure, currently this is a stub copy, also, put it in a separate page.
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=0.95\textwidth]{graphics/software-plot-example.pdf}
+	\end{center}
+	\caption{An example window opened by \texttt{./plot.py}.}
+	\label{fig:software-plot-example}
+\end{figure}
+
+% TODO: Put this table in a landscape, separate page
+\begin{table}[h]
+\input{back/sim-list-amounts.tex}
+\caption{The list of clouds' amounts. Calculated via rounding down cloud concentrations, and total amounts. Created using \texttt{./sim.py --list latex-amounts}.}
+\label{tbl:sim-list-amounts}
+\end{table}
+
+\input{back/sim-list-most.tex}

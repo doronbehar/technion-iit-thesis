@@ -162,6 +162,7 @@ Where the $\pm$ summation is implementing the counter propagating beams force su
 		\includegraphics[width=0.95\textwidth]{graphics/laser_cool_overlap.pdf}
 	\end{center}
 	\caption{Optimal LASER cooling parameters calculated for a general ion cloud, using a maximisation of integral \ref{eq:laser-cool-overlap-integral}. The 'Back of the envelope' line is of \ref{eq:back-of-envelope-detuning-T}. The maximisation was done using \texttt{scipy.optimize.minimize} with \texttt{method='TNC'}\cite{scipy}. Similar results were obtained with other optimization methods, but this was the fastest method that also produced smooth results.}
+	\label{fig:laser-cool-optimal-overlap}
 \end{figure}
 
 This result can be used to optimize the cooling process via changing the detuning \& intensity of the cooling LASERs dynamically. Writing an algorithm that would play with the detuning \& intensity to optimize the cooling according to intermediate temperature measurements could be an interesting topic for further research, either via simulations or directly in experiment.
@@ -218,7 +219,7 @@ Naturally, the main result that interests us is the temperature. Which is essent
 Under the approximated treatment of the Ion trap's potential as a perfect harmonic potential, and with the long range Coulomb potential neglected, one can treat the positions analogously, and hence almost identically to the velocities. This is done by multiplying each particle's position $x_i$ in the $i$'th axis, by $2\pi f_i x_i$, where $f_i$ is the secular frequency of the Ion trap in the $i$'th axis.\footnote{Although not implied by an existence of an additional index besides $i$, there is a different, non-trivial set of $f_i$ secular frequencies per particle species, as described in section \ref{ssec:non-trivial-mass-dep}.}
 
 % TODO: Use labels per these temperatures related subsections, and \ref to them in the technical part of the thesis.
-\subsection{Temperature's Probabilistic Methods}
+\subsection{Temperature's Probabilistic Methods}\label{ssec:T_method}
 
 Given $N$ particles, which were 'measured' during the computer simulation in a certain time, 2 arrays of shapes \texttt{(N,3)} are obtained for velocities and positions. The positions' array can be scaled by the proper secular frequencies as described above, and the question of how to compute a temperature given such an array has multiple legitimate answers. To layout all available answers we'll denote the random variable $u_i \in \{v_i, 2\pi f_i x_i\}$ for axis $i$. The $i$'th slice of length \texttt{N} from the above \texttt{(N,3)} shaped array is a distribution of the $u_i$ random variable.
 
