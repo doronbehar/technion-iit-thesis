@@ -3,7 +3,7 @@
 \section{Converting Secular Frequencies to Electric Fields}\label{sec:comp/freqs2aq}
 
 % TODO: Cite more places that solve the Mathieu equation from a geometry of electrodes.
-Most solutions of the Mathieu equation in the context of ion trapping start from a certain physical design of electrodes, that (often loosely\cite{AkermanThesis}) is justifying a certain parametrisation for 3 dimensional Mathieu equations. Our only geometry based assumption is that $q_z = 0$, as explained in subsection \ref{ssec:params-trapping}. The following subsections will dive deeper into details of the Mathieu Equation solution, and present a few insights relevant to sympathetic cooling. 
+Most solutions of the Mathieu equation in the context of ion trapping start from a certain physical design of electrodes, that (often loosely\cite{AkermanThesis}) is justifying a certain parametrisation for 3 dimensional Mathieu equations. Our only geometry based assumption is that $q_z = 0$, as explained in section~\ref{ssec:params-trapping}. The following subsections will dive deeper into details of the Mathieu Equation solution, and present a few insights relevant to sympathetic cooling. 
 
 \subsection{Dimensionless Mathieu Equation Solving}\label{ssec:comp/mathieu}
 
@@ -87,7 +87,7 @@ The verification of this solution was implemented in a Matplotlib\cite{Matplotli
 Interactive plot \ref{fig:pure-mathieu-fft} can be also useful for inspecting the roughness of the motion as a function of $a$ and $q$. As expected, a high $q$ and a lower $a$ produce more 'RF-noisy' motion near the peaks of the oscillatory, secular motion. Also, satisfyingly, there's barely any difference in the $\beta$ accuracy as $N$ is increased, even when starting from $N=3$. Hence, this parameter was practically hard-coded in all the simulations etc. to $N=7$.
 
 % TODO: Cite this
-Most Mathieu stability diagrams found in literature, assume that geometry dictates $a_x = a_y$, and like us, that $q_z = 0$. Thanks to equation \ref{eq:laplace}, this suggests that one can plot a single Mathieu stability diagram for a 3 dimensional trap using a single Mathieu stability diagram for $(a_r,q_r)$ where $a_r \equiv a_x = a_y = -a_z/2$ and $q_r = q_x = -q_y$ as axes. I find these stability diagrams confusing, as they need to also take care of correctly mirroring $q_x = -q_y$ to satisfy stability in both $x$ \& $y$ spatial dimensions (where the $z$ axis is trivially stable). Figure \ref{fig:mathieu-stability} presents a much simpler alternative to show the stability of a 3 dimensional trap, without even imposing cylindrical symmetry which shouldn't be physically unimplementable.
+Most Mathieu stability diagrams found in literature, assume that geometry dictates $a_x = a_y$, and like us, that $q_z = 0$. Thanks to equation \ref{eq:laplace}, this suggests that one can plot a single Mathieu stability diagram for a 3 dimensional trap using a single Mathieu stability diagram for $(a_r,q_r)$ where $a_r \equiv a_x = a_y = -a_z/2$ and $q_r = q_x = -q_y$ as axes. I find these stability diagrams confusing, as they need to also take care of correctly mirroring $q_x = -q_y$ to satisfy stability in both $x$ \& $y$ spatial dimensions (where the $z$ axis is trivially stable). Figure~\ref{fig:mathieu-stability} presents a much simpler alternative to show the stability of a 3 dimensional trap, without even imposing cylindrical symmetry which shouldn't be physically unimplementable.
 
 \begin{figure}
 	\begin{center}
@@ -110,14 +110,14 @@ Is that true in a Mathieu trap? The process of generating a dimensionless $(a,q)
 
 $$(a,q)\cdot \frac{m_{cooler}}{m_{target}}$$
 
-The dependence of $\beta_{target}$ as a function of the mass ratio is depicted in figure \ref{fig:mathieu-mass-dep}. This insight invites defining 2 decoupled, boolean parameters for the simulation, named \texttt{micromotion} \& \texttt{naive\_freqs}. Table \ref{tbl:naive_freqs-micromotion} is a truth table explaining what trapping forces are applied in each combination of these parameters. A separate definition of these parameters is laid out afterwards for completeness.
+The dependence of $\beta_{target}$ as a function of the mass ratio is depicted in figure~\ref{fig:mathieu-mass-dep}. This insight invites defining 2 decoupled, boolean parameters for the simulation, named \texttt{micromotion} \& \texttt{naive\_freqs}. Table~\ref{tbl:naive_freqs-micromotion} is a truth table explaining what trapping forces are applied in each combination of these parameters. A separate definition of these parameters is laid out afterwards for completeness.
 % TODO: Make sure this 'afterwards' is correct - depends upon the final state of the document
 
 \begin{figure}
 	\begin{center}
 		\includegraphics[width=0.86\textwidth]{graphics/mathieu-mass-dep.pdf}
 	\end{center}
-	\caption{A Matplotlib interactive plot showing the non-trivial dependence of the secular frequencies of a 'target' mass (represented in blue), given a Mathieu trap with $(a,q)$ that define a certain secular frequency for a 'cooler' mass, termed $\beta_0$. The $(a,q)$ values used here, implement the $x$-axis Mathieu force that was used in the simulations that produced the summarized results in figure \ref{fig:LAMMPS_summarized_naive_freqs-micromotion}, which also shows the possible secular frequencies' absolute values in $\mathrm{kHz}$.}
+	\caption{A Matplotlib interactive plot showing the non-trivial dependence of the secular frequencies of a 'target' mass (represented in blue), given a Mathieu trap with $(a,q)$ that define a certain secular frequency for a 'cooler' mass, termed $\beta_0$. The $(a,q)$ values used here, implement the $x$-axis Mathieu force that was used in the simulations that produced the summarized results in figure~\ref{fig:LAMMPS_summarized_naive_freqs-micromotion}, which also shows the possible secular frequencies' absolute values in $\mathrm{kHz}$.}
 	\label{fig:mathieu-mass-dep}
 \end{figure}
 
@@ -150,7 +150,7 @@ Controls whether the secular frequencies experienced by both ion species are imp
 
 \subsection{LAMMPS Verification of Mathieu Understanding}
 
-Now that we have gained confidence in our Mathieu solving capabilities, Let's demonstrate that indeed the reversely solved Mathieu equations presented in subsection \ref{ssec:params-trapping} indeed produces $(a_i, q_i)$ pairs with the requested secular frequencies. Figure \ref{fig:LAMMPS_summarized_naive_freqs-micromotion} demonstrates that decoupling the \texttt{micromotion} and \texttt{naive\_freqs} parameters was done successfully.
+Now that we have gained confidence in our Mathieu solving capabilities, Let's demonstrate that indeed the reversely solved Mathieu equations presented in section~\ref{ssec:params-trapping} indeed produces $(a_i, q_i)$ pairs with the requested secular frequencies. Figure~\ref{fig:LAMMPS_summarized_naive_freqs-micromotion} demonstrates that decoupling the \texttt{micromotion} and \texttt{naive\_freqs} parameters was done successfully.
 
 \begin{figure}
 	\begin{center}
@@ -173,7 +173,7 @@ Under the secular approximation, and when ignoring the Coulomb potential, the Ma
 
 Where $k_i$ is the spring-like coefficients of the harmonic trap. This distributions couples naturally density and temperature. We are interested in measuring the Coulomb energy per particle (denoted as $E_c/N$) as a function of the parameters of the distribution function above. Since the real temperature is affected by the Coulomb energy, we will not use the symbol $T$ in the following usages of expression \ref{eq:position-probability}, but rather we'll use $\tau$. The parameters that can affect $E_c/N$ are: $\{k_i\}$, $\tau$, and most importantly the number of ions $N$.
 
-The relation of $E_c/N$ to it's parameters is not analytical, yet we still expect a smooth behavior if we'd average over enough randomness. In figure \ref{fig:coulomb_energy} we can see that (expectedly), dense and cold ion clouds produce a higher Coulomb energy, that even exceeds $\tau$.\footnote{Figure \ref{fig:coulomb_energy_normalized} to appendix shows the same results normalized to $\tau$.}
+The relation of $E_c/N$ to it's parameters is not analytical, yet we still expect a smooth behavior if we'd average over enough randomness. In figure~\ref{fig:coulomb_energy} we can see that (expectedly), dense and cold ion clouds produce a higher Coulomb energy, that even exceeds $\tau$.\footnote{Figure~\ref{fig:coulomb_energy_normalized} to appendix shows the same results normalized to $\tau$.}
 
 \begin{figure}
 	\begin{center}
@@ -182,9 +182,9 @@ The relation of $E_c/N$ to it's parameters is not analytical, yet we still expec
 	\caption{Example dependence of $E_c/N$ to $N$ and $\tau$ for a trap of \ce{Yb^+} with secular frequencies of $(8.5, 8.5, 1.5) \mathrm{kHz}$, in the range of $\tau\in[2, 200]\mathrm{K}$.}\label{fig:coulomb_energy}
 \end{figure}
 
-To produce this color-mesh, we distributed the ions in space multiple times per $(\tau,N)$ point, until the relative standard deviation of all $E_c/N$ results in that point was lower then $0.12$ (arbitrary number), with a minimum of 5 distributions (also termed 'iterations'). Statistical results of figure \ref{fig:coulomb_energy} is depicted in figures \ref{fig:coulomb_energy_std} and \ref{fig:coulomb_energy_iterations}.
+To produce this color-mesh, we distributed the ions in space multiple times per $(\tau,N)$ point, until the relative standard deviation of all $E_c/N$ results in that point was lower then $0.12$ (arbitrary number), with a minimum of 5 distributions (also termed 'iterations'). Statistical results of figure~\ref{fig:coulomb_energy} is depicted in figures \ref{fig:coulomb_energy_std} and \ref{fig:coulomb_energy_iterations}.
 
-Naturally, the value of the highest Coulomb energy found escalates with the trap's tightness, as can be seen in figure \ref{fig:coulomb_energy_f_z}.
+Naturally, the value of the highest Coulomb energy found escalates with the trap's tightness, as can be seen in figure~\ref{fig:coulomb_energy_f_z}.
 
 \begin{figure}
 	\begin{center}
@@ -193,12 +193,12 @@ Naturally, the value of the highest Coulomb energy found escalates with the trap
 	\caption{The dependence of $E_c/N$ upon the z secular frequency, for a few specific $(\tau,N)$ pairs, and $f_x = f_y = 8.5\mathrm{kHz}$.}\label{fig:coulomb_energy_f_z}
 \end{figure}
 
-To \textbf{summarize}, the Coulomb energy is not negligible for dense \& cold distributions. Our ability to initiate a distribution of ions in a thermodynamically stable set of positions is limited by the effects of strong Coulomb energy, and by the tightness of our trap. To avoid too strong Coulomb energy effects, we thereby avoid distributing ions in $T < 5\mathrm{K}$.\footnote{During the research period I tried to construct an algorithm that would get a real temperature $T \ne \tau$, $N$ and a set of secular frequencies, and compute a $\tau$ with which the system will be more thermodynamically stable initially. When this algorithm was used for a single ion species it was slightly effective. However when 2 ion species were used, (with different masses and different $\{k_i\}$ - see section \ref{sec:comp/freqs2aq}), accommodating the algorithm for that case has proved to be too complex, and too slow.} More importantly, we expect time dependent temperature measurements to be offset from the initial temperature $T_i$ on the order of magnitude of the Coulomb energy. Since we also wish to start cooling when the system is thermodynamically stable, the Coulomb energy offset requires us to wait for a few $\mathrm{ms}$, before beginning cooling, as can also be seen from the oscillations in figure. % TODO: \ref{fig:} from results
+To \textbf{summarize}, the Coulomb energy is not negligible for dense \& cold distributions. Our ability to initiate a distribution of ions in a thermodynamically stable set of positions is limited by the effects of strong Coulomb energy, and by the tightness of our trap. To avoid too strong Coulomb energy effects, we thereby avoid distributing ions in $T < 5\mathrm{K}$.\footnote{During the research period I tried to construct an algorithm that would get a real temperature $T \ne \tau$, $N$ and a set of secular frequencies, and compute a $\tau$ with which the system will be more thermodynamically stable initially. When this algorithm was used for a single ion species it was slightly effective. However when 2 ion species were used, (with different masses and different $\{k_i\}$ - see section~\ref{sec:comp/freqs2aq}), accommodating the algorithm for that case has proved to be too complex, and too slow.} More importantly, we expect time dependent temperature measurements to be offset from the initial temperature $T_i$ on the order of magnitude of the Coulomb energy. Since we also wish to start cooling when the system is thermodynamically stable, the Coulomb energy offset requires us to wait for a few $\mathrm{ms}$, before beginning cooling, as can also be seen from the oscillations in figure. % TODO: \ref{fig:} from results
 
 \section{RF division Finesse, Stability \& Convergence}\label{sec:comp/convergence}
 
 % TODO: Cite the convergence statement
-An important performance-affecting issue to consider is the finesse of the time division. As explained in subsection \ref{ssec:T_rf_type}, our time must be divided to an integer amount of RF cycles, which is referred to in software as \texttt{rf\_divisor}. To prove that our time division is fine enough, we can run a simulation with the exact same set of parameters, including the initial conditions, and check whether the temperatures graph is changing less and less as \texttt{rf\_divisor} increases.
+An important performance-affecting issue to consider is the finesse of the time division. As explained in section~\ref{ssec:T_rf_type}, our time must be divided to an integer amount of RF cycles, which is referred to in software as \texttt{rf\_divisor}. To prove that our time division is fine enough, we can run a simulation with the exact same set of parameters, including the initial conditions, and check whether the temperatures graph is changing less and less as \texttt{rf\_divisor} increases.
 
 As a start, we can take a few
 

@@ -2,7 +2,7 @@
 
 The repository of the software code is available online at: \url{https://gitlab.com/doronbehar/lab-ion-trap-simulations}
 
-The repository consists of several Python executable scripts, each with a different role. The main important scripts are \texttt{sim.py} and \texttt{plot.py}. Running \texttt{./sim.py} creates a set of \texttt{.h5} suffixed files (in HDF5\cite{HDF5} format), and running \texttt{./plot.py} with the \texttt{.h5} files as arguments opens an interactive window as depicted in figure \ref{fig:software-plot-example}.
+The repository consists of several Python executable scripts, each with a different role. The main important scripts are \texttt{sim.py} and \texttt{plot.py}. Running \texttt{./sim.py} creates a set of \texttt{.h5} suffixed files (in HDF5\cite{HDF5} format), and running \texttt{./plot.py} with the \texttt{.h5} files as arguments opens an interactive window as depicted in figure~\ref{fig:software-plot-example}.
 
 Most other scripts in the repository implement functionalities required for simulating, and can also be executed as standalone scripts as well. Executing them tests the functionality they implement, sometimes via printing numbers, and sometimes via opening complex interactive plots like in figures \ref{fig:mathieu-mass-dep} \& \ref{fig:pure-mathieu-coefficients}. The following sections will simply describe each script, hopefully in an order that will make it easy to understand the complete architecture of the repository.
 
@@ -55,7 +55,7 @@ The following parameters always get a single value, even if not specified explic
     \item \texttt{--cooler \{Be,Ca,Yb,Ra\}}: Which cooler ion to use (default: [\ce{Yb}])
     \item \texttt{--time-stabilizing}: How much time before cooling (default: [$5.0 \mathrm{ms}$])
     \item \texttt{--time-cooling}: How much time after cooling (default: [$15 \mathrm{ms}$])
-    \item \texttt{--rf-divisor}: How many timesteps to put in a single RF cycle (default: [1597]), see also section \ref{sec:comp/convergence}.
+    \item \texttt{--rf-divisor}: How many timesteps to put in a single RF cycle (default: [1597]), see also section~\ref{sec:comp/convergence}.
     \item \texttt{--windows-attenuation}: By what fraction the intensity decreases after passing 2 windows (default: [0.7])
 	% TODO: Consider whether maybe this should be deleted 
     \item \texttt{--approximate-laser-force} (boolean): Simulate LASER cooling with the approximated $\alpha \cdot v$-like expression
@@ -92,7 +92,7 @@ This command tests the effect of the RF divisors on the stability and convergenc
     ::: --{no-,}naive-freqs ::: --{no-,}micromotion
 \end{verbatim}
 
-In the above, the $2\times 2$ boolean matrix of \texttt{naive\_freq} and \texttt{micromotion} is measured. A similar command was used to generate figure \ref{fig:LAMMPS_summarized_naive_freqs-micromotion}. The \texttt{\{no-,\}OPTION} syntax is expanded by the shell to \texttt{--no-OPTION --OPTION}, and GNU \texttt{parallel} runs 1 \texttt{./sim.py} process with \texttt{--no-OPTION} and another with \texttt{--OPTION}, and does the same for the other list of arguments appearing after the 2nd \texttt{:::}.
+In the above, the $2\times 2$ boolean matrix of \texttt{naive\_freq} and \texttt{micromotion} is measured. A similar command was used to generate figure~\ref{fig:LAMMPS_summarized_naive_freqs-micromotion}. The \texttt{\{no-,\}OPTION} syntax is expanded by the shell to \texttt{--no-OPTION --OPTION}, and GNU \texttt{parallel} runs 1 \texttt{./sim.py} process with \texttt{--no-OPTION} and another with \texttt{--OPTION}, and does the same for the other list of arguments appearing after the 2nd \texttt{:::}.
 
 \subsubsection{Other command line options}
 
@@ -115,14 +115,14 @@ Additionally, \texttt{xarray} array-like objects can be saved to files of variou
 \begin{itemize}
 	\item (Like Zarr), it has a concept of Groups, allowing you to save the xarray objects into 1 group, and other data in another group.
 	\item In comparison to Zarr, HDF5 files are single files, and not directories, making them less prone to corruption due to cloud storage sync conflicts, and manual recursive copying issues.
-	\item Can be faster then Zarr when reading data that needs to be read fast enough for animations like in figure \ref{fig:software-plot-example}.
+	\item Can be faster then Zarr when reading data that needs to be read fast enough for animations like in figure~\ref{fig:software-plot-example}.
 \end{itemize}
 
 There are also a few worth noting advantages of Zarr over HDF5:
 
 \begin{itemize}
-	\item The parallel writing support, which could have been an advantage for subsection \ref{ssec:manual/parallelized-simulating}.
-	\item Somewhat related to the above advantage, and also explained in subsection \ref{ssec:HDF5-measurements-format}, appending simulation data like positions and velocities can be done a bit more efficiently with Zarr, as this operation doesn't require extending the file and make sure all the pointers in the file point to the correct place.
+	\item The parallel writing support, which could have been an advantage for section~\ref{ssec:manual/parallelized-simulating}.
+	\item Somewhat related to the above advantage, and also explained in section~\ref{ssec:HDF5-measurements-format}, appending simulation data like positions and velocities can be done a bit more efficiently with Zarr, as this operation doesn't require extending the file and make sure all the pointers in the file point to the correct place.
 \end{itemize}
 
 These Zarr advantages were realized in a late part of the research period, and were not assessed thoroughly.\footnote{Also due to rough edges with the Zarr $2.18 \rightarrow 3.0$ version update, that happened around that time.}
@@ -144,11 +144,11 @@ The raw simulations results are not suitable to be modelled in an xarray object.
 
 \subsubsection{\texttt{times}}
 
-The first direct HDF5 dataset in the measurement group: A simple, usually\footnote{Why not always? See section \ref{ssec:sim-continue}} linearly spaced time stamps, that always starts with 0, and is appended floating point numbers as the simulation's time proceeds.
+The first direct HDF5 dataset in the measurement group: A simple, usually\footnote{Why not always? See section~\ref{ssec:sim-continue}} linearly spaced time stamps, that always starts with 0, and is appended floating point numbers as the simulation's time proceeds.
 
 \subsubsection{\texttt{mass=AMU} HDF5 Datasets}
 
-Since we are interested in measuring every ion species separately, every HDF5 group described in the next subsections, contains at least 1 HDF5 dataset in a path that ends with \texttt{mass=174}\footnote{For \ce{Yb^+}} or \texttt{mass=222}\footnote{For \ce{CHDBrI^+}}, depending upon the parameters \texttt{cloud} (from \ref{sssec:manual/multi-value-params}) \& \texttt{--cooler} (from \ref{sssec:manual/single-value-params}). If the multiplication of \texttt{cloud}$\times$\texttt{total} $<1$, there is only 1 mass. Note that table \ref{tbl:sim-list-amounts} also makes it possible to simulate with only a cooler mass - when \texttt{cloud} = 1.
+Since we are interested in measuring every ion species separately, every HDF5 group described in the next subsections, contains at least 1 HDF5 dataset in a path that ends with \texttt{mass=174}\footnote{For \ce{Yb^+}} or \texttt{mass=222}\footnote{For \ce{CHDBrI^+}}, depending upon the parameters \texttt{cloud} (from \ref{sssec:manual/multi-value-params}) \& \texttt{--cooler} (from \ref{sssec:manual/single-value-params}). If the multiplication of \texttt{cloud}$\times$\texttt{total} $<1$, there is only 1 mass. Note that table~\ref{tbl:sim-list-amounts} also makes it possible to simulate with only a cooler mass - when \texttt{cloud} = 1.
 
 \subsubsection{\texttt{positions} prefixed Groups}
 
@@ -166,7 +166,7 @@ Very similarly to the \texttt{positions} prefixed groups, there are \texttt{velo
 
 \subsubsection{The \texttt{temperatures} Group of Groups}
 
-Per every \texttt{velocities} and \texttt{positions} related group of HDF5 Datasets, multiple 1 dimensional HDF5 datasets of length \texttt{M} are saved into the \texttt{temperatures} group. Given a \texttt{T\_coord} \& \texttt{T\_rf\_type}, there are 5 \texttt{T\_method}s one can use to get a temperature, as described in subsection \ref{ssec:T_method} and table \ref{tbl:T_methods}. The full template of the paths to these per mass HDF5 datasets, under the \texttt{measurements/\{h\}} group, is:
+Per every \texttt{velocities} and \texttt{positions} related group of HDF5 Datasets, multiple 1 dimensional HDF5 datasets of length \texttt{M} are saved into the \texttt{temperatures} group. Given a \texttt{T\_coord} \& \texttt{T\_rf\_type}, there are 5 \texttt{T\_method}s one can use to get a temperature, as described in section~\ref{ssec:T_method} and table~\ref{tbl:T_methods}. The full template of the paths to these per mass HDF5 datasets, under the \texttt{measurements/\{h\}} group, is:
 
 \begin{verbatim}
 temperatures/{T_coord}_rf_{T_rf_type}_{T_method}/mass={AMU}
@@ -178,7 +178,7 @@ Note that no \texttt{temperatures/potisions\_rf\_averaged*} datasets are saved, 
 
 Running a single simulation of $20-30\mathrm{ms}$ can take $\approx 30 \mathrm{min}$. Hence scanning can obviously take days, depending on the dimensionality of the scan. A great way to speed up such scans is via distributing scanning points to different CPU cores. The algorithm described below, implemented in \texttt{parallel\_hdf5\_splitting.py}\footnote{Was implemented with \url{https://claude.ai}.}, is in charge of deciding how to distribute the scanning points to CPU cores.
 
-The splitting algorithm is best explained using examples. In table \ref{tbl:--cores-splitting-examples}, $C$ is the argument given to \texttt{./sim.py --cores}, that defaults to the number of CPU cores on the machine (usually $8$ or $16$). $C^*$ is the resulted number of CPU cores the scan is distributed to, decided by the algorithm ($C^* \leq C$).
+The splitting algorithm is best explained using examples. In table~\ref{tbl:--cores-splitting-examples}, $C$ is the argument given to \texttt{./sim.py --cores}, that defaults to the number of CPU cores on the machine (usually $8$ or $16$). $C^*$ is the resulted number of CPU cores the scan is distributed to, decided by the algorithm ($C^* \leq C$).
 
 \begin{table}
   \centering
@@ -219,7 +219,7 @@ Where:
 
 \begin{itemize}
 	\item \texttt{basic\_parameters\_hints} is a comma separated list of \texttt{param=value} strings of specific parameters worth mentioning early upfront in the file name - parameters that should have substantial influence on the results. 
-	\item \texttt{\{v1,v2,v3\}} is comma separated list of float like parameters that were scanned, from subsection \ref{sssec:manual/multi-value-params}.
+	\item \texttt{\{v1,v2,v3\}} is comma separated list of float like parameters that were scanned, from section~\ref{sssec:manual/multi-value-params}.
 	\item \texttt{date} is the date specified via \texttt{--date} (defaults to the OS' date).
 	\item \texttt{\#} is the index of the CPU core upon which these simulations were scanned.
 \end{itemize}
@@ -236,17 +236,17 @@ The basic usage is:
 parallel ./sim-continue.py ::: scan*.h5.now-scanned
 \end{verbatim}
 
-Where the \texttt{.now-scanned} suffixed files are scan files that were not finished (or when finished but not renamed, as described in subsection \ref{ssec:manual/parallelized-simulating}). In principal \texttt{./sim-continue.py} accepts only a single \texttt{.h5} file, so GNU parallel\cite{GNUParallel} can very useful with it.
+Where the \texttt{.now-scanned} suffixed files are scan files that were not finished (or when finished but not renamed, as described in section~\ref{ssec:manual/parallelized-simulating}). In principal \texttt{./sim-continue.py} accepts only a single \texttt{.h5} file, so GNU parallel\cite{GNUParallel} can very useful with it.
 
 The next subsections, explain how to use \texttt{./sim-continue.py} with successfully finished scans - scan files ending with \texttt{.h5}, and a few details regarding the file names.
 
 \subsection{Simulating More Time then Originally Prescribed}
 
-Sometimes, you look at the results of a particular scan point with \texttt{./plot.py} (see section \ref{sec:manual/plot}), and you want to extract a few simulations and run them for a few more $\mathrm{ms}$. This is possible with the \texttt{./sim-continue.py}'s \texttt{--time-cooling} option, which replaces the original cooling time with the one you specify. Likewise, for the sake of UI symmetry, the option \texttt{--time-stabilizing} also exists and replaces the original stabilization time.
+Sometimes, you look at the results of a particular scan point with \texttt{./plot.py} (see section~\ref{sec:manual/plot}), and you want to extract a few simulations and run them for a few more $\mathrm{ms}$. This is possible with the \texttt{./sim-continue.py}'s \texttt{--time-cooling} option, which replaces the original cooling time with the one you specify. Likewise, for the sake of UI symmetry, the option \texttt{--time-stabilizing} also exists and replaces the original stabilization time.
 
 \subsection{Simulating with a Finer Time Division}
 
-Another common scenario where \texttt{./sim-continue.py} is very useful, is running part of a simulation from a certain point in time, but with a higher RF divisor. You can observe example results where this is needed in section \ref{sec:comp/convergence}. The relevant self-explanatory command line options are \texttt{--rf-divisor} and \texttt{--from}. The argument to \texttt{--from} is a time point in $\mathrm{ms}$, rounded downwards to the nearest time point found.
+Another common scenario where \texttt{./sim-continue.py} is very useful, is running part of a simulation from a certain point in time, but with a higher RF divisor. You can observe example results where this is needed in section~\ref{sec:comp/convergence}. The relevant self-explanatory command line options are \texttt{--rf-divisor} and \texttt{--from}. The argument to \texttt{--from} is a time point in $\mathrm{ms}$, rounded downwards to the nearest time point found.
 % TODO: Maybe make the above \ref a bit more accurate - maybe \ref to a figure.
 
 \subsection{Removing Abruptly Some Ions}
@@ -257,11 +257,11 @@ One very rarely used, yet still maintained feature of \texttt{./sim-continue.py}
 
 When \texttt{./sim-continue.py} is given an unfinished \texttt{.h5.now-scanned} file path, it copies it to a file with the extension \texttt{.h5.now-appended}, and tries to fill it. Then when it finishes, the \texttt{.h5.now-appended} file is renamed to \texttt{.h5}.
 
-Somewhat similarly, when \texttt{./sim-continue.py} is given a (usually valid) \texttt{.h5} suffixed file, a \texttt{.h5.now-appended} file is still created and filled to, and renamed upon completion to \texttt{.h5}. However, for a valid \texttt{.h5} file, and when one of the \texttt{--time-*} or \texttt{--rf-divisor} options are used, the \texttt{basic\_parameters\_hints} part of the file name\footnote{Explained in subsection \ref{ssec:manual/parallelized-simulating}} will change, and thus ensure you won't override the original \texttt{.h5} file.
+Somewhat similarly, when \texttt{./sim-continue.py} is given a (usually valid) \texttt{.h5} suffixed file, a \texttt{.h5.now-appended} file is still created and filled to, and renamed upon completion to \texttt{.h5}. However, for a valid \texttt{.h5} file, and when one of the \texttt{--time-*} or \texttt{--rf-divisor} options are used, the \texttt{basic\_parameters\_hints} part of the file name\footnote{Explained in section~\ref{ssec:manual/parallelized-simulating}} will change, and thus ensure you won't override the original \texttt{.h5} file.
 
 \section{\texttt{sim-reconcile.py}}
 
-Another likely scenario one may encounter when researching, is best explained in the following example: Assume you ran the scans marked in table \ref{tbl:sim-reconcile-example}, using e.g a 2 dimensional scan of parameters $(A, B) \in \{a_1, a_2\}\times\{b_1, b_2\}$, and then a 1 dimensional scan of $B \in \{b_2, b_3\}$ with $A = a_3$. You may suspect there's some coupling between parameters $A$ and $B$, and you want to get a full picture of the dependence. Therefor you wish to simulate the missing configurations, marked with \checkmark\ in table \ref{tbl:sim-reconcile-example}.
+Another likely scenario one may encounter when researching, is best explained in the following example: Assume you ran the scans marked in table~\ref{tbl:sim-reconcile-example}, using e.g a 2 dimensional scan of parameters $(A, B) \in \{a_1, a_2\}\times\{b_1, b_2\}$, and then a 1 dimensional scan of $B \in \{b_2, b_3\}$ with $A = a_3$. You may suspect there's some coupling between parameters $A$ and $B$, and you want to get a full picture of the dependence. Therefor you wish to simulate the missing configurations, marked with \checkmark\ in table~\ref{tbl:sim-reconcile-example}.
 
 \begin{table}[h]
     \centering
@@ -350,7 +350,7 @@ Very similar to the trap's frequencies, a similar \texttt{--collapse-offset} has
 
 \subsection{Showing \texttt{pwlf} Fit Results}
 
-The piecewise fit results, described in subsection \ref{ssec:intro/SummarizedMeasurement}, can be plotted by the command line options \texttt{--show-fits} and \texttt{--show-regimes}. \texttt{--show-fits} simply plots the lines of the fits in addition to the raw measurements.
+The piecewise fit results, described in section~\ref{ssec:intro/SummarizedMeasurement}, can be plotted by the command line options \texttt{--show-fits} and \texttt{--show-regimes}. \texttt{--show-fits} simply plots the lines of the fits in addition to the raw measurements.
 
 \texttt{--show-regimes} also plots an opaque background marking the cooling regimes detected by \texttt{pwlf}\cite{pwlf}. Since only 1 pair of regimes can be sensibly plotted on one axes, the fits' break points are averaged over all dimensions of the scans.
 
@@ -364,7 +364,7 @@ The piecewise fit results, described in subsection \ref{ssec:intro/SummarizedMea
 	\item \texttt{--where} accepts 2 arguments, a dimension, and an index of a value of a parameter. The list of values and their indices can be printed with \texttt{--list all}. Choosing multiple values \texttt{v1, v2, ...} of a dimension \texttt{d}, can be done with \texttt{--where d v1 --where d v2 ...}.
 \end{itemize}
 
-Additional arguments and their values are described in table \ref{tbl:T_methods}.
+Additional arguments and their values are described in table~\ref{tbl:T_methods}.
 
 \section{\texttt{plot.py}}\label{sec:manual/plot}
 
@@ -378,7 +378,7 @@ Through out the research period,
 
 \section{Helpers, not Dealing Directly with Simulations}
 
-All other Python files in the repository collect functions related to a certain topic in simulating or plotting. Most of them are also executables, allowing to test the functions implemented in various ways. Table \ref{tbl:helper-scripts} briefly describes them.
+All other Python files in the repository collect functions related to a certain topic in simulating or plotting. Most of them are also executables, allowing to test the functions implemented in various ways. Table~\ref{tbl:helper-scripts} briefly describes them.
 
 \begin{table}
 \begin{tabularx}{\textwidth}{l|X|X}
@@ -388,13 +388,13 @@ Name                            & Purpose                                       
 \hline
 \texttt{boltzmann.py}           & Implement and tests various temperature computations, and temperatures-dependent distributions.                                                       & Given trap secular frequencies and other parameters, can print and plot statistics of distributions.                                                                                                                                                 \\
 \hline
-\texttt{coulomb.py}             & Implement Coulomb energies calculation, using Freud's\cite{freud} \texttt{locality.AABBQuery} - allowing to iterate all nearest-neighbors efficiently. & Can calculate \& plot data like presented in section \ref{sec:comp/coulomb} and in chapter \ref{chap:coulomb}.                                                                                                                                       \\
+\texttt{coulomb.py}             & Implement Coulomb energies calculation, using Freud's\cite{freud} \texttt{locality.AABBQuery} - allowing to iterate all nearest-neighbors efficiently. & Can calculate \& plot data like presented in section~\ref{sec:comp/coulomb} and in chapter \ref{chap:coulomb}.                                                                                                                                       \\
 \hline
-\texttt{laser\_cool.py}         & Implement LASER cooling related functions.                                                                                                             & Opens a Matplotlib plot solving the equation of motion of a single particle under a harmonic force and the LASER cooling force. Including sliders for various parameters that affect the results, similarly to figure \ref{fig:pure-mathieu-fft}.    \\
+\texttt{laser\_cool.py}         & Implement LASER cooling related functions.                                                                                                             & Opens a Matplotlib plot solving the equation of motion of a single particle under a harmonic force and the LASER cooling force. Including sliders for various parameters that affect the results, similarly to figure~\ref{fig:pure-mathieu-fft}.    \\
 \hline
-\texttt{mathieu.py}             & Implement a \texttt{Trap} class solving the Mathieu equations given, as described in subsection \ref{ssec:comp/mathieu}.                               & Can open figures \ref{fig:pure-mathieu-coefficients}, \ref{fig:pure-mathieu-fft}, \ref{fig:mathieu-stability} \& \ref{fig:mathieu-mass-dep}.Is also capable of exploring the dependence of $\{(a_i, q_i)\}$ solutions given $\beta_i$ in other ways. \\
+\texttt{mathieu.py}             & Implement a \texttt{Trap} class solving the Mathieu equations given, as described in section~\ref{ssec:comp/mathieu}.                               & Can open figures \ref{fig:pure-mathieu-coefficients}, \ref{fig:pure-mathieu-fft}, \ref{fig:mathieu-stability} \& \ref{fig:mathieu-mass-dep}.Is also capable of exploring the dependence of $\{(a_i, q_i)\}$ solutions given $\beta_i$ in other ways. \\
 \hline
-\texttt{optimal\_cooling.py}    & None for simulating and plotting.                                                                                                                      & Generates figure \ref{fig:laser-cool-optimal-overlap}.                                                                                                                                                                                              \\
+\texttt{optimal\_cooling.py}    & None for simulating and plotting.                                                                                                                      & Generates figure~\ref{fig:laser-cool-optimal-overlap}.                                                                                                                                                                                              \\
 \hline
 \texttt{physical\_constants.py} & Put all physical and technical parameters in the same place.                                                                                           & Does nothing.                                                                                                                                                                                                                                        \\
 \hline
