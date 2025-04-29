@@ -286,7 +286,7 @@ scan@reconciling@vars=(...)@{date}.h5
 
 Where the only dynamic part of it is \texttt{\{date\}}, and the \texttt{.now-scanned} suffix is added during the scan.
 
-\subsection{Merging Threshold}\label{ssec:manual/mergine-threshold}
+\subsection{Merging Threshold}\label{ssec:manual/merge-threshold}
 
 When \texttt{./sim-reconcile.py} and other scripts (explained further on), read multiple \texttt{.h5} files, they merge all scans' \texttt{ranges} xarray datasets, using the default \texttt{join="outer"}\footnote{See \href{https://docs.xarray.dev/en/stable/generated/xarray.merge.html}{xarray.merge documentation}.} argument, which means: Unionize all simulations' input parameters, and fill the missing values of data variables with \texttt{NaN}. In our case, our only data variable is called \texttt{hash}.
 
@@ -296,11 +296,113 @@ Per dimension, compute a 'cluster' of distances between the values normalized to
 
 \section{\texttt{time-plot.py}}
 
+The most basic plotting functionality is plotting multiple simulation results as a function of time, on the same axes. The per spatial axis' standard deviation, and the temperatures, are the only time dependent variables calculated by the code, as introduced in \ref{sec:intro/-y-options} These are selected via the \texttt{-y} command line option, and it defaults to temperatures.
+
+Several worth noting features of \texttt{time-plot.py} (common also to \texttt{plot.py}) are explained in the next subsections.
+
+\subsection{Handling Multi-Dimensional Scans}
+
+Differentiating between the lines is smartly done by the script via the following line properties, termed \textit{displayers}:
+
+\begin{itemize}
+	\item Colors: (Matplotlib provides a list of 10 easily differentiable colors)
+	\item Line Styles ($\tikz[baseline=-0.5ex]\draw[thick] (0,0) -- (0.4,0);$, $\tikz[baseline=-0.5ex]\draw[thick, dotted] (0,0) -- (0.4,0);$, $\tikz[baseline=-0.5ex]\draw[thick, dashed] (0,0) -- (0.4,0);$, $\tikz[baseline=-0.5ex]\draw[thick, dash dot] (0,0) -- (0.4,0);$ etc.
+)
+	\item Markers ($\times$, $\circ$, $\cdot$ etc.)
+\end{itemize}
+
+When multi-dimensional scans of parameters are given as an argument to \texttt{time-plot.py}, all non-trivial dimensions can be represented by any of the above displayers. Besides the standard simulation parameters, the masses are also considered as a potential dimension to iterate over. If a mixed species cloud was simulated, a \texttt{mass} dimension is added, and it can be displayed by one of the displayers above. An algorithm\footnote{Also written with \url{https://openai.com/}.} to choose a displayer per a dimension, is described below.
+
+The displayers itemized above are ordered according to their clarity when displayed on axes, with the clearest displayer being the first. The non-trivial dimensions of the scans, including the mass dimension, are also ordered by their size, starting with the largest. Then the algorithm matches each dimension to each displayer, until all displayers are consumed. When more non-trivial dimensions exist, and no more displayers are available, these left dimensions are marked 'to be averaged over'.
+
+An exceptional dimension in the above iteration is the initial conditions' \texttt{seed}, which the algorithm by default marks it to be averaged over. The command line options \texttt{--color, --linestyle, --marker, --average} can be used to modify the default behavior of the algorithm, which might be a bit arbitrary if dimensions of the same length are in the scan.
+
+Lastly, the \texttt{ranges} \texttt{xarray.Dataset} saved in each \texttt{.h5} file given as argument, is read and merged before the dimensions and displayers are iterated. \texttt{./time-plot.py} prints to the terminal a table of the matching made between displayers and dimensions, along with their lengths. Tables \ref{tbl:coordsDisplayers-default}, \ref{tbl:coordsDisplayers-color} and \ref{tbl:coordsDisplayers-color-marker} demonstrate how this matching is printed, for several different displayers command line arguments.
+
+\begin{table}[h]
+\input{back/coordsDisplayers-default.tex}
+\caption{The default match made by the plotting scripts between displayers and \texttt{xarray.Dataset} dimensions, for a scan with only 1 mass.}
+\label{tbl:coordsDisplayers-default}
+\end{table}
+
+\begin{table}[h]
+\input{back/coordsDisplayers-color.tex}
+\caption{The dimensions-displayers match for the same \texttt{.h5} files as in \ref{tbl:coordsDisplayers-default}, but when \texttt{--color omega} was given.}
+\label{tbl:coordsDisplayers-color}
+\end{table}
+
+\begin{table}[h]
+\input{back/coordsDisplayers-color-marker.tex}
+\caption{Like \ref{tbl:coordsDisplayers-color}, but with \texttt{--color T\_init --marker seed}.}
+\label{tbl:coordsDisplayers-color-marker}
+\end{table}
+
+The algorithm is flexible enough to use a different displayer for a dimension if you picked it with the command line, and never discard a displayer unless you chose enough dimensions to \texttt{--average} over. Averaging over multiple dimensions is done simply via multiple arguments to \texttt{--average}.
+
+\subsection{Handling Different Traps \& Offsets (\texttt{collapse\_ds.py})}
+
+A common scenario one may encounter is the desire to choose a different displayer per trap. The trap's secular frequencies are modeled as 3 dimensions, and even before assigning displayers to dimensions, if you'd take multiple scans with the secular frequencies as in figure% TODO: \ref{fig:...}
+, \texttt{xarray}'s merging will create a huge \texttt{xarray.Dataset} with many missing measurements, with every possible combination of all secular frequencies used.
+
+The natural thing to do of course is to consider instead a single dimension. This is termed in our context as \textit{collapsing}, and can be done using \texttt{--collapse-trap}. If you have a scan where $(f_x, f_y)$ were changed together, but $f_z$ was constant, \texttt{--collapse-trap xy} can be used (\texttt{xyz} is the default argument).
+
+Very similar to the trap's frequencies, a similar \texttt{--collapse-offset} has the same possible arguments and behavior, acting upon the offsets. This functionality is implemented in \texttt{collapse\_ds.py} and can be tested by executing it.
+
+\subsection{Showing \texttt{pwlf} Fit Results}
+
+The piecewise fit results, described in subsection \ref{ssec:intro/SummarizedMeasurement}, can be plotted by the command line options \texttt{--show-fits} and \texttt{--show-regimes}. \texttt{--show-fits} simply plots the lines of the fits in addition to the raw measurements.
+
+\texttt{--show-regimes} also plots an opaque background marking the cooling regimes detected by \texttt{pwlf}\cite{pwlf}. Since only 1 pair of regimes can be sensibly plotted on one axes, the fits' break points are averaged over all dimensions of the scans.
+
+\subsection{Miscellaneous Options}
+
+\begin{itemize}
+	\item Since reading multiple datasets involves merging, the same \texttt{--merge-threshold} argument and behavior described in \ref{ssec:manual/merge-threshold}.
+	\item Saving the plot in any format supported by Matplotlib is possible using \texttt{--save-fig}, with the format specified by the argument's file extension.
+	\item \texttt{--log} makes the y axis scaled logarithmically. 
+	\item \texttt{--list} makes the script not open any figure, and instead prints information related to the simulation and displaying parameters. Various formats are supported as arguments.
+	\item \texttt{--where} accepts 2 arguments, a dimension, and an index of a value of a parameter. The list of values and their indices can be printed with \texttt{--list all}. Choosing multiple values \texttt{v1, v2, ...} of a dimension \texttt{d}, can be done with \texttt{--where d v1 --where d v2 ...}.
+\end{itemize}
+
+Additional arguments and their values are described in table \ref{tbl:T_methods}.
+
 \section{\texttt{plot.py}}\label{sec:manual/plot}
+
+The main way to interact with simulations results is with \texttt{plot.py}.
+
+% TODO: Don't forget to mention ctrl-h and other keyboard shortcuts.
 
 \section{\texttt{h5doctor.py}}
 
+Through out the research period,
+
 \section{Helpers, not Dealing Directly with Simulations}
+
+All other Python files in the repository collect functions related to a certain topic in simulating or plotting. Most of them are also executables, allowing to test the functions implemented in various ways. Table \ref{tbl:helper-scripts} briefly describes them.
+
+\begin{table}
+\begin{tabularx}{\textwidth}{l|X|X}
+Name                            & Purpose                                                                                                                                               & Execution                                                                                                                                                                                                                        \\
+\hline
+\texttt{analyze.py}             & Analyzing results, and structuring the results also into a \texttt{xarray.Dataset}.                                                                   & Shows the Python representation of the computed \texttt{xarray.Dataset}s, given \texttt{.h5} files.                                                                                                                                                  \\
+\hline
+\texttt{boltzmann.py}           & Implement and tests various temperature computations, and temperatures-dependent distributions.                                                       & Given trap secular frequencies and other parameters, can print and plot statistics of distributions.                                                                                                                                                 \\
+\hline
+\texttt{coulomb.py}             & Implement Coulomb energies calculation, using Freud's\cite{freud} \texttt{locality.AABBQuery} - allowing to iterate all nearest-neighbors efficiently. & Can calculate \& plot data like presented in section \ref{sec:comp/coulomb} and in chapter \ref{chap:coulomb}.                                                                                                                                       \\
+\hline
+\texttt{laser\_cool.py}         & Implement LASER cooling related functions.                                                                                                             & Opens a Matplotlib plot solving the equation of motion of a single particle under a harmonic force and the LASER cooling force. Including sliders for various parameters that affect the results, similarly to figure \ref{fig:pure-mathieu-fft}.    \\
+\hline
+\texttt{mathieu.py}             & Implement a \texttt{Trap} class solving the Mathieu equations given, as described in subsection \ref{ssec:comp/mathieu}.                               & Can open figures \ref{fig:pure-mathieu-coefficients}, \ref{fig:pure-mathieu-fft}, \ref{fig:mathieu-stability} \& \ref{fig:mathieu-mass-dep}.Is also capable of exploring the dependence of $\{(a_i, q_i)\}$ solutions given $\beta_i$ in other ways. \\
+\hline
+\texttt{optimal\_cooling.py}    & None for simulating and plotting.                                                                                                                      & Generates figure \ref{fig:laser-cool-optimal-overlap}.                                                                                                                                                                                              \\
+\hline
+\texttt{physical\_constants.py} & Put all physical and technical parameters in the same place.                                                                                           & Does nothing.                                                                                                                                                                                                                                        \\
+\hline
+\texttt{pwlfWrapper.py}         & Wraps the PWLF algorithm to ease handling of the fit parameters' uncertainties.                                                                        & Does nothing.
+\end{tabularx}
+\caption{All helper Python files in the repository.}
+\label{tbl:helper-scripts}
+\end{table}
 
 \section{Reference Tables \& Figures}
 
