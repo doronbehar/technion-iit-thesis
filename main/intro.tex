@@ -210,7 +210,7 @@ Lastly, the initial conditions were obtained using a random number generator wit
 
 % Put all the onenote's technical challenges related content here
 
-\section{Output Result Types}
+\section{Output Result Types}\label{sec:intro/-y-options}
 
 Naturally, the main result that interests us is the temperature. Which is essentially a common measure for the average kinetic energy, and in our case, since we use a VMI, it is a measure of the velocities' distribution's width. A physically related property of our ion clouds is the size, that can be measured per axis simply via a \texttt{std}. As for the temperatures, there are a few more ways to measure them, laid out below. 
 
@@ -272,7 +272,7 @@ Where $\circlearrowright$ marks an RF cycle, and $\left\langle\circlearrowright\
 
 Lastly, we can select specific, multiple temperature values and average over the different methods, coordinates and RF handling methods. A common example is to take the positions and velocities sampled in the beginning of each RF cycle ($\mathrm{min}\left(\circlearrowright\right)$), and calculate the temperature according to all \texttt{T\_method}s. Whatever specific \texttt{T\_coord}s / \texttt{T\_rf\_type}s / \texttt{T\_method}s were chosen, the code analyzing and displaying the simulation results averages over these dimensions for each time index separately.\footnote{Technically, the temperatures obtained from the RF averaged ($\left\langle\circlearrowright\right\rangle$) positions ($\overrightarrow{\omega x}$) are considered \texttt{NaN} and hence ignored.}
 
-\subsection{Further Summarizing Analyzes}
+\subsection{Further Summarizing Analyzes}\label{ssec:intro/SummarizedMeasurement}
 
 Up until now we discussed time dependent properties of our ion clouds - the per spatial axis size and the various temperatures. We can also summarize these results to obtain various measures of how fast did we cool our ions, and how much smaller did the cloud get due to the LASER cooling etc. This is termed both in the code and here as summarized results.
 
