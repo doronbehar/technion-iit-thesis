@@ -453,15 +453,20 @@ Name                            & Purpose                                       
 
 \input{back/sim-list-most.tex}
 
+\newgeometry{top=2cm, bottom=2cm}
 \begin{sidewaysfigure}[h]
 	\begin{center}
-		\includegraphics[width=0.95\textwidth]{graphics/software-plot-example.pdf}
+		\adjincludegraphics[%
+			width=\textwidth,%
+			trim={{0.13\textwidth} 0 {0.05\textwidth} 0},%
+			clip,%
+		]{graphics/software-plot-example.pdf}
 	\end{center}
-	\caption{An example window opened by \texttt{./plot.py}.}
+	\caption{A typical window opened by \texttt{./plot.py}. All features are explained section~\ref{sec:manual/plot}.}
 	\label{fig:software-plot-example}
 \end{sidewaysfigure}
-
 \newgeometry{top=2cm, bottom=2cm}
+
 \begin{sidewaystable}[h]
 \input{back/sim-list-amounts.tex}
 \caption{The list of clouds' amounts. Calculated via rounding down cloud concentrations, and total amounts. Created using \texttt{./sim.py --list latex-amounts}.}
