@@ -385,7 +385,40 @@ The main way to interact with simulations results is with \texttt{plot.py}.
 
 \section{\texttt{h5doctor.py}}
 
-Through out the research period,
+Throughout the research period the format in which simulation results are saved has changed a lot. To verify our scan files are valid and can be plotted, and to also apply a sort of quality assurance, this script was written.
+
+All modifying actions this script may perform, depend on the input \texttt{.h5} files successfully going through a check phase. The \texttt{./h5doctor.py check} command can be used to perform only a check, which also verifies many HDF5 attributes related details are intact. Other actions possible of \texttt{h5doctor.py} are described in the next sections. 
+
+\subsection{Modifying Parameters}
+
+A particular kind of change the simulations' scans can go through, is changes to the \texttt{ranges} \texttt{xarray.Dataset}, described below:
+
+\begin{itemize}
+	\item Parameters renamed.
+	\item A floating point parameter was rescaled by a scalar.
+	\item A new parameter added (happened often).
+\end{itemize}
+
+When a new parameter is added, it is likely that old scans are still valid, but their \texttt{ranges} simply don't include that parameter but had it set to an implicit value. All of these scenarios (and a few more), are handled by \texttt{./h5doctor.py}.
+
+Since the \texttt{ranges} \texttt{xarray.Dataset} also includes a \texttt{hash} \texttt{xarray.DataArray}, calculated based on the simulation's parameters,  \texttt{./h5doctor.py} is also carefully changes these hashes' values, and renames the pointers in the \texttt{measurements/} HDF5 groups (see section~\ref{ssec:HDF5-measurements-format}).
+
+\subsection{Coulomb Energies}
+
+When \texttt{./sim.py} is used with \texttt{--coulomb}, it saves a few time-dependent Coulomb energies HDF5 datasets, that can be plotted with \texttt{./plot.py --show-coulomb}. Usually these energies are not very interesting, but sometimes, it can be interesting to look at the Coulomb energies after the simulation was finished. Without requiring to simulate everything again with \texttt{--coulomb}, \texttt{./h5doctor.py coulomb --save} can fill in those HDF5 datasets based on the positions.
+
+Worth noting is the fact that \texttt{./sim.py --coulomb} is using a LAMMPS\cite{LAMMPS} function to calculate these energies, whereas \texttt{./h5doctor.py coulomb} uses a Freud\cite{freud} function to calculate them (see table~\ref{tbl:helper-scripts}). Hence, by default this subcommand verifies there is a small numerically negligible difference between these two calculation methods and thus verifies our understanding of both of these functions.
+
+\subsection{Ignoring Measurements}
+
+As described in section~\ref{sec:comp/convergence}, sometimes only after a long scan has finished, you find out a certain specific simulation has had a numerical error due to a too coarse RF divisor, which change the summarized results so substantially, that they should be ignored. Ignoring is done via an \texttt{ignore} HDF5 attribute that can be set or removed by \texttt{./h5doctor.py ignore}.
+
+Handling multiple \texttt{.h5} files is done seamlessly, and usually you don't have to know which \texttt{.h5} file contains the simulation you wish to ignore. The \texttt{./h5doctor.py ignore select} uses \textit{Beaupy}\footnote{\url{https://petereon.github.io/beaupy/}} to help you find easily the simulation you are interested. The other \texttt{./h5doctor.py ignore} subcommands are:
+
+\begin{itemize}
+	\item \texttt{search}: Search and report any ignored simulations
+	\item \texttt{clean}: Clean all ignored simulations
+\end{itemize}
 
 \section{Helpers, not Dealing Directly with Simulations}
 
