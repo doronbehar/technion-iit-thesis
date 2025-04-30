@@ -284,11 +284,11 @@ Since there is no guarantee the collection of missing scanning points iterated i
 scan@reconciling@vars=(...)@{date}.h5
 \end{verbatim}
 
-Where the only dynamic part of it is \texttt{\{date\}}, and the \texttt{.now-scanned} suffix is added during the scan.
+Where the only dynamic part of it is \texttt{\{date\}}, and the \texttt{.now-scanned} suffix is added during the scan, and removed when it finishes successfully. In principle, it should be possible to parallelize this scan too, but this feature is not yet implemented.
 
 \subsection{Merging Threshold}\label{ssec:manual/merge-threshold}
 
-When \texttt{./sim-reconcile.py} and other scripts (explained further on), read multiple \texttt{.h5} files, they merge all scans' \texttt{ranges} xarray datasets, using the default \texttt{join="outer"}\footnote{See \href{https://docs.xarray.dev/en/stable/generated/xarray.merge.html}{xarray.merge documentation}.} argument, which means: Unionize all simulations' input parameters, and fill the missing values of data variables with \texttt{NaN}. In our case, our only data variable is called \texttt{hash}.
+When \texttt{./sim-reconcile.py} and other scripts (described further on), read multiple \texttt{.h5} files, they merge all scans' \texttt{ranges} xarray datasets, using the default \texttt{join="outer"}\footnote{See \href{https://docs.xarray.dev/en/stable/generated/xarray.merge.html}{xarray.merge documentation}.} argument, which means: Unionize all simulations' input parameters, and fill the missing values of data variables with \texttt{NaN}. In our case, our only data variable is called \texttt{hash}.
 
 Now what if 2 scans have cooling times of $15.05\mathrm{ms}$ and $15.0\mathrm{ms}$? The naive behavior of xarray would be to consider these two values different. Unfortunately, this can cause the merged \texttt{xarray.Dataset} to look very sparse, when in fact we'd probably like to consider these 2 points the same. This is why merging scans' \texttt{ranges} parameters is done using a non-trivial merging algorithm\footnote{This time developed with \url{https://openai.com/}.} called 'smoothly merging datasets', described briefly in the next paragraph.
 
@@ -380,7 +380,7 @@ Through out the research period,
 
 All other Python files in the repository collect functions related to a certain topic in simulating or plotting. Most of them are also executables, allowing to test the functions implemented in various ways. Table~\ref{tbl:helper-scripts} briefly describes them.
 
-\begin{table}
+\begin{sidewaystable}[h]
 \begin{tabularx}{\textwidth}{l|X|X}
 Name                            & Purpose                                                                                                                                               & Execution                                                                                                                                                                                                                        \\
 \hline
@@ -402,24 +402,25 @@ Name                            & Purpose                                       
 \end{tabularx}
 \caption{All helper Python files in the repository.}
 \label{tbl:helper-scripts}
-\end{table}
+\end{sidewaystable}
 
+\clearpage
 \section{Reference Tables \& Figures}
 
-% TODO: Get this figure, currently this is a stub copy, also, put it in a separate page.
-\begin{figure}[h]
+\input{back/sim-list-most.tex}
+
+\begin{sidewaysfigure}[h]
 	\begin{center}
 		\includegraphics[width=0.95\textwidth]{graphics/software-plot-example.pdf}
 	\end{center}
 	\caption{An example window opened by \texttt{./plot.py}.}
 	\label{fig:software-plot-example}
-\end{figure}
+\end{sidewaysfigure}
 
-% TODO: Put this table in a landscape, separate page
-\begin{table}[h]
+\newgeometry{top=2cm, bottom=2cm}
+\begin{sidewaystable}[h]
 \input{back/sim-list-amounts.tex}
 \caption{The list of clouds' amounts. Calculated via rounding down cloud concentrations, and total amounts. Created using \texttt{./sim.py --list latex-amounts}.}
 \label{tbl:sim-list-amounts}
-\end{table}
-
-\input{back/sim-list-most.tex}
+\end{sidewaystable}
+\restoregeometry
