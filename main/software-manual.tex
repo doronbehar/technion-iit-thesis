@@ -413,7 +413,7 @@ Worth noting is the fact that \texttt{./sim.py --coulomb} is using a LAMMPS\cite
 
 As described in section~\ref{sec:comp/convergence}, sometimes only after a long scan has finished, you find out a certain specific simulation has had a numerical error due to a too coarse RF divisor, which change the summarized results so substantially, that they should be ignored. Ignoring is done via an \texttt{ignore} HDF5 attribute that can be set or removed by \texttt{./h5doctor.py ignore}.
 
-Handling multiple \texttt{.h5} files is done seamlessly, and usually you don't have to know which \texttt{.h5} file contains the simulation you wish to ignore. The \texttt{./h5doctor.py ignore select} uses \textit{Beaupy}\footnote{\url{https://petereon.github.io/beaupy/}} to help you find easily the simulation you are interested. The other \texttt{./h5doctor.py ignore} subcommands are:
+Handling multiple \texttt{.h5} files is done seamlessly, and usually you don't have to know which \texttt{.h5} file contains the simulation you wish to ignore. The \texttt{./h5doctor.py ignore select} uses \textit{Beaupy}\footnote{\url{https://petereon.github.io/beaupy/}} to help you find easily the simulation you are interested in. The other \texttt{./h5doctor.py ignore} subcommands are:
 
 \begin{itemize}
 	\item \texttt{search}: Search and report any ignored simulations
@@ -426,17 +426,17 @@ All other Python files in the repository collect functions related to a certain 
 
 \begin{sidewaystable}[h]
 \begin{tabularx}{\textwidth}{l|X|X}
-Name                            & Purpose                                                                                                                                               & Execution                                                                                                                                                                                                                        \\
+\textbf{Name}                   & \textbf{Purpose}                                                                                                                                       & \textbf{Execution}                                                                                                                                                                                                                                   \\
 \hline
-\texttt{analyze.py}             & Analyzing results, and structuring the results also into a \texttt{xarray.Dataset}.                                                                   & Shows the Python representation of the computed \texttt{xarray.Dataset}s, given \texttt{.h5} files.                                                                                                                                                  \\
+\texttt{analyze.py}             & Analyzing results, and structuring the results also into a \texttt{xarray.Dataset}.                                                                    & Shows the Python representation of the computed \texttt{xarray.Dataset}s, given \texttt{.h5} files.                                                                                                                                                  \\
 \hline
-\texttt{boltzmann.py}           & Implement and tests various temperature computations, and temperatures-dependent distributions.                                                       & Given trap secular frequencies and other parameters, can print and plot statistics of distributions.                                                                                                                                                 \\
+\texttt{boltzmann.py}           & Implement and tests various temperature computations, and temperatures-dependent distributions.                                                        & Given trap secular frequencies and other parameters, can print and plot statistics of distributions.                                                                                                                                                 \\
 \hline
 \texttt{coulomb.py}             & Implement Coulomb energies calculation, using Freud's\cite{freud} \texttt{locality.AABBQuery} - allowing to iterate all nearest-neighbors efficiently. & Can calculate \& plot data like presented in section~\ref{sec:comp/coulomb} and in chapter \ref{chap:coulomb}.                                                                                                                                       \\
 \hline
 \texttt{laser\_cool.py}         & Implement LASER cooling related functions.                                                                                                             & Opens a Matplotlib plot solving the equation of motion of a single particle under a harmonic force and the LASER cooling force. Including sliders for various parameters that affect the results, similarly to figure~\ref{fig:pure-mathieu-fft}.    \\
 \hline
-\texttt{mathieu.py}             & Implement a \texttt{Trap} class solving the Mathieu equations given, as described in section~\ref{ssec:comp/mathieu}.                               & Can open figures \ref{fig:pure-mathieu-coefficients}, \ref{fig:pure-mathieu-fft}, \ref{fig:mathieu-stability} \& \ref{fig:mathieu-mass-dep}.Is also capable of exploring the dependence of $\{(a_i, q_i)\}$ solutions given $\beta_i$ in other ways. \\
+\texttt{mathieu.py}             & Implement a \texttt{Trap} class solving the Mathieu equations given, as described in section~\ref{ssec:comp/mathieu}.                                  & Can open figures \ref{fig:pure-mathieu-coefficients}, \ref{fig:pure-mathieu-fft}, \ref{fig:mathieu-stability} \& \ref{fig:mathieu-mass-dep}.Is also capable of exploring the dependence of $\{(a_i, q_i)\}$ solutions given $\beta_i$ in other ways. \\
 \hline
 \texttt{optimal\_cooling.py}    & None for simulating and plotting.                                                                                                                      & Generates figure~\ref{fig:laser-cool-optimal-overlap}.                                                                                                                                                                                              \\
 \hline
@@ -462,7 +462,7 @@ Name                            & Purpose                                       
 			clip,%
 		]{graphics/software-plot-example.pdf}
 	\end{center}
-	\caption{A typical window opened by \texttt{./plot.py}. All features are explained section~\ref{sec:manual/plot}.}
+	\caption{A typical window opened by \texttt{./plot.py}. All features are described in section~\ref{sec:manual/plot}.}
 	\label{fig:software-plot-example}
 \end{sidewaysfigure}
 \newgeometry{top=2cm, bottom=2cm}
