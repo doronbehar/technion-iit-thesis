@@ -300,7 +300,7 @@ The most basic plotting functionality is plotting multiple simulation results as
 
 Several worth noting features of \texttt{time-plot.py} (common also to \texttt{plot.py}) are explained in the next subsections.
 
-\subsection{Handling Multi-Dimensional Scans}
+\subsection{Handling Multi-Dimensional Scans}\label{ssec:manual/displayers-dimensions}
 
 Differentiating between the lines is smartly done by the script via the following line properties, termed \textit{displayers}:
 
@@ -350,7 +350,7 @@ Lastly, the \texttt{ranges} \texttt{xarray.Dataset} saved in each \texttt{.h5} f
 
 The algorithm is flexible enough to use a different displayer for a dimension if you picked it with the command line, and never discard a displayer unless you chose enough dimensions to \texttt{--average} over. Averaging over multiple dimensions is done simply via multiple arguments to \texttt{--average}.
 
-\subsection{Handling Different Traps \& Offsets (\texttt{collapse\_ds.py})}
+\subsection{Handling Different Traps \& Offsets (\texttt{collapse\_ds.py})}\label{ssec:manual/collapse_ds}
 
 A common scenario one may encounter is the desire to choose a different displayer per trap. The trap's secular frequencies are modeled as 3 dimensions, and even before assigning displayers to dimensions, if you'd take multiple scans with the secular frequencies as in figure% TODO: \ref{fig:...}
 , \texttt{xarray}'s merging will create a huge \texttt{xarray.Dataset} with many missing measurements, with every possible combination of all secular frequencies used.
@@ -365,23 +365,121 @@ The piecewise fit results, described in section~\ref{ssec:intro/SummarizedMeasur
 
 \texttt{--show-regimes} also plots an opaque background marking the cooling regimes detected by \texttt{pwlf}\cite{pwlf}. Since only 1 pair of regimes can be sensibly plotted on one axes, the fits' break points are averaged over all dimensions of the scans.
 
-\subsection{Miscellaneous Options}
+\subsection{Miscellaneous Options}\label{ssec:manual/misc-options}
 
 \begin{itemize}
 	\item Since reading multiple datasets involves merging, the same \texttt{--merge-threshold} argument and behavior described in \ref{ssec:manual/merge-threshold}.
 	\item Saving the plot in any format supported by Matplotlib is possible using \texttt{--save-fig}, with the format specified by the argument's file extension.
 	\item \texttt{--log} makes the y axis scaled logarithmically. 
-	\item \texttt{--list} makes the script not open any figure, and instead prints information related to the simulation and displaying parameters. Various formats are supported as arguments.
+	\item \texttt{--list} makes the script not open any figure, and instead prints information related to the simulation and displaying parameters. Various formats are supported, and can be specified as optional arguments to \texttt{--list}.
 	\item \texttt{--where} accepts 2 arguments, a dimension, and an index of a value of a parameter. The list of values and their indices can be printed with \texttt{--list all}. Choosing multiple values \texttt{v1, v2, ...} of a dimension \texttt{d}, can be done with \texttt{--where d v1 --where d v2 ...}.
 \end{itemize}
 
-Additional arguments and their values are described in table~\ref{tbl:T_methods}.
+Additional optional arguments like \texttt{--T\_coord}, \texttt{--T\_rf\_type} and \texttt{--T\_method} are described in table~\ref{tbl:T_methods}.
 
 \section{\texttt{plot.py}}\label{sec:manual/plot}
 
-The main way to interact with simulations results is with \texttt{plot.py}.
+\texttt{plot.py} is the main script with which you can view simulations' results of any kind, interactively, as shown in figure~\ref{fig:software-plot-example}. The basic command line usage is simply passing it \texttt{.h5} arguments. Many other optional command line arguments were already introduced in previous sections, as described briefly below:
 
-% TODO: Don't forget to mention ctrl-h and other keyboard shortcuts.
+\begin{itemize}
+	\item \texttt{--collapse-trap} and \texttt{--collapse-offset} work as described in section~\ref{ssec:manual/collapse_ds}, though for here it is more relevant for the axes described in section~\ref{ssec:manual/x-vs-y}.
+	\item \texttt{--merge-threshold}, \texttt{--where} \& \texttt{--list} work exactly as described in section~\ref{ssec:manual/misc-options}.
+	\item \texttt{--T\_coord}, \texttt{--T\_rf\_type} \& \texttt{--T\_method} also work very similarly to \texttt{./time-plot.py}, and here they are relevant for axes described in sections \ref{ssec:manual/x-vs-y} and \ref{ssec:manual/plot-time-dependent}.
+\end{itemize}
+
+The \texttt{--show-coulomb} command line option also creates a simple separate figure window, showing on a separate axes the coulomb energies of the currently viewed simulation, if these energies are available\footnote{See also section~\ref{ssec:h5doctor_coulomb}.}. All other optional command line arguments are relevant only for specific GUI elements in the GUI, and hence are described in each of the following sections.
+
+\subsection{Top Right: Summarized Results' Dependence on Simulation Parameters}\label{ssec:manual/x-vs-y}
+
+The main purpose of \texttt{./plot.py} is to display \textit{summarized} simulation results, on a single same axes, as described in section~\ref{ssec:intro/SummarizedMeasurement}. For a 1 dimensional scan of parameter $p$, the summarized results are plotted as a function of $p$, where results relevant of different masses in each simulation, are differentiated by color. This plot is termed here and in software as \textit{x-vs-y}.
+
+Like with \texttt{./time-plot.py} (see section~\ref{ssec:manual/displayers-dimensions}), each varying dimension of the scan is attached a \textit{displayer}, with the horizontal axis considered a displayer as well, termed simply \texttt{x}. The \texttt{x} displayer is picked first - for the most varying dimension, and can be picked manually with the command line argument \texttt{-x}, just like \texttt{--color}, \texttt{--linestyle} and \texttt{--marker}.
+
+Deciding which summarized results are displayed, can be done either in the GUI via the radio-buttons found at the right-bottom, or via the command line arguments described in tables~\ref{tbl:y-arguments}~and~\ref{tbl:y-dependents}.
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l|X|l}
+\textbf{-y choice} & \textbf{Explanation} & \textbf{Dependent Arguments} \\
+\hline
+T & The temperature of the clouds [Kelvin] & \makecell[tl]{\texttt{--part}} \\
+\hline
+size & Cloud size [mm] & \makecell[tl]{\texttt{--axis} \\ \texttt{--part}} \\
+\hline
+coolFreq & The cooling frequency [kHz], as calculated by cjekel's PWLF (PieceWise Linear Fit) algorithm\cite{pwlf} & \makecell[tl]{\texttt{--regime}} \\
+\hline
+cloudFreq & The cloud's collective movement most dominant frequency [kHz] & \makecell[tl]{\texttt{--axis} \\ \texttt{--freqMethod} \\ \texttt{--freqOperator}} \\
+\end{tabularx}
+\caption{Available choices for the \texttt{-y} argument and their meanings.}
+\label{tbl:y-arguments}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabularx}{\textwidth}{l|X}
+\textbf{Argument} & \textbf{Explanation} \\
+\hline
+\texttt{--part} & The simulation part in comparison to cooling time point to use in the calculation (options: \texttt{stabilizing}, \texttt{cooling}, \texttt{s-f}, \texttt{f/s}; default: \texttt{stabilizing}) \\
+\hline
+\texttt{--regime} & The index of the cooling regime that was detected by cjekel's PWLF (PieceWise Linear Fit) algorithm\cite{pwlf} (options: \texttt{0}, \texttt{1}; default: \texttt{0}) \\
+\hline
+\texttt{--axis} & The axis for which to focus the calculation upon (options: \texttt{x}, \texttt{y}, \texttt{z}; default: \texttt{x}) \\
+\hline
+\texttt{--freqMethod} & How to compute the dominant movement frequency of the cloud (options: \texttt{fft}, \texttt{fit}; default: \texttt{fft}) \\
+\hline
+\texttt{--freqOperator} & How to compute the dominant movement frequency of the cloud (options: \texttt{none}, \texttt{diff}, \texttt{ratio}; default: \texttt{none}) \\
+\end{tabularx}
+\caption{Arguments that other \texttt{-y} choices may depend on.}
+\label{tbl:y-dependents}
+\end{table}
+
+Last notes:
+
+\begin{itemize}
+	\item The \textit{x-vs-y} figure can be saved to a file via the \texttt{--save-fig} command line option.
+	\item If the \texttt{x} displayer is set by chance to the simulation parameter \texttt{omega}, you can use the boolean flag \texttt{--intensity} to make the x axis of this figure scale like laser intensity, as in equation~\ref{eq:omega2intensity}.
+\end{itemize}
+
+\subsection{Bottom Left: Scan's Dimensions Sliders}\label{ssec:manual/plot-sliders}
+
+As described in section~\ref{ssec:manual/x-vs-y}, multiple dimensions of the input \texttt{.h5} files are attached to \textit{displayer}s. Like with \texttt{./time-plot.py}, the \texttt{seed} parameter is averaged over by default, along with potentially other dimensions. The 3D animation (section~\ref{ssec:manual/plot-3d-anim}), and the time-dependent plot (section~\ref{ssec:manual/plot-time-dependent}), always display a single simulation, which can be picked by the sliders found in the bottom-left part of the figure.
+
+Controlling the values of each slider can be done by clicking the mouse near a tick, and also via the keyboard shortcuts in table~\ref{tbl:manual/keyboard-shortcuts}. The command line option \texttt{--interactive-init} can be used to start the GUI in a specific state of the sliders, by choosing interactively a specific simulation in the command line - using \textit{Beaupy}\footnote{\url{https://petereon.github.io/beaupy/}} and iterating the non-trivial dimensions.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textit{displayer} & $+$ & $-$ \\
+\midrule
+x         & \keys{\ctrl+\arrowkeyright} & \keys{\ctrl+\arrowkeyleft} \\
+color     & \keys{\ctrl+\arrowkeyup}    & \keys{\ctrl+\arrowkeydown} \\
+linestyle & \keys{\ctrl+j}              & \keys{\ctrl+k} \\
+average   & \keys{\ctrl+u}              & \keys{\ctrl+i} \\
+\bottomrule
+\end{tabular}
+\caption{Keyboard shortcuts for iterating dimensions values, per their attachment to a \textit{displayer}. $\pm$ is increasing/decreasing the dimension's value.}%
+\label{tbl:manual/keyboard-shortcuts}
+\end{table}
+
+Lastly, the \keys{\ctrl+h} can be used to save the currently focused simulation to a single file, which can be manipulated and inspected later for various purposes.
+
+\subsection{Top Left: 3D Animation}\label{ssec:manual/plot-3d-anim}
+
+The central part of the GUI is the 3D animation showing the particles' movement in time, of the simulation picked by the sliders. Matplotlib allows to easily changing the view angle\footnote{See \url{https://matplotlib.org/stable/api/toolkits/mplot3d/view_angles.html}}, and zooming in and out\footnote{See \url{https://matplotlib.org/stable/users/explain/figure/interactive.html\#interactive-navigation}.} with the mouse. A few relevant command line options for the animation are available:
+
+\begin{itemize}
+	\item \texttt{--no-animate}: Disables animation - useful when you want to observe each frame.
+	% TODO: Maybe mention the PDF attachments
+	\item \texttt{--save-video}: Saves a video animation of the particles moving, including the rest of the GUI axes and other elements. To simulate a specific simulation, \texttt{--interactive-init} can be used.
+	\item \texttt{--range}: Specifies a limit $L$ in $\mathrm{mm}$ for the 3D space, used as $\pm L$ from the origin for all spatial dimensions.
+\end{itemize}
+
+\subsection{Middle Right: Time Dependent Results}\label{ssec:manual/plot-time-dependent}
+
+This plot is very similar to plots generated by \texttt{./time-plot.py}, only that it shows only on a single simulation - the simulation picked by the sliders. Since only a single simulation's results are displayed, the piecewise fits and cooling regimes are always presented, unless the simulation is marked as ignored, in which case there are no fits available to begin with.
+
+The command line option \texttt{--log} can be used to start the GUI with this plot's vertical axis displayed in a logarithmic scale. When the GUI is open, \keys{\ctrl+l} can be used to toggle on/off the logarithmic scaling.
 
 \section{\texttt{h5doctor.py}}
 
@@ -403,11 +501,11 @@ When a new parameter is added, it is likely that old scans are still valid, but 
 
 Since the \texttt{ranges} \texttt{xarray.Dataset} also includes a \texttt{hash} \texttt{xarray.DataArray}, calculated based on the simulation's parameters,  \texttt{./h5doctor.py} is also carefully changes these hashes' values, and renames the pointers in the \texttt{measurements/} HDF5 groups (see section~\ref{ssec:HDF5-measurements-format}).
 
-\subsection{Coulomb Energies}
+\subsection{Coulomb Energies}\label{ssec:h5doctor_coulomb}
 
 When \texttt{./sim.py} is used with \texttt{--coulomb}, it saves a few time-dependent Coulomb energies HDF5 datasets, that can be plotted with \texttt{./plot.py --show-coulomb}. Usually these energies are not very interesting, but sometimes, it can be interesting to look at the Coulomb energies after the simulation was finished. Without requiring to simulate everything again with \texttt{--coulomb}, \texttt{./h5doctor.py coulomb --save} can fill in those HDF5 datasets based on the positions.
 
-Worth noting is the fact that \texttt{./sim.py --coulomb} is using a LAMMPS\cite{LAMMPS} function to calculate these energies, whereas \texttt{./h5doctor.py coulomb} uses a Freud\cite{freud} function to calculate them (see table~\ref{tbl:helper-scripts}). Hence, by default this subcommand verifies there is a small numerically negligible difference between these two calculation methods and thus verifies our understanding of both of these functions.
+Worth noting is the fact that \texttt{./sim.py --coulomb} is using a LAMMPS\cite{LAMMPS} function to calculate these energies, whereas \texttt{./h5doctor.py coulomb} uses \textit{Freud}\cite{freud} to iterate all the pairs and sum the $1/r$ distances. Hence, by default this subcommand verifies there is a small numerically negligible difference between these two calculation methods and thus verifies our understanding of both of these functions.
 
 \subsection{Ignoring Measurements}
 
