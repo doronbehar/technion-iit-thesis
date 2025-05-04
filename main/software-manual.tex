@@ -1,14 +1,12 @@
 \chapter{Simulation Software Manual \& Technical Details}
 
-The repository of the software code is available online at: \url{https://gitlab.com/doronbehar/lab-ion-trap-simulations}
+The repository of the Simulations' software code is available online at: \url{https://gitlab.com/doronbehar/lab-ion-trap-simulations}. It consists of several Python executable scripts, each with a different role. The main important scripts are \texttt{sim.py} and \texttt{plot.py}. Running \texttt{./sim.py} creates a set of \texttt{.h5} suffixed files (in HDF5\cite{HDF5} format), and running \texttt{./plot.py} with the \texttt{.h5} files as arguments opens an interactive window for viewing the results, as depicted in figure~\ref{fig:software-plot-example}.
 
-The repository consists of several Python executable scripts, each with a different role. The main important scripts are \texttt{sim.py} and \texttt{plot.py}. Running \texttt{./sim.py} creates a set of \texttt{.h5} suffixed files (in HDF5\cite{HDF5} format), and running \texttt{./plot.py} with the \texttt{.h5} files as arguments opens an interactive window as depicted in figure~\ref{fig:software-plot-example}.
-
-Most other scripts in the repository implement functionalities required for simulating, and can also be executed as standalone scripts as well. Executing them tests the functionality they implement, sometimes via printing numbers, and sometimes via opening complex interactive plots like in figures \ref{fig:mathieu-mass-dep} \& \ref{fig:pure-mathieu-coefficients}. The following sections will simply describe each script, hopefully in an order that will make it easy to understand the complete architecture of the repository.
+The following sections will simply describe each file in the repository, hopefully in an order that will make it easy to understand the complete architecture.
 
 \section{\texttt{flake.nix}: Setting up a Development Environment}
 
-Before we'll begin describing the actual Python scripts, it is important to setup a proper development environment for running the scripts. The best software I'd recommend for any task for managing a development environment on a per-project basis, is the package manager \textit{Nix}\cite{Nix}. Nix is a functional package manager\cite{NixThesis}, meaning it is capable of producing (packages and) development environments from a pure set of inputs. The intention is to increase the likelihood that the resulted development environment will be reproducible\cite{SoftwareReproducitilityThesis} on any computer running Nix.
+Before we'll begin describing the actual Python scripts, it is important to setup a proper development environment for running the scripts. The best software I recommend for managing the development environment on a per-project basis, is the package manager \textit{Nix}\cite{Nix}. Nix is a functional package manager\cite{NixThesis}, meaning it is capable of producing (packages and) development environments from a pure set of inputs. The intention is to increase the likelihood that the resulted development environment will be reproducible\cite{SoftwareReproducitilityThesis} on any computer running Nix.
 
 The main file that defines the development environment is \texttt{flake.nix}. If you have \texttt{nix} installed you should be able to run \texttt{nix develop}\footnote{Don't forget to enable the (currently, as of writing) \texttt{experimental-features = nix-command flakes}. See the relevant \href{https://nix.dev/manual/nix/stable/contributing/experimental-features}{Nix' Manual page} for more details.} in a command line shell and enter a Bash shell that would be capable of running any script in the repository just like I did - with the same versions of Python dependencies, and same LAMMPS version and build variant.
 
@@ -41,7 +39,7 @@ Most of the float typed parameters' possible values are defined in \texttt{PARAM
 
 When you run \texttt{./sim.py} and you want to choose specific values of a certain float like parameter, you use the indices of the array's values defined in \texttt{PARAMETERS\_INFO}. For example to scan the initial temperatures $[10,40]\mathrm{K}$, you would use \texttt{--T\_init 1 3}. If you want to specify a certain range of values, you can use Bash shell syntax to choose e.g $[5,10,20]\mathrm{K}$ with \texttt{--T\_init \{0..2\}}, which simply is expanded by Bash to \texttt{--T\_init 0 1 2}.
 
-To view all available parameters and their values, \texttt{./sim.py --list} can be used, which lists all available parameters to the terminal in 2 tables. Tables \ref{tbl:sim-list-most} and \ref{tbl:sim-list-amounts} serve as a LaTeX copy of these tables. Eventually, to run scans with a sensible amount of varying parameters (2-3 dimensions), you'd need to write \texttt{./sim.py} commands with lots of options, every time. This could be a nightmare without using Shell command line history, accessible with the keyboard's up-arrows. For a more versatile and efficient command line history browsing, I'd recommend using \href{https://github.com/junegunn/fzf}{fzf} with \href{https://github.com/junegunn/fzf/blob/d24b58ef3fc6d6d2c43e07a44e0f757b9bdfbeff/shell/key-bindings.bash#L133-L136}{this Bash configuration.}
+To view all available parameters and their values, \texttt{./sim.py --list} can be used, which lists all available parameters to the terminal in 2 tables. Tables \ref{tbl:sim-list-most} and \ref{tbl:sim-list-amounts} serve as a copy of these tables. Eventually, to run scans with a sensible amount of varying parameters (2-3 dimensions), you'd need to write \texttt{./sim.py} commands with lots of options, every time. This could be a nightmare without using Shell command line history, accessible with the keyboard's \keys{\arrowkeyup} \& \keys{\arrowkeydown} keys. For a more versatile and efficient command line history browsing, I'd recommend using \href{https://github.com/junegunn/fzf}{fzf} with \href{https://github.com/junegunn/fzf/blob/d24b58ef3fc6d6d2c43e07a44e0f757b9bdfbeff/shell/key-bindings.bash#L133-L136}{this Bash configuration.}
 
 Lastly, the \texttt{--seed} parameter allows one to choose a specific random number generation (positive integer) seed. Multiple values are treated as multiple initial conditions to perform - hence increasing the dimensionality of the scan. A negative integer argument like e.g \texttt{--seed=-5}, means 'take 5 random seed integers'.
 
@@ -57,7 +55,7 @@ The following parameters always get a single value, even if not specified explic
     \item \texttt{--time-cooling}: How much time after cooling (default: [$15 \mathrm{ms}$])
     \item \texttt{--rf-divisor}: How many timesteps to put in a single RF cycle (default: [1597]), see also section~\ref{sec:comp/convergence}.
     \item \texttt{--windows-attenuation}: By what fraction the intensity decreases after passing 2 windows (default: [0.7])
-	% TODO: Consider whether maybe this should be deleted 
+    % TODO: Consider whether maybe this should be deleted 
     \item \texttt{--approximate-laser-force} (boolean): Simulate LASER cooling with the approximated $\alpha \cdot v$-like expression
     \item \texttt{--offset x[mm] y[mm] z[mm]}: Put the ion cloud in an offset from the center (default: [0.0, 0.0, 0.0])
 \end{itemize}
@@ -99,18 +97,18 @@ In the above, the $2\times 2$ boolean matrix of \texttt{naive\_freq} and \texttt
 Besides the obvious \texttt{--help} option, a few more non physical options of \texttt{./sim.py} are of worth noting:
 
 \begin{itemize}
-	\item \texttt{--date}: When creating a \texttt{.h5} file, part of the file's name includes by default a date string. Useful when you want to use a string easier to remember, such that it'd be easy for you to locate these particular simulation scan later.
-	\item \texttt{--coulomb}: When simulating, measure the coulomb energies into a separate group. This data can be plotted in a separate figure window with \texttt{./plot.py --show-coulomb}.
+	\item \texttt{--date}: When creating \texttt{.h5} files, part of the files' name include a date string. When you want to easily allocate the files later, this option can be used.
+	\item \texttt{--coulomb}: When simulating, measure the coulomb energies into a dedicated HDF5 group. This data can be plotted in a separate figure window with \texttt{./plot.py --show-coulomb}.
 	\item \texttt{--high-resolution}: When simulating, extract the velocities and the positions every simulation step, and not only in the beginning of every RF cycle. NOTE this makes the simulation run much slower due to slow excessive disk writing.
 	\item \texttt{--list}: Don't actually simulate, only list the available parameters. Essentially prints into the terminal tables \ref{tbl:sim-list-most} and \ref{tbl:sim-list-amounts}.
-	\item \texttt{--cores}: How many CPU cores to use when distributing jobs, defaults to 8. See \ref{ssec:manual/parallelized-simulating} for more details.
+	\item \texttt{--cores}: How many CPU cores to use when distributing jobs, defaults to the number of CPU cores available on your machine. See section~\ref{ssec:manual/parallelized-simulating} for more details.
 \end{itemize}
 
 \subsection{Managing Simulation Parameters with \texttt{xarray}}
 
-Since we have so many simulation parameters, and we are interested in manipulate their results in various ways, it can be incomprehensibly hard to do it with traditional multi-dimensional Numpy arrays. Almost all of the repository uses \texttt{xarray}\cite{xarray} to manage arrays of 2 dimensions and more. With \texttt{xarray} you can be absolutely sure you are performing operations on the right dimensions, no matter how they are ordered internally.
+Since we have so many simulation parameters, and we are interested in manipulating their results in various ways, it can be incomprehensibly hard to do it with traditional multi-dimensional Numpy arrays. Almost all of the repository uses \texttt{xarray}\cite{xarray} to manage arrays of 2 dimensions and more. With \texttt{xarray} you can be absolutely sure you are performing operations on the right dimensions, no matter how they are ordered internally.
 
-Additionally, \texttt{xarray} array-like objects can be saved to files of various formats, like HDF5\cite{HDF5}, \textit{Zarr}\footnote{\url{https://zarr.readthedocs.io/en/stable/}} and more. Specifically in this project, the HDF5 format was picked, because:
+Additionally, \texttt{xarray}-like objects can be saved to files of various formats, like HDF5\cite{HDF5}, \textit{Zarr}\footnote{\url{https://zarr.readthedocs.io/en/stable/}} and more. Specifically in this project, the HDF5 format was picked, because:
 
 \begin{itemize}
 	\item (Like Zarr), it has a concept of Groups, allowing you to save the xarray objects into 1 group, and other data in another group.
@@ -131,8 +129,8 @@ The format in which simulations results were saved is described below:
 
 \begin{itemize}
 	\item Each scan of parameters is saved to a single HDF5 file.
-	\item The main description of the parameters scanned is defined via an \texttt{xarray.Dataset} saved into a group named \texttt{ranges}.
-	\item Each dimension in the dataset is named like the parameters in tables \ref{tbl:sim-list-most} and \ref{tbl:sim-list-amounts} and as described in \ref{sssec:manual/single-value-params}.
+	\item The parameters scanned over are defined via an \texttt{xarray.Dataset} saved into an HDF5 group named \texttt{ranges}.
+	\item Each dimension in the dataset is named like the parameters in tables \ref{tbl:sim-list-most} and \ref{tbl:sim-list-amounts}, as described in section~\ref{sssec:manual/single-value-params}.
 	\item Each scanning point, has a hash, calculated\footnote{Using \href{https://zepworks.com/deepdiff/current/deephash.html}{DeepHash}.} from the dictionary of input parameters values.
 	\item The hash is part of the saved \texttt{ranges} dataset, and it serves as a link to actual simulation measurements of that set of input parameters.
 	\item Per hash \texttt{h}, the HDF5 group \texttt{measurements/\{h\}} holds all the simulation's raw results, in a hierarchical format described in the next section.
@@ -140,7 +138,7 @@ The format in which simulations results were saved is described below:
 
 \subsection{\texttt{measurements/} HDF5 groups format}\label{ssec:HDF5-measurements-format}
 
-The raw simulations results are not suitable to be modelled in an xarray object. They are calculated much more dynamically, and include much more data in comparison to the \texttt{xarray.Dataset} saved in the \texttt{ranges} HDF5 group, and hence invite a more dynamic format that allows appending and truncating data without loading it all into memory. The next subsections describe the HDF5 'paths' to the HDF5 datasets.\footnote{Note the slightly confusing terminology: An \href{https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html}{\texttt{xarray.Dataset}} is not an \href{https://docs.h5py.org/en/stable/high/dataset.html}{HDF5 dataset} - these are 2 completely different Python objects.}
+The raw simulations' results are not suitable to be modelled as an xarray object. They are calculated much more dynamically, and include much more data in comparison to the \texttt{xarray.Dataset} saved in the \texttt{ranges} HDF5 group, and hence invite a more dynamic format that allows appending and truncating data without loading it all into memory. The next subsections describe the HDF5 'paths' to the HDF5 datasets.\footnote{Note the slightly confusing terminology: An \href{https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html}{\texttt{xarray.Dataset}} is not an \href{https://docs.h5py.org/en/stable/high/dataset.html}{HDF5 dataset} - these are 2 completely different Python objects.}
 
 \subsubsection{\texttt{times}}
 
@@ -148,21 +146,23 @@ The first direct HDF5 dataset in the measurement group: A simple, usually\footno
 
 \subsubsection{\texttt{mass=AMU} HDF5 Datasets}
 
-Since we are interested in measuring every ion species separately, every HDF5 group described in the next subsections, contains at least 1 HDF5 dataset in a path that ends with \texttt{mass=174}\footnote{For \ce{Yb^+}} or \texttt{mass=222}\footnote{For \ce{CHDBrI^+}}, depending upon the parameters \texttt{cloud} (from \ref{sssec:manual/multi-value-params}) \& \texttt{--cooler} (from \ref{sssec:manual/single-value-params}). If the multiplication of \texttt{cloud}$\times$\texttt{total} $<1$, there is only 1 mass. Note that table~\ref{tbl:sim-list-amounts} also makes it possible to simulate with only a cooler mass - when \texttt{cloud} = 1.
+Since we are interested in measuring every ion species separately, every HDF5 group described in the next subsections, contains at least 1 HDF5 dataset in a path that ends with \texttt{mass=AMU}. If the simulation's \texttt{cloud}$\times$\texttt{total} $\in(0,1)$, the paths \texttt{mass=X} \& \texttt{mass=222} will be included - for the masses of the cooler and target \ce{CHDBrI^+}. It may also be that \texttt{cloud}$\times$\texttt{total} $\in\{0,1\}$, and then there will be only a single \texttt{mass=AMU} there.
+
+The \texttt{cloud} parameter explained in section~\ref{sssec:manual/multi-value-params}, and the \texttt{--cooler} parameter in section~\ref{sssec:manual/single-value-params}. Table~\ref{tbl:sim-list-amounts} lists all possible amounts of coolers v.s targets, including those in which \texttt{cloud}$\times$\texttt{total} $\in\{0,1\}$.
 
 \subsubsection{\texttt{positions} prefixed Groups}
 
-There are 3 types of positions arrays, each with shape \texttt{(M, N, 3)}, where \texttt{N} is the number of ions of that species, and \texttt{M} is the number of time samples. They are saved under the following groups:
+There are 3 types of positions arrays, each with shape \texttt{(M, N, 3)}, where \texttt{N} is the number of ions of the species, and \texttt{M} is the number of time samples. They are saved under the following groups:
 
 \begin{itemize}
 	\item \texttt{positions\_rf\_min}: The positions measured when the RF oscillation is at it's minimum.
 	\item \texttt{positions\_rf\_max}: The positions measured when the RF oscillation is at it's maximum - at the middle time step of the oscillation.
-	\item \texttt{positions}: The positions measured in every timestep sampled. Unless \texttt{--high-resolution} is used, the arrays in this group are identical to those saved to \texttt{positions\_rf\_min}.
+	\item \texttt{positions}: When \texttt{--high-resolution} is not used, the arrays in this group are identical to those saved to \texttt{positions\_rf\_min}. If it \emph{is} used, the positions in \emph{every} time step are saved there.
 \end{itemize}
 
 \subsubsection{\texttt{velocities} prefixed Groups}
 
-Very similarly to the \texttt{positions} prefixed groups, there are \texttt{velocities} and \texttt{velocities\_rf\_\{min,max\}} groups. An additional group named \texttt{velocities\_rf\_averaged} is also saved, and it includes the per particle velocities averaged over an RF cycle, as described in \ref{ssec:T_rf_type}.
+Very similarly to the \texttt{positions} prefixed groups, the analogous \texttt{velocities} groups are saved as well. An additional group named \texttt{velocities\_rf\_averaged} is also saved, and it includes the per particle, per axis velocities averaged over an RF cycle, as described in section~\ref{ssec:T_rf_type}.
 
 \subsubsection{The \texttt{temperatures} Group of Groups}
 
@@ -172,7 +172,7 @@ Per every \texttt{velocities} and \texttt{positions} related group of HDF5 Datas
 temperatures/{T_coord}_rf_{T_rf_type}_{T_method}/mass={AMU}
 \end{verbatim}
 
-Note that no \texttt{temperatures/potisions\_rf\_averaged*} datasets are saved, as explained in \ref{ssec:T-options-summery}.
+Note that no \texttt{temperatures/potisions\_rf\_averaged*} datasets are saved, as explained in section~\ref{ssec:T-options-summery}.
 
 \subsection{Scan Parallelizing Algorithm (\texttt{parallel\_hdf5\_splitting.py})}\label{ssec:manual/parallelized-simulating}
 
@@ -207,9 +207,9 @@ The splitting algorithm is best explained using examples. In table~\ref{tbl:--co
   \label{tbl:--cores-splitting-examples}
 \end{table}
 
-The definition of $C^*$ is simple to explain in general: If we'll denote $T$ to be the total number of scanning points, $C^*$ is the highest divisor of $T$ such that $C^* <= C$. The progress bars of \texttt{./sim.py} create are aware of the sub processes' progress, and update them accordingly.
+The definition of $C^*$ is simple to explain in general: If we'll denote $T$ to be the total number of scanning points, $C^*$ is the highest divisor of $T$ such that $C^* <= C$. The progress bars \texttt{./sim.py} creates, are aware of the sub processes' progress, and updates them accordingly.
 
-While \texttt{./sim.py} runs, it creates multiple files in the following scheme:
+When \texttt{./sim.py} runs, it creates multiple files in the following scheme:
 	
 \begin{verbatim}
 scan@{basic_parameters_hints}@vars=({v1,v2,v3})@{date(core#)}.h5
@@ -228,9 +228,9 @@ While a scan is running, that file is added a \texttt{.now-scanned} suffix, to h
 
 \section{\texttt{sim-continue.py}}\label{ssec:sim-continue}
 
-Imagine you run a long scan that takes a day or two, and something crashes in the middle of the night. Letting go of all the results obtained so far would be too expensive, and if there's a bug that caused this crash, you'd have to run the same command and wait for insensible long time and wait for it to happen again. This scenario invites writing a script, named \texttt{sim-continue.py} that will be able to recover from such crashes, and perhaps be able to do a bit more.
+Imagine you run a long scan that takes a day or two, and something crashes in the middle of the night. Letting go of all the results obtained so far would be too expensive, and if there's a bug that caused this crash, you'd have to run the same command and wait an insensible long time for it to happen again. This scenario invites writing a script, named \texttt{sim-continue.py} that will be able to recover from such crashes, and perhaps be able to do a bit more.
 
-The basic usage is:
+The basic recovery usage of it is:
 
 \begin{verbatim}
 parallel ./sim-continue.py ::: scan*.h5.now-scanned
@@ -238,11 +238,11 @@ parallel ./sim-continue.py ::: scan*.h5.now-scanned
 
 Where the \texttt{.now-scanned} suffixed files are scan files that were not finished (or when finished but not renamed, as described in section~\ref{ssec:manual/parallelized-simulating}). In principal \texttt{./sim-continue.py} accepts only a single \texttt{.h5} file, so GNU parallel\cite{GNUParallel} can very useful with it.
 
-The next subsections, explain how to use \texttt{./sim-continue.py} with successfully finished scans - scan files ending with \texttt{.h5}, and a few details regarding the file names.
+The next subsections, explain how to use \texttt{./sim-continue.py} with successfully finished scans - scan files ending with \texttt{.h5}, and a few details regarding the \texttt{.h5} file naming schema.
 
 \subsection{Simulating More Time then Originally Prescribed}
 
-Sometimes, you look at the results of a particular scan point with \texttt{./plot.py} (see section~\ref{sec:manual/plot}), and you want to extract a few simulations and run them for a few more $\mathrm{ms}$. This is possible with the \texttt{./sim-continue.py}'s \texttt{--time-cooling} option, which replaces the original cooling time with the one you specify. Likewise, for the sake of UI symmetry, the option \texttt{--time-stabilizing} also exists and replaces the original stabilization time.
+Sometimes, you look at the results of a particular scan point with \texttt{./plot.py} (see section~\ref{sec:manual/plot}), and you want to extract a few simulations and run them for a few more $\mathrm{ms}$. This is possible with \texttt{./sim-continue.py}'s \texttt{--time-cooling} option, which replaces the original cooling time with the one you specify. Likewise, for the sake of UI symmetry, the option \texttt{--time-stabilizing} also exists and replaces the original stabilization time.
 
 \subsection{Simulating with a Finer Time Division}
 
@@ -257,11 +257,11 @@ One very rarely used, yet still maintained feature of \texttt{./sim-continue.py}
 
 When \texttt{./sim-continue.py} is given an unfinished \texttt{.h5.now-scanned} file path, it copies it to a file with the extension \texttt{.h5.now-appended}, and tries to fill it. Then when it finishes, the \texttt{.h5.now-appended} file is renamed to \texttt{.h5}.
 
-Somewhat similarly, when \texttt{./sim-continue.py} is given a (usually valid) \texttt{.h5} suffixed file, a \texttt{.h5.now-appended} file is still created and filled to, and renamed upon completion to \texttt{.h5}. However, for a valid \texttt{.h5} file, and when one of the \texttt{--time-*} or \texttt{--rf-divisor} options are used, the \texttt{basic\_parameters\_hints} part of the file name\footnote{Explained in section~\ref{ssec:manual/parallelized-simulating}} will change, and thus ensure you won't override the original \texttt{.h5} file.
+Somewhat similarly, when \texttt{./sim-continue.py} is given a (hopefully valid) \texttt{.h5} suffixed file, a \texttt{.h5.now-appended} file is still created and filled to, and renamed upon completion to \texttt{.h5}. However, for a valid \texttt{.h5} file, and when one of the \texttt{--time-*} or \texttt{--rf-divisor} options are used, the \texttt{basic\_parameters\_hints} part of the file name\footnote{Explained in section~\ref{ssec:manual/parallelized-simulating}} will change, and thus ensure you won't override the original \texttt{.h5} file.
 
 \section{\texttt{sim-reconcile.py}}
 
-Another likely scenario one may encounter when researching, is best explained in the following example: Assume you ran the scans marked in table~\ref{tbl:sim-reconcile-example}, using e.g a 2 dimensional scan of parameters $(A, B) \in \{a_1, a_2\}\times\{b_1, b_2\}$, and then a 1 dimensional scan of $B \in \{b_2, b_3\}$ with $A = a_3$. You may suspect there's some coupling between parameters $A$ and $B$, and you want to get a full picture of the dependence. Therefor you wish to simulate the missing configurations, marked with \checkmark\ in table~\ref{tbl:sim-reconcile-example}.
+Another likely scenario one may encounter when researching, is best explained in the following example: Assume you ran the scans marked in table~\ref{tbl:sim-reconcile-example}, using e.g a 2 dimensional scan of parameters $(A, B) \in \{a_1, a_2\}\times\{b_1, b_2\}$, and then a 1 dimensional scan of $B \in \{b_2, b_3\}$ with $A = a_3$. You may suspect there's some coupling between parameters $A$ and $B$, and you want to get a full picture of the dependence. Therefor you wish to simulate the missing configurations, marked with $\times$ in table~\ref{tbl:sim-reconcile-example}.
 
 \begin{table}[h]
     \centering
@@ -274,7 +274,7 @@ Another likely scenario one may encounter when researching, is best explained in
         $a_3$ & $\times$ & \checkmark & \checkmark \\
         \bottomrule
     \end{tabular}
-    \caption{Example of partially overlapping scans requiring homogenization. \checkmark\ indicates completed simulations; $\times$\ indicates missing ones to be filled.}
+    \caption{Example of partially overlapping scans requiring reconciliation. \checkmark\ indicates completed simulations; $\times$\ indicates missing ones to be filled.}
     \label{tbl:sim-reconcile-example}
 \end{table}
 
@@ -284,25 +284,25 @@ Since there is no guarantee the collection of missing scanning points iterated i
 scan@reconciling@vars=(...)@{date}.h5
 \end{verbatim}
 
-Where the only dynamic part of it is \texttt{\{date\}}, and the \texttt{.now-scanned} suffix is added during the scan, and removed when it finishes successfully. In principle, it should be possible to parallelize this scan too, but this feature is not yet implemented.
+Where the only dynamic part of it is \texttt{\{date\}}, and the \texttt{.now-scanned} suffix is added during the scan (and removed when it finishes successfully). In principle, it should be possible to parallelize this scan too, but this feature is not yet implemented.
 
 \subsection{Merging Threshold}\label{ssec:manual/merge-threshold}
 
-When \texttt{./sim-reconcile.py} and other scripts (described further on), read multiple \texttt{.h5} files, they merge all scans' \texttt{ranges} xarray datasets, using the default \texttt{join="outer"}\footnote{See \href{https://docs.xarray.dev/en/stable/generated/xarray.merge.html}{xarray.merge documentation}.} argument, which means: Unionize all simulations' input parameters, and fill the missing values of data variables with \texttt{NaN}. In our case, our only data variable is called \texttt{hash}.
+When \texttt{./sim-reconcile.py}, and other scripts described further on, read multiple \texttt{.h5} files, they merge all scans' \texttt{ranges} xarray datasets, using the default \texttt{join="outer"}\footnote{See \href{https://docs.xarray.dev/en/stable/generated/xarray.merge.html}{xarray.merge documentation}.} argument, which means: Unionize all simulations' input parameters, and fill the missing values of data variables with \texttt{NaN}. In our case, our only data variable is called \texttt{hash}.
 
-Now what if 2 scans have cooling times of $15.05\mathrm{ms}$ and $15.0\mathrm{ms}$? The naive behavior of xarray would be to consider these two values different. Unfortunately, this can cause the merged \texttt{xarray.Dataset} to look very sparse, when in fact we'd probably like to consider these 2 points the same. This is why merging scans' \texttt{ranges} parameters is done using a non-trivial merging algorithm\footnote{This time developed with \url{https://openai.com/}.} called 'smoothly merging datasets', described briefly in the next paragraph.
+Now what if 2 scans have cooling times of $15.05\mathrm{ms}$ and $15.0\mathrm{ms}$? The naive behavior of xarray would be to consider these two values different. Unfortunately, this can cause the merged \texttt{xarray.Dataset} to be very sparse, when in fact we'd probably like to consider these 2 points the same. This is why merging scans' \texttt{ranges} parameters is done using a non-trivial merging algorithm\footnote{Developed with \url{https://openai.com/}.} called 'smoothly merging datasets', described briefly in the next paragraph.
 
-Per dimension, compute a 'cluster' of distances between the values normalized to their mean.\footnote{implemented with \texttt{linkage} and \texttt{fcluster} functions from \texttt{scipy.cluster.hierarchy}.} Now if there are 2 values in the cluster in a distance $d$ apart, they are considered the same. Then, the only thing left is to group the values considered the same by the clusters into, and take the only hash we wish to find there among NaN hashes. If multiple non-NaN hashes are found in each such closely located parts of the cluster, an error message is raised. The $d$ parameter is called in the command line \texttt{--merge-threshold}.
+Per dimension, compute a 'cluster' of distances between the values normalized to their mean.\footnote{Implemented with \texttt{linkage} and \texttt{fcluster} functions from \texttt{scipy.cluster.hierarchy}\cite{scipy}.} Now if there are 2 values in the cluster in a distance $d$ apart, they are considered the same. Then, the only thing left is to group the values considered the same by the clusters' into, and take the only valid hash we find there among NaN hashes. If multiple non-NaN hashes are found in each such closely located parts of the cluster, an error message is raised. The $d$ parameter defaults to $0.01$, and can be modified in the command line with \texttt{--merge-threshold}.
 
 \section{\texttt{time-plot.py}}
 
-The most basic plotting functionality is plotting multiple simulation results as a function of time, on the same axes. The per spatial axis' standard deviation, and the temperatures, are the only time dependent variables calculated by the code, as introduced in \ref{sec:intro/-y-options} These are selected via the \texttt{-y} command line option, and it defaults to temperatures.
+The most basic plotting functionality is plotting multiple simulation results as a function of time, on the same axes. The per spatial axis' standard deviation, and the temperatures, are the only time dependent variables calculated by the code, as introduced in section~\ref{sec:intro/-y-options} These are selected via the \texttt{-y} command line option, and it defaults to temperatures.
 
 Several worth noting features of \texttt{time-plot.py} (common also to \texttt{plot.py}) are explained in the next subsections.
 
 \subsection{Handling Multi-Dimensional Scans}\label{ssec:manual/displayers-dimensions}
 
-Differentiating between the lines is smartly done by the script via the following line properties, termed \textit{displayers}:
+Differentiating between the lines is done by the script via the following line properties, termed \textit{displayers}:
 
 \begin{itemize}
 	% This list was generated by OpenAI too :)
@@ -322,13 +322,13 @@ Differentiating between the lines is smartly done by the script via the followin
 	\item Markers ($\times$, $\circ$, $\cdot$ etc.)
 \end{itemize}
 
-When multi-dimensional scans of parameters are given as an argument to \texttt{time-plot.py}, all non-trivial dimensions can be represented by any of the above displayers. Besides the standard simulation parameters, the masses are also considered as a potential dimension to iterate over. If a mixed species cloud was simulated, a \texttt{mass} dimension is added, and it can be displayed by one of the displayers above. An algorithm\footnote{Also written with \url{https://openai.com/}.} to choose a displayer per a dimension, is described below.
+The \texttt{ranges} \texttt{xarray.Dataset} saved in each \texttt{.h5} file given as argument, is read and merged before the dimensions and displayers are iterated. All non-trivial dimensions of the merged \texttt{xarray.Dataset} can be represented by any of the above displayers. Besides the standard simulation parameters, the masses are also considered as a potential dimension to iterate over. If a mixed species cloud was simulated, a \texttt{mass} dimension is added, and it can be displayed by one of the displayers above. An algorithm\footnote{Also written with \url{https://openai.com/}.} to choose a displayer per a dimension, is described below.
 
-The displayers itemized above are ordered according to their clarity when displayed on axes, with the clearest displayer being the first. The non-trivial dimensions of the scans, including the mass dimension, are also ordered by their size, starting with the largest. Then the algorithm matches each dimension to each displayer, until all displayers are consumed. When more non-trivial dimensions exist, and no more displayers are available, these left dimensions are marked 'to be averaged over'.
+The displayers itemized above are ordered according to their clarity when displayed on axes, with the clearest displayer being the colors. The non-trivial dimensions of the scans, including the mass dimension, are also ordered by their size, starting with the largest. Then the algorithm matches each dimension to each displayer, until all displayers are consumed. When more non-trivial dimensions exist, and no more displayers are available, the dimensions left are marked 'to be averaged over'.
 
 An exceptional dimension in the above iteration is the initial conditions' \texttt{seed}, which the algorithm by default marks it to be averaged over. The command line options \texttt{--color, --linestyle, --marker, --average} can be used to modify the default behavior of the algorithm, which might be a bit arbitrary if dimensions of the same length are in the scan.
 
-Lastly, the \texttt{ranges} \texttt{xarray.Dataset} saved in each \texttt{.h5} file given as argument, is read and merged before the dimensions and displayers are iterated. \texttt{./time-plot.py} prints to the terminal a table of the matching made between displayers and dimensions, along with their lengths. Tables \ref{tbl:coordsDisplayers-default}, \ref{tbl:coordsDisplayers-color} and \ref{tbl:coordsDisplayers-color-marker} demonstrate how this matching is printed, for several different displayers command line arguments.
+\texttt{./time-plot.py} prints to the terminal a table of the matching made between displayers and dimensions, along with their lengths. Tables \ref{tbl:coordsDisplayers-default}, \ref{tbl:coordsDisplayers-color} and \ref{tbl:coordsDisplayers-color-marker} demonstrate how this matching is printed, for several different displayers command line arguments.
 
 \begin{table}[h]
 \input{back/coordsDisplayers-default.tex}
@@ -352,25 +352,23 @@ The algorithm is flexible enough to use a different displayer for a dimension if
 
 \subsection{Handling Different Traps \& Offsets (\texttt{collapse\_ds.py})}\label{ssec:manual/collapse_ds}
 
-A common scenario one may encounter is the desire to choose a different displayer per trap. The trap's secular frequencies are modeled as 3 dimensions, and even before assigning displayers to dimensions, if you'd take multiple scans with the secular frequencies as in figure% TODO: \ref{fig:...}
-, \texttt{xarray}'s merging will create a huge \texttt{xarray.Dataset} with many missing measurements, with every possible combination of all secular frequencies used.
+A common scenario one may encounter is the desire to choose a different displayer per trap. Take as an example the secular frequencies in figure~% TODO: \ref{fig:...}
+Since the trap's secular frequencies are modeled as 3 parameters, before even assigning displayers to dimensions, \texttt{xarray}'s merging will create a large and sparse \texttt{xarray.Dataset}, with every possible combination of all secular frequencies used.
 
-The natural thing to do of course is to consider instead a single dimension. This is termed in our context as \textit{collapsing}, and can be done using \texttt{--collapse-trap}. If you have a scan where $(f_x, f_y)$ were changed together, but $f_z$ was constant, \texttt{--collapse-trap xy} can be used (\texttt{xyz} is the default argument).
+The natural thing to do of course is to consider instead a single dimension per trap. This is termed in our context as \textit{collapsing}, and can be done using \texttt{--collapse-trap}. If you have a scan where $(f_x, f_y)$ were changed together, but $f_z$ was constant, \texttt{--collapse-trap xy} can be used (\texttt{xyz} is the default argument).
 
 Very similar to the trap's frequencies, a similar \texttt{--collapse-offset} has the same possible arguments and behavior, acting upon the offsets. This functionality is implemented in \texttt{collapse\_ds.py} and can be tested by executing it.
 
 \subsection{Showing \texttt{pwlf} Fit Results}
 
-The piecewise fit results, described in section~\ref{ssec:intro/SummarizedMeasurement}, can be plotted by the command line options \texttt{--show-fits} and \texttt{--show-regimes}. \texttt{--show-fits} simply plots the lines of the fits in addition to the raw measurements.
-
-\texttt{--show-regimes} also plots an opaque background marking the cooling regimes detected by \texttt{pwlf}\cite{pwlf}. Since only 1 pair of regimes can be sensibly plotted on one axes, the fits' break points are averaged over all dimensions of the scans.
+The piecewise fit results, described in section~\ref{ssec:intro/SummarizedMeasurement}, are added to the plot if the command line options \texttt{--show-fits} and/or \texttt{--show-regimes} are used. \texttt{--show-fits} simply plots the lines of the fits in addition to the raw measurements, and \texttt{--show-regimes} also plots an opaque background marking the cooling regimes detected by \texttt{pwlf}\cite{pwlf}. Since only 1 pair of regimes can be sensibly plotted on one axes, the fits' break points are averaged over all dimensions of the scans.
 
 \subsection{Miscellaneous Options}\label{ssec:manual/misc-options}
 
 \begin{itemize}
-	\item Since reading multiple datasets involves merging, the same \texttt{--merge-threshold} argument and behavior described in \ref{ssec:manual/merge-threshold}.
-	\item Saving the plot in any format supported by Matplotlib is possible using \texttt{--save-fig}, with the format specified by the argument's file extension.
-	\item \texttt{--log} makes the y axis scaled logarithmically. 
+	\item Since reading multiple datasets involves merging, the same merging behavior described in section~\ref{ssec:manual/merge-threshold} is applied here, and \texttt{--merge-threshold} is available as well.
+	\item Saving the plot in any format supported by Matplotlib is possible using \texttt{--save-fig}, with the format specified by the given file's extension. If '\texttt{-}' is used as a file path, the contents of a PDF file containing the plot are printed to \texttt{stdout}, useful for piping it straight to the clipboard.
+	\item \texttt{--log} makes the y axis scale logarithmically. 
 	\item \texttt{--list} makes the script not open any figure, and instead prints information related to the simulation and displaying parameters. Various formats are supported, and can be specified as optional arguments to \texttt{--list}.
 	\item \texttt{--where} accepts 2 arguments, a dimension, and an index of a value of a parameter. The list of values and their indices can be printed with \texttt{--list all}. Choosing multiple values \texttt{v1, v2, ...} of a dimension \texttt{d}, can be done with \texttt{--where d v1 --where d v2 ...}.
 \end{itemize}
@@ -379,7 +377,7 @@ Additional optional arguments like \texttt{--T\_coord}, \texttt{--T\_rf\_type} a
 
 \section{\texttt{plot.py}}\label{sec:manual/plot}
 
-\texttt{plot.py} is the main script with which you can view simulations' results of any kind, interactively, as shown in figure~\ref{fig:software-plot-example}. The basic command line usage is simply passing it \texttt{.h5} arguments. Many other optional command line arguments were already introduced in previous sections, as described briefly below:
+\texttt{plot.py} is the main script with which you can view simulations' results of any kind, interactively, as shown in figure~\ref{fig:software-plot-example}. The basic command line usage is simply passing it \texttt{.h5} arguments. Many other optional command line arguments share the same behavior with other scripts, as described briefly below:
 
 \begin{itemize}
 	\item \texttt{--collapse-trap} and \texttt{--collapse-offset} work as described in section~\ref{ssec:manual/collapse_ds}, though for here it is more relevant for the axes described in section~\ref{ssec:manual/x-vs-y}.
@@ -387,17 +385,17 @@ Additional optional arguments like \texttt{--T\_coord}, \texttt{--T\_rf\_type} a
 	\item \texttt{--T\_coord}, \texttt{--T\_rf\_type} \& \texttt{--T\_method} also work very similarly to \texttt{./time-plot.py}, and here they are relevant for axes described in sections \ref{ssec:manual/x-vs-y} and \ref{ssec:manual/plot-time-dependent}.
 \end{itemize}
 
-The \texttt{--show-coulomb} command line option also creates a simple separate figure window, showing on a separate axes the coulomb energies of the currently viewed simulation, if these energies are available\footnote{See also section~\ref{ssec:h5doctor_coulomb}.}. All other optional command line arguments are relevant only for specific GUI elements in the GUI, and hence are described in each of the following sections.
+The \texttt{--show-coulomb} command line option also creates a simple separate figure window, showing the coulomb energies of the currently viewed simulation, if these energies are available\footnote{See also section~\ref{ssec:h5doctor_coulomb}.}. All other optional command line arguments are relevant only for specific GUI elements in the GUI, and hence are described in each of the following sections.
 
 \subsection{Top Right: Summarized Results' Dependence on Simulation Parameters}\label{ssec:manual/x-vs-y}
 
-The main purpose of \texttt{./plot.py} is to display \textit{summarized} simulation results, on a single same axes, as described in section~\ref{ssec:intro/SummarizedMeasurement}. For a 1 dimensional scan of parameter $p$, the summarized results are plotted as a function of $p$, where results relevant of different masses in each simulation, are differentiated by color. This plot is termed here and in software as \textit{x-vs-y}.
+The main purpose of \texttt{./plot.py} is to display \textit{summarized} simulation results, on a single axes, as described in section~\ref{ssec:intro/SummarizedMeasurement}. For a 1 dimensional scan of parameter $p$, the summarized results are plotted as a function of $p$, where results relevant of different masses in each simulation, are differentiated by color. This plot is termed here and in software as \textit{x-vs-y}.
 
 Like with \texttt{./time-plot.py} (see section~\ref{ssec:manual/displayers-dimensions}), each varying dimension of the scan is attached a \textit{displayer}, with the horizontal axis considered a displayer as well, termed simply \texttt{x}. The \texttt{x} displayer is picked first - for the most varying dimension, and can be picked manually with the command line argument \texttt{-x}, just like \texttt{--color}, \texttt{--linestyle} and \texttt{--marker}.
 
 Deciding which summarized results are displayed, can be done either in the GUI via the radio-buttons found at the right-bottom, or via the command line arguments described in tables~\ref{tbl:y-arguments}~and~\ref{tbl:y-dependents}.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \begin{tabularx}{\textwidth}{l|X|l}
 \textbf{-y choice} & \textbf{Explanation} & \textbf{Dependent Arguments} \\
@@ -455,6 +453,7 @@ Controlling the values of each slider can be done by clicking the mouse near a t
 x         & \keys{\ctrl+\arrowkeyright} & \keys{\ctrl+\arrowkeyleft} \\
 color     & \keys{\ctrl+\arrowkeyup}    & \keys{\ctrl+\arrowkeydown} \\
 linestyle & \keys{\ctrl+j}              & \keys{\ctrl+k} \\
+marker    & \keys{\ctrl+n}              & \keys{\ctrl+m} \\
 average   & \keys{\ctrl+u}              & \keys{\ctrl+i} \\
 \bottomrule
 \end{tabular}
@@ -462,7 +461,7 @@ average   & \keys{\ctrl+u}              & \keys{\ctrl+i} \\
 \label{tbl:manual/keyboard-shortcuts}
 \end{table}
 
-Lastly, the \keys{\ctrl+h} can be used to save the currently focused simulation to a single file, which can be manipulated and inspected later for various purposes.
+Lastly, \keys{\ctrl+h} can be used to save the currently focused simulation to a single file, which can be manipulated and inspected later for various purposes.
 
 \subsection{Top Left: 3D Animation}\label{ssec:manual/plot-3d-anim}
 
@@ -503,15 +502,15 @@ Since the \texttt{ranges} \texttt{xarray.Dataset} also includes a \texttt{hash} 
 
 \subsection{Coulomb Energies}\label{ssec:h5doctor_coulomb}
 
-When \texttt{./sim.py} is used with \texttt{--coulomb}, it saves a few time-dependent Coulomb energies HDF5 datasets, that can be plotted with \texttt{./plot.py --show-coulomb}. Usually these energies are not very interesting, but sometimes, it can be interesting to look at the Coulomb energies after the simulation was finished. Without requiring to simulate everything again with \texttt{--coulomb}, \texttt{./h5doctor.py coulomb --save} can fill in those HDF5 datasets based on the positions.
+When \texttt{./sim.py} is used with \texttt{--coulomb}, it saves a few time-dependent Coulomb energies HDF5 datasets, that can be plotted with \texttt{./plot.py --show-coulomb}. Usually these energies are not very interesting, but sometimes, it can be interesting to look at the Coulomb energies after the simulation finished. Without requiring simulating everything again with \texttt{./sim.py --coulomb}, \texttt{./h5doctor.py coulomb --save} can fill in those HDF5 datasets based on the positions.
 
-Worth noting is the fact that \texttt{./sim.py --coulomb} is using a LAMMPS\cite{LAMMPS} function to calculate these energies, whereas \texttt{./h5doctor.py coulomb} uses \textit{Freud}\cite{freud} to iterate all the pairs and sum the $1/r$ distances. Hence, by default this subcommand verifies there is a small numerically negligible difference between these two calculation methods and thus verifies our understanding of both of these functions.
+Worth noting: \texttt{./sim.py --coulomb} is using a LAMMPS\cite{LAMMPS} function to calculate these energies, whereas \texttt{./h5doctor.py coulomb} uses \textit{Freud}\cite{freud} to iterate all the pairs and sum the $1/r$ distances. Hence, by default this subcommand verifies there is a small numerically negligible difference between these two calculation methods and thus verifies the usage of both of these functions.
 
 \subsection{Ignoring Measurements}
 
-As described in section~\ref{sec:comp/convergence}, sometimes only after a long scan has finished, you find out a certain specific simulation has had a numerical error due to a too coarse RF divisor, which change the summarized results so substantially, that they should be ignored. Ignoring is done via an \texttt{ignore} HDF5 attribute that can be set or removed by \texttt{./h5doctor.py ignore}.
+As described in section~\ref{sec:comp/convergence}, sometimes only after a long scan has finished, you find out a certain specific simulation has had a numerical error due to a too coarse RF divisor, which change the summarized results so substantially, that they should be ignored. Ignoring is done via a dedicated HDF5 attribute that can be set or removed by \texttt{./h5doctor.py ignore}.
 
-Handling multiple \texttt{.h5} files is done seamlessly, and usually you don't have to know which \texttt{.h5} file contains the simulation you wish to ignore. The \texttt{./h5doctor.py ignore select} uses \textit{Beaupy}\footnote{\url{https://petereon.github.io/beaupy/}} to help you find easily the simulation you are interested in. The other \texttt{./h5doctor.py ignore} subcommands are:
+Handling multiple \texttt{.h5} files is done seamlessly, and usually you don't have to know which \texttt{.h5} file contains the simulation you wish to ignore. Rather, \texttt{./h5doctor.py ignore select} uses \textit{Beaupy}\footnote{\url{https://petereon.github.io/beaupy/}} to help you find easily the simulation you are interested in. The other \texttt{./h5doctor.py ignore} subcommands are:
 
 \begin{itemize}
 	\item \texttt{search}: Search and report any ignored simulations
@@ -520,7 +519,7 @@ Handling multiple \texttt{.h5} files is done seamlessly, and usually you don't h
 
 \section{Helpers, not Dealing Directly with Simulations}
 
-All other Python files in the repository collect functions related to a certain topic in simulating or plotting. Most of them are also executables, allowing to test the functions implemented in various ways. Table~\ref{tbl:helper-scripts} briefly describes them.
+All other Python files in the repository collect functions related to a certain topic in simulating or plotting. Most of them are also executables, allowing to test the functions implemented in them, in various ways. Table~\ref{tbl:helper-scripts} briefly describes them.
 
 \begin{sidewaystable}[h]
 \begin{tabularx}{\textwidth}{l|X|X}
@@ -530,7 +529,7 @@ All other Python files in the repository collect functions related to a certain 
 \hline
 \texttt{boltzmann.py}           & Implement and tests various temperature computations, and temperatures-dependent distributions.                                                        & Given trap secular frequencies and other parameters, can print and plot statistics of distributions.                                                                                                                                                 \\
 \hline
-\texttt{coulomb.py}             & Implement Coulomb energies calculation, using Freud's\cite{freud} \texttt{locality.AABBQuery} - allowing to iterate all nearest-neighbors efficiently. & Can calculate \& plot data like presented in section~\ref{sec:comp/coulomb} and in chapter \ref{chap:coulomb}.                                                                                                                                       \\
+\texttt{coulomb.py}             & Implement Coulomb energies calculation, using Freud's\cite{freud} \texttt{locality.AABBQuery} - allowing to iterate all nearest-neighbors efficiently. & Can calculate \& plot data like presented in section~\ref{sec:comp/coulomb} and in appendix~\ref{chap:coulomb}.                                                                                                                                       \\
 \hline
 \texttt{laser\_cool.py}         & Implement LASER cooling related functions.                                                                                                             & Opens a Matplotlib plot solving the equation of motion of a single particle under a harmonic force and the LASER cooling force. Including sliders for various parameters that affect the results, similarly to figure~\ref{fig:pure-mathieu-fft}.    \\
 \hline
