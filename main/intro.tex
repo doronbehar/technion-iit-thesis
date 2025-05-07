@@ -251,7 +251,7 @@ Another interesting RF cycles related option, is to sample the velocities and po
 
 \subsection{Temperatures Options Summary}\label{ssec:T-options-summery}
 
-The above temperatures related options are modeled in software as 3 dimensions with the names and symbolic optional values as defined in table~\ref{tbl:T_methods}
+The above temperatures related options are modeled in software as 3 dimensions with the names and symbolic optional values as defined in table~\ref{tbl:T_methods}. We can select specific, multiple temperature values and average over the different methods, coordinates and RF handling methods. A common example is to take the positions and velocities sampled in the beginning of each RF cycle ($\mathrm{min}\left(\circlearrowright\right)$), and calculate the temperature according to all \texttt{T\_method}s. Whatever specific \texttt{T\_coord}s / \texttt{T\_rf\_type}s / \texttt{T\_method}s were chosen, the code analyzing and displaying the simulation results averages over these dimensions for each time index separately.\footnote{Technically, the temperatures obtained from the RF averaged ($\left\langle\circlearrowright\right\rangle$) positions ($\overrightarrow{\omega x}$) are considered \texttt{NaN} and hence ignored.}
 
 \begin{table}
 \begin{tabular}{l||l|l|l|l|l}
@@ -265,13 +265,9 @@ Dimension   & \multicolumn{5}{c}{Optional values}\\
 \texttt{T\_method}  & $\mathrm{Ave}\left(|u|\right)^2(\pi/8)$      & $\mathrm{Var}\left(|u|\right)/(3 - 8/\pi)$   & $\mathrm{Var}\left(u_x\right)$               & $\mathrm{Var}\left(u_y\right)$ & $\mathrm{Var}\left(u_z\right)$ \\
 \hline
 \end{tabular}
-\caption{Ways to measure temperatures, obtained from a generalized maxwell-Boltzmann model}
+\caption{Ways to measure temperatures, obtained from a generalized maxwell-Boltzmann model. $\circlearrowright$ marks an RF cycle, and $\left\langle\circlearrowright\right\rangle$ marks an average over RF cycle. The functions $\mathrm{Ave}$ and $\mathrm{Var}$ operate upon a 1 dimensional array of length $N$ - the number of per specie's particles.}
 \label{tbl:T_methods}
 \end{table}
-
-Where $\circlearrowright$ marks an RF cycle, and $\left\langle\circlearrowright\right\rangle$ marks an average over RF cycle. The functions $\mathrm{Ave}$ and $\mathrm{Var}$ operate upon a 1 dimensional array of length $N$ - the number of particles sampled.
-
-Lastly, we can select specific, multiple temperature values and average over the different methods, coordinates and RF handling methods. A common example is to take the positions and velocities sampled in the beginning of each RF cycle ($\mathrm{min}\left(\circlearrowright\right)$), and calculate the temperature according to all \texttt{T\_method}s. Whatever specific \texttt{T\_coord}s / \texttt{T\_rf\_type}s / \texttt{T\_method}s were chosen, the code analyzing and displaying the simulation results averages over these dimensions for each time index separately.\footnote{Technically, the temperatures obtained from the RF averaged ($\left\langle\circlearrowright\right\rangle$) positions ($\overrightarrow{\omega x}$) are considered \texttt{NaN} and hence ignored.}
 
 \subsection{Further Summarizing Analyzes}\label{ssec:intro/SummarizedMeasurement}
 
