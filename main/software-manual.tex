@@ -371,6 +371,7 @@ The piecewise fit results, described in section~\ref{ssec:intro/SummarizedMeasur
 	\item \texttt{--log} makes the y axis scale logarithmically. 
 	\item \texttt{--list} makes the script not open any figure, and instead prints information related to the simulation and displaying parameters. Various formats are supported, and can be specified as optional arguments to \texttt{--list}.
 	\item \texttt{--where} accepts 2 arguments, a dimension, and an index of a value of a parameter. The list of values and their indices can be printed with \texttt{--list all}. Choosing multiple values \texttt{v1, v2, ...} of a dimension \texttt{d}, can be done with \texttt{--where d v1 --where d v2 ...}.
+	\item \texttt{--where-mass} allows you to select a single mass number (in AMU) to show. Using it also reduces the amount of displayers required to display all dimensions on the axes.
 \end{itemize}
 
 Additional optional arguments like \texttt{--T\_coord}, \texttt{--T\_rf\_type} and \texttt{--T\_method} are described in table~\ref{tbl:T_methods}.
