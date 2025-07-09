@@ -65,5 +65,11 @@ $(MAIN).zip: $(SOURCES) $(FIGURES) $(ADDITIONAL_FILES)
 archive: $(MAIN).zip
 zip: $(MAIN).zip
 
+seminar:
+# Ignore rc file of the project
+	$(LATEXMK) -norc -view=none -pdf -pvc --interaction=nonstopmode seminar.tex
+
+seminarClean:
+	rm -f *.aux *.fdb_latexmk *.fls *.log *.out *.snm *.toc
 
 .PHONY: clean once symlink all aux
