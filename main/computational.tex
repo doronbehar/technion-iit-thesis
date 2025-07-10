@@ -18,7 +18,7 @@ For the sake of completeness, I'll quickly explain how to solve the 1 dimensiona
 Where $2\tau \equiv \omega_\mathrm{rf} t$. Substituting a solution of the form:
 
 % TODO: Write this equation
-$$x(\tau) = \sum_{-\infty}^\infty $$
+$$x(\tau) = e^{i\beta\tau}\sum_{n=-\infty}^\infty \gamma_n e^{i n \tau} + e^{-i\beta\tau}\sum_{n=-\infty}^\infty \gamma_n e^{-i n \tau} $$
 
 Yields the set of equations presented in \ref{eq:gamma_n-relation} between the coefficients $\{\gamma_n\}_{-\infty}^\infty$, with $\beta = 2 \omega_\mathrm{sec}/\omega_\mathrm{rf}$. The main point important to understand, is that we need to find a non-trivial solution, meaning a set $\gamma_n$ coefficients that not all are $0$. The best way to view the equations of all coefficients is via a matrix:
 
