@@ -431,7 +431,63 @@ $$(\tilde{a}_i, \tilde{q}_i) \rightarrow f_\mathrm{sec}$$
 \section{Optimizing LASER parameters}
 
 \begin{frame}{Preliminary LASER Cooling Adjustments}
-Reminder:
+\begin{columns}
+
+\begin{column}{0.5\textwidth}
+\begin{figure}
+\centering\begin{tikzpicture}
+  % Left laser (Laser 1)
+  \draw[->,decorate,decoration={snake,amplitude=2mm,segment length=6mm},thick] 
+    (-2.5,0) -- (-0.8,0) node[midway, below=8pt] {laser 1};
+  % Right laser (Laser 2)
+  \draw[->,decorate,decoration={snake,amplitude=2mm,segment length=6mm},thick] 
+    (+2.5,0) -- (+0.8,0) node[midway, below=8pt] {laser 2 $(-\hat{k})$};
+  % Particle (black circle)
+  \fill (0,0) circle (6pt);
+  % Particle Velocity arrow
+  \draw[->,thick] (-0.1,-0.4) -- (0.3,-0.4) node[left=12pt] {$v$};
+\end{tikzpicture}
+\end{figure}
+
+\uncover<2->{Reminder: $$
+    \mathbf{F}(\mathbf{v}) = \sum_\pm \frac{h \pi \Gamma \hat{k}}{\lambda} \cdot \frac{\pm\Omega^2/2}{\Gamma^2/4 + \Omega^2/2 + (\delta \mp \mathbf{k}\cdot\mathbf{v})^2}
+$$}
+
+\uncover<3->{Boltzmann: $\mathcal{P}(v) \propto \exp\left(-\frac{m v^2}{2 K_\mathrm{B}T}\right)$}
+
+\uncover<4->{Overlap: $$
+\int_{-\infty}^\infty\,\mathrm{d}v\exp\left(-\frac{m v^2}{2 K_\text{B} T}\right) |\mathbf{F}(v)|
+$$}
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\uncover<5->{
+\begin{figure}
+\centering\includegraphics[width=\linewidth]{graphics/laser_cool_overlap.pdf}
+\end{figure}
+}
+\uncover<6->{Intuitively: $$\delta_\mathrm{opt} = \frac{\sqrt{K_\text{B} T/m}}{\lambda}$$}
+
+\end{column}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{Optimizing LASER for initial $T$}
+    
+\begin{figure}
+\centering
+\alt<4->{\includegraphics[width=\linewidth]{graphics/sympathetic-omega-dep@m=174@intensity.pdf}
+}{\includegraphics[width=\linewidth]{graphics/sympathetic-omega-dep@m=174.pdf}
+}
+\end{figure}
+
+\uncover<2->{\vspace{-2em}\tiny{\input{artifacts/sympathetic-omega-dep@parameters.tex}}}
+
+\uncover<3->{\vspace{1em}$$\text{Bloch Equations: }
+I = \frac{2\pi h c \Gamma}{3 \lambda^3} \cdot \left(\frac{\Omega}{\Gamma}\right)^2 \underset{\ce{Yb^+}}{\approx} \frac{1\mathrm{mW}}{\mathrm{mm}^2} \cdot \left(\frac{\Omega}{\Gamma}\right)^2
+$$}
+
 \end{frame}
 
 \begin{frame}
