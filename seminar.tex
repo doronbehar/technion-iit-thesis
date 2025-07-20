@@ -624,7 +624,7 @@ $$\left\langle\mathbf{F}_\mathrm{rad}\right\rangle(\mathbf{v}; \mathbf{k}) \unco
 \end{figure}
 \begin{figure}
 \centering
-\includegraphics[width=0.85\linewidth]{graphics/Yb-Cooling-Limit/T@Ti=10.pdf}
+\includegraphics[width=\linewidth]{graphics/Yb-Cooling-Limit/T@Ti=10.pdf}
 \end{figure}
 \end{column}
 
@@ -658,18 +658,30 @@ Higher $\Omega$ cools fast
 % Generated with uncommited changes! git stash diff is as follows:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% diff --git a/time-plot.py b/time-plot.py
-% index a0abaaf..6ce0cb5 100755
-% --- a/time-plot.py
-% +++ b/time-plot.py
-% @@ -111,8 +111,8 @@ class TimePlot(PlotterBase):
-%                          # There is no real need for two labels for both time
-%                          # parts, so we use a boolean switch here based on the
-%                          # two possible parts of the simulation.
-% -                        ", ".join(label_key)
-% -                        if part == "cooling" else
-% +                        ", ".join(label_key[:1])
-% +                        if part == "cooling" and displayment_dict['linestyle'] == 'solid' else
+% diff --git i/time-plot.py w/time-plot.py
+% index 663ae3a..7f6307d 100755
+% --- i/time-plot.py
+% +++ w/time-plot.py
+% @@ -108,6 +108,13 @@ class TimePlot(PlotterBase):
+%                      markevery=0.25,
+%                      # Set alpha=1 in contrast to alpha above
+%                      markerfacecolor=displayment_dict['color'] + "ff",
+% +                )
+% +                self.ax.plot(
+% +                    [],[],
+% +                    color=displayment_dict['color'] + "{:02x}".format(
+% +                        # Specify alpha here instead of the fraction
+% +                        round(0.3 * 255)
+% +                    ),
+%                      # NOTE: Not using `alpha` parameter directly, in order to
+%                      # use different alpha values for markers and lines.
+%                      label=(
+% @@ -117,7 +124,7 @@ class TimePlot(PlotterBase):
+%                          ", ".join(label_key)
+%                          # NOTE: A cool way to always make sure there will be a
+%                          # label, generalized to any self.args.parts values.
+% -                        if part == self.args.parts[0] else
+% +                        if part == self.args.parts[0] and displayment_dict['marker'] == 'x' else
 %                          None
 %                      ),
 %                  )
