@@ -72,4 +72,13 @@ seminar:
 seminarClean:
 	rm -f *.aux *.fdb_latexmk *.fls *.log *.out *.snm *.toc
 
+cleanFigures:
+	@for image_file in $$(ls graphics/); do \
+	    if ! grep -q $$image_file aux/*.log *.log 2>/dev/null; then \
+	        echo "Removing graphics/$$image_file"; \
+	        rm "graphics/$$image_file"; \
+	    fi; \
+	done
+
+
 .PHONY: clean once symlink all aux
