@@ -368,10 +368,16 @@ The piecewise fit results, described in section~\ref{ssec:intro/SummarizedMeasur
 \begin{itemize}
 	\item Since reading multiple datasets involves merging, the same merging behavior described in section~\ref{ssec:manual/merge-threshold} is applied here, and \texttt{--merge-threshold} is available as well.
 	\item Saving the plot in any format supported by Matplotlib is possible using \texttt{--save-fig}, with the format specified by the given file's extension. If '\texttt{-}' is used as a file path, the contents of a PDF file containing the plot are printed to \texttt{stdout}, useful for piping it straight to the clipboard.
+  	\item \texttt{--wfrac} Takes the intended LaTeX \texttt{\textbackslash linewidth} fraction used when including the saved figure.
+	\item \texttt{--hprop} Takes the height/width proportion to use in the generated figure.
+	\item \texttt{--always-show}: If saving, open the figure before finishing.
+	\item \texttt{--legend}: When saving, put legend in the specified location. Use 'none' to disable legend altogether.
+	\item \texttt{--legend-columns}: Specify the amount of legend columns to use. Relevant only when saving, and when using a legend location outside and '{upper,lower}'. The default value, is picked by the maximal input datasets' dimensions.
 	\item \texttt{--log} makes the y axis scale logarithmically. 
 	\item \texttt{--list} makes the script not open any figure, and instead prints information related to the simulation and displaying parameters. Various formats are supported, and can be specified as optional arguments to \texttt{--list}.
 	\item \texttt{--where} accepts 2 arguments, a dimension, and an index of a value of a parameter. The list of values and their indices can be printed with \texttt{--list all}. Choosing multiple values \texttt{v1, v2, ...} of a dimension \texttt{d}, can be done with \texttt{--where d v1 --where d v2 ...}.
-	\item \texttt{--where-mass} allows you to select a single mass number (in AMU) to show. Using it also reduces the amount of displayers required to display all dimensions on the axes.
+	\item \texttt{--mass-conf} allows you to reduce the results dataset by performing simple operations upon the masses. One option is to use an argument of the form \texttt{m=AMU} that selects the given mass. A 2nd option is performing a mathematical operation between the light v.s heavy mass. The special argument \texttt{a-h-l} is useful for \texttt{-y E\_c} only, for showing the Coulomb interaction energy between the species. Using this option reduces the amount of displayers required to display all dimensions on the axes.
+	\item \texttt{--smooth} smooths the time dependent data before analyzing it, using Scipy's \texttt{make\_smoothing\_spline}\footnote{See \url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.make_smoothing_spline.html}.} and given a $\lambda$ parameter.
 \end{itemize}
 
 Additional optional arguments like \texttt{--T\_coord}, \texttt{--T\_rf\_type} and \texttt{--T\_method} are described in table~\ref{tbl:T_methods}.
@@ -385,8 +391,6 @@ Additional optional arguments like \texttt{--T\_coord}, \texttt{--T\_rf\_type} a
 	\item \texttt{--merge-threshold}, \texttt{--where} \& \texttt{--list} work exactly as described in section~\ref{ssec:manual/misc-options}.
 	\item \texttt{--T\_coord}, \texttt{--T\_rf\_type} \& \texttt{--T\_method} also work very similarly to \texttt{./time-plot.py}, and here they are relevant for axes described in sections \ref{ssec:manual/x-vs-y} and \ref{ssec:manual/plot-time-dependent}.
 \end{itemize}
-
-The \texttt{--show-coulomb} command line option also creates a simple separate figure window, showing the coulomb energies of the currently viewed simulation, if these energies are available\footnote{See also section~\ref{ssec:h5doctor_coulomb}.}. All other optional command line arguments are relevant only for specific GUI elements in the GUI, and hence are described in each of the following sections.
 
 \subsection{Top Right: Summarized Results' Dependence on Simulation Parameters}\label{ssec:manual/x-vs-y}
 
@@ -408,6 +412,8 @@ size & Cloud size [mm] & \makecell[tl]{\texttt{--axis} \\ \texttt{--part}} \\
 coolFreq & The cooling frequency [kHz], as calculated by cjekel's PWLF (PieceWise Linear Fit) algorithm\cite{pwlf} & \makecell[tl]{\texttt{--regime}} \\
 \hline
 cloudFreq & The cloud's collective movement most dominant frequency [kHz] & \makecell[tl]{\texttt{--axis} \\ \texttt{--freqMethod} \\ \texttt{--freqOperator}} \\
+\hline
+$E_c$ & Coulomb energies\footnote{See also section~\ref{ssec:h5doctor_coulomb}.} [eV] & \makecell[tl]{\texttt{--part}} \\
 \end{tabularx}
 \caption{Available choices for the \texttt{-y} argument and their meanings.}
 \label{tbl:y-arguments}
@@ -473,6 +479,8 @@ The central part of the GUI is the 3D animation showing the particles' movement 
 	% TODO: Maybe mention the PDF attachments
 	\item \texttt{--save-video}: Saves a video animation of the particles moving, including the rest of the GUI axes and other elements. To simulate a specific simulation, \texttt{--interactive-init} can be used.
 	\item \texttt{--range}: Specifies a limit $L$ in $\mathrm{mm}$ for the 3D space, used as $\pm L$ from the origin for all spatial dimensions.
+	\item \texttt{--positions-label}: Choose a different positions label scheme. Defaults to \texttt{full}, which means show what masses are trapped, and how many of them are trapped at any given time. Other options are self explanatory: \texttt{only-mass}, \texttt{none}.
+	\item \texttt{--separate-positions-figure}: Put the positions' axes in a separate figure. Useful for saving images of the 3D particles (projected onto 2D), in selected points in time
 \end{itemize}
 
 \subsection{Middle Right: Time Dependent Results}\label{ssec:manual/plot-time-dependent}
@@ -530,17 +538,19 @@ All other Python files in the repository collect functions related to a certain 
 \hline
 \texttt{boltzmann.py}           & Implement and tests various temperature computations, and temperatures-dependent distributions.                                                        & Given trap secular frequencies and other parameters, can print and plot statistics of distributions.                                                                                                                                                 \\
 \hline
-\texttt{coulomb.py}             & Implement Coulomb energies calculation, using Freud's\cite{freud} \texttt{locality.AABBQuery} - allowing to iterate all nearest-neighbors efficiently. & Can calculate \& plot data like presented in section~\ref{sec:comp/coulomb} and in appendix~\ref{chap:coulomb}.                                                                                                                                       \\
+\texttt{coulomb.py}             & Implement Coulomb energies calculation, using Freud's\cite{freud} \texttt{locality.AABBQuery} - allowing to iterate all nearest-neighbors efficiently. & Can calculate \& plot data like presented in section~\ref{sec:comp/coulomb} and in appendix~\ref{chap:coulomb}.                                                                                                                                      \\
 \hline
 \texttt{laser\_cool.py}         & Implement LASER cooling related functions.                                                                                                             & Opens a Matplotlib plot solving the equation of motion of a single particle under a harmonic force and the LASER cooling force. Including sliders for various parameters that affect the results, similarly to figure~\ref{fig:pure-mathieu-fft}.    \\
 \hline
 \texttt{mathieu.py}             & Implement a \texttt{Trap} class solving the Mathieu equations given, as described in section~\ref{ssec:comp/mathieu}.                                  & Can open figures \ref{fig:pure-mathieu-coefficients}, \ref{fig:pure-mathieu-fft}, \ref{fig:mathieu-stability} \& \ref{fig:mathieu-mass-dep}.Is also capable of exploring the dependence of $\{(a_i, q_i)\}$ solutions given $\beta_i$ in other ways. \\
 \hline
-\texttt{optimal\_cooling.py}    & None for simulating and plotting.                                                                                                                      & Generates figure~\ref{fig:laser-cool-optimal-overlap}.                                                                                                                                                                                              \\
+\texttt{optimal\_cooling.py}    & None for simulating and plotting.                                                                                                                      & Generates figure~\ref{fig:laser-cool-optimal-overlap}.                                                                                                                                                                                               \\
 \hline
 \texttt{physical\_constants.py} & Put all physical and technical parameters in the same place.                                                                                           & Does nothing.                                                                                                                                                                                                                                        \\
 \hline
-\texttt{pwlfWrapper.py}         & Wraps the PWLF algorithm to ease handling of the fit parameters' uncertainties.                                                                        & Does nothing.
+\texttt{pwlfWrapper.py}         & Wraps the PWLF algorithm to ease handling of the fit parameters' uncertainties.                                                                        & Does nothing.                                                                                                                                                                                                                                        \\
+\hline
+\texttt{bolg.py}                & Implements an algorithm (written by Claude.ai), that performs an opposite of file path globbing (hence the name). Used for picking figures' titles.    & Tests the algorithm using simply file paths arguments.                                                                                                                                                                                               \\
 \end{tabularx}
 \caption{All helper Python files in the repository.}
 \label{tbl:helper-scripts}
