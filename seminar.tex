@@ -639,6 +639,25 @@ $$\left\langle\mathbf{F}_\mathrm{rad}\right\rangle(\mathbf{v}; \mathbf{k}) \unco
 \begin{figure}
 \centering
 \alt<2->{
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Generated with uncommited changes! git stash diff is as follows:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% diff --git a/time-plot.py b/time-plot.py
+% index 890a8b6..616cf07 100755
+% --- a/time-plot.py
+% +++ b/time-plot.py
+% @@ -138,7 +138,8 @@ class TimePlot(PlotterBase):
+%                          }),
+%                      )
+%          self.ax.set_xlabel("time [ms]")
+% -        self.ax.set_ylabel(self.ylabel)
+% +        #self.ax.set_ylabel(self.ylabel)
+% +        self.ax.set_ylabel("")
+%          self.ax.set_yscale("log" if self.args.log else "linear")
+%          if self.args.show_regimes and self.args.y == 'T':
+%              averaged = self.analyzed_data.squeeze(drop=True).sel(
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \includegraphics[width=\linewidth]{graphics/Yb-Cooling-Limit/T@Ti=5.pdf}
 }{
     % Generated with the above, but simply removed the graph in inkscape
