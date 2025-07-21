@@ -69,6 +69,9 @@ seminar:
 # Ignore rc file of the project
 	$(LATEXMK) -norc -view=none -pdf -pvc --interaction=nonstopmode seminar.tex
 
+seminarOnce:
+	$(LATEXMK) -norc -view=none -pdf --interaction=nonstopmode seminar.tex
+
 seminarClean:
 	rm -f *.aux *.fdb_latexmk *.fls *.log *.out *.snm *.toc
 
