@@ -53,7 +53,7 @@ The following parameters always get a single value, even if not specified explic
     \item \texttt{--cooler \{Be,Ca,Yb,Ra\}}: Which cooler ion to use (default: [\ce{Yb}])
     \item \texttt{--time-stabilizing}: How much time before cooling (default: [$5.0 \mathrm{ms}$])
     \item \texttt{--time-cooling}: How much time after cooling (default: [$15 \mathrm{ms}$])
-    \item \texttt{--rf-divisor}: How many timesteps to put in a single RF cycle (default: [1597]), see also section~\ref{sec:comp/convergence}.
+    \item \texttt{--rf-divisor}: How many timesteps to put in a single RF cycle (default: [1597]), see also section~\ref{sec:theory/convergence}.
     \item \texttt{--windows-attenuation}: By what fraction the intensity decreases after passing 2 windows (default: [0.7])
     % TODO: Consider whether maybe this should be deleted 
     \item \texttt{--approximate-laser-force} (boolean): Simulate LASER cooling with the approximated $\alpha \cdot v$-like expression
@@ -75,7 +75,7 @@ The following parameters always get a single value, even if not specified explic
       --rf-divisor ::: 1301 1381 1427 1523 1583
 \end{verbatim}
 
-This command tests the effect of the RF divisors on the stability and convergence (see \ref{sec:comp/convergence}). Note that \texttt{--seed \{90..93\}} is expanded by the shell and eventually interpreted as \texttt{--seed 90 91 92 93}, which means: Run each simulation with 4 different initial conditions defined by the seeds $90-93$. Using a constant set of seeds, and not \texttt{-seed=-4}, makes sure that every process initiated by GNU \texttt{parallel} will use the same 4 initial conditions, and not 4 randomly picked initial condition seeds (picked by each \texttt{./sim.py} process).
+This command tests the effect of the RF divisors on the stability and convergence (see \ref{sec:theory/convergence}). Note that \texttt{--seed \{90..93\}} is expanded by the shell and eventually interpreted as \texttt{--seed 90 91 92 93}, which means: Run each simulation with 4 different initial conditions defined by the seeds $90-93$. Using a constant set of seeds, and not \texttt{-seed=-4}, makes sure that every process initiated by GNU \texttt{parallel} will use the same 4 initial conditions, and not 4 randomly picked initial condition seeds (picked by each \texttt{./sim.py} process).
 
 \begin{verbatim}
   parallel --tmux \
@@ -246,7 +246,7 @@ Sometimes, you look at the results of a particular scan point with \texttt{./plo
 
 \subsection{Simulating with a Finer Time Division}
 
-Another common scenario where \texttt{./sim-continue.py} is very useful, is running part of a simulation from a certain point in time, but with a higher RF divisor. You can observe example results where this is needed in section~\ref{sec:comp/convergence}. The relevant self-explanatory command line options are \texttt{--rf-divisor} and \texttt{--from}. The argument to \texttt{--from} is a time point in $\mathrm{ms}$, rounded downwards to the nearest time point found.
+Another common scenario where \texttt{./sim-continue.py} is very useful, is running part of a simulation from a certain point in time, but with a higher RF divisor. You can observe example results where this is needed in section~\ref{sec:theory/convergence}. The relevant self-explanatory command line options are \texttt{--rf-divisor} and \texttt{--from}. The argument to \texttt{--from} is a time point in $\mathrm{ms}$, rounded downwards to the nearest time point found.
 % TODO: Maybe make the above \ref a bit more accurate - maybe \ref to a figure.
 
 \subsection{Removing Abruptly Some Ions}
@@ -445,7 +445,7 @@ Last notes:
 	\item If the \texttt{x} displayer is set by chance to the simulation parameter \texttt{omega}, you can use the boolean flag \texttt{--intensity} to make the x axis of this figure scale like laser intensity, as in equation~\ref{eq:omega2intensity}.
 \end{itemize}
 
-\subsection{Bottom Left: Scan's Dimensions Sliders}\label{ssec:manual/plot-sliders}
+\subsection{Bottom Left: Scan's Dimensions Sliders}
 
 As described in section~\ref{ssec:manual/x-vs-y}, multiple dimensions of the input \texttt{.h5} files are attached to \textit{displayer}s. Like with \texttt{./time-plot.py}, the \texttt{seed} parameter is averaged over by default, along with potentially other dimensions. The 3D animation (section~\ref{ssec:manual/plot-3d-anim}), and the time-dependent plot (section~\ref{ssec:manual/plot-time-dependent}), always display a single simulation, which can be picked by the sliders found in the bottom-left part of the figure.
 
@@ -517,7 +517,7 @@ Worth noting: \texttt{./sim.py --coulomb} is using a LAMMPS\cite{LAMMPS} functio
 
 \subsection{Ignoring Measurements}
 
-As described in section~\ref{sec:comp/convergence}, sometimes only after a long scan has finished, you find out a certain specific simulation has had a numerical error due to a too coarse RF divisor, which change the summarized results so substantially, that they should be ignored. Ignoring is done via a dedicated HDF5 attribute that can be set or removed by \texttt{./h5doctor.py ignore}.
+As described in section~\ref{sec:theory/convergence}, sometimes only after a long scan has finished, you find out a certain specific simulation has had a numerical error due to a too coarse RF divisor, which change the summarized results so substantially, that they should be ignored. Ignoring is done via a dedicated HDF5 attribute that can be set or removed by \texttt{./h5doctor.py ignore}.
 
 Handling multiple \texttt{.h5} files is done seamlessly, and usually you don't have to know which \texttt{.h5} file contains the simulation you wish to ignore. Rather, \texttt{./h5doctor.py ignore select} uses \textit{Beaupy}\footnote{\url{https://petereon.github.io/beaupy/}} to help you find easily the simulation you are interested in. The other \texttt{./h5doctor.py ignore} subcommands are:
 
@@ -538,11 +538,11 @@ All other Python files in the repository collect functions related to a certain 
 \hline
 \texttt{boltzmann.py}           & Implement and tests various temperature computations, and temperatures-dependent distributions.                                                        & Given trap secular frequencies and other parameters, can print and plot statistics of distributions.                                                                                                                                                 \\
 \hline
-\texttt{coulomb.py}             & Implement Coulomb energies calculation, using Freud's\cite{freud} \texttt{locality.AABBQuery} - allowing to iterate all nearest-neighbors efficiently. & Can calculate \& plot data like presented in section~\ref{sec:comp/coulomb} and in appendix~\ref{chap:coulomb}.                                                                                                                                      \\
+\texttt{coulomb.py}             & Implement Coulomb energies calculation, using Freud's\cite{freud} \texttt{locality.AABBQuery} - allowing to iterate all nearest-neighbors efficiently. & Can calculate \& plot data like presented in section~\ref{sec:theory/init-coulomb} and in appendix~\ref{chap:coulomb}.                                                                                                                                      \\
 \hline
 \texttt{laser\_cool.py}         & Implement LASER cooling related functions.                                                                                                             & Opens a Matplotlib plot solving the equation of motion of a single particle under a harmonic force and the LASER cooling force. Including sliders for various parameters that affect the results, similarly to figure~\ref{fig:pure-mathieu-fft}.    \\
 \hline
-\texttt{mathieu.py}             & Implement a \texttt{Trap} class solving the Mathieu equations given, as described in section~\ref{ssec:comp/mathieu}.                                  & Can open figures \ref{fig:pure-mathieu-coefficients}, \ref{fig:pure-mathieu-fft}, \ref{fig:mathieu-stability} \& \ref{fig:mathieu-mass-dep}.Is also capable of exploring the dependence of $\{(a_i, q_i)\}$ solutions given $\beta_i$ in other ways. \\
+\texttt{mathieu.py}             & Implement a \texttt{Trap} class solving the Mathieu equations given, as described in section~\ref{sec:theory/mathieu-inversly}.                                  & Can open figures \ref{fig:pure-mathieu-coefficients}, \ref{fig:pure-mathieu-fft}, \ref{fig:mathieu-stability} \& \ref{fig:mathieu-mass-dep}.Is also capable of exploring the dependence of $\{(a_i, q_i)\}$ solutions given $\beta_i$ in other ways. \\
 \hline
 \texttt{optimal\_cooling.py}    & None for simulating and plotting.                                                                                                                      & Generates figure~\ref{fig:laser-cool-optimal-overlap}.                                                                                                                                                                                               \\
 \hline
