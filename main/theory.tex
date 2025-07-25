@@ -1,7 +1,6 @@
 \chapter{Theory}\label{chap:theory}
 
-% TODO: Add \refs to sections for (1) and (2) parts of sentence.
-This chapter will iterate the theoretical background necessary for understanding how we trap and cool our ions, and the available measures we performed on the simulation results. With respect to trapping, we present 2 small innovations in the field, which are (1) inverse solution of the Mathieu equation, and (2) non-trivial dependence of mass to secular frequencies, which is particularly relevant for thermodynamically stable initial conditions.
+This chapter will iterate the theoretical background necessary for understanding how we trap and cool our ions, and the available measures we performed on the simulation results. With respect to trapping, we present 2 small innovations in the field, which are (1) inverse solution of the Mathieu equation (section~\ref{sec:theory/mathieu-inversly}, and (2) non-trivial dependence of mass to secular frequencies (section~\ref{sec:theory/non-trivial-mass-dep}, which is particularly relevant for thermodynamically stable initial conditions.
 
 \section{Trapping}\label{sec:theory/trapping}
 
@@ -170,9 +169,9 @@ Naturally, the value of the highest Coulomb energy found escalates with the trap
 
 The Coulomb energy is not negligible for dense \& cold distributions. Our ability to initiate a distribution of ions in a thermodynamically stable set of positions is limited by the effects of strong Coulomb energy, and by the tightness of our trap. To avoid too strong Coulomb energy effects, we thereby avoid distributing ions in $T < 5\mathrm{K}$.\footnote{During the research period I tried to construct an algorithm that would get a real temperature $T \ne \tau$, $N$ and a set of secular frequencies, and compute a $\tau$ with which the system will be more thermodynamically stable initially. When this algorithm was used for a single ion species it was slightly effective. However when 2 ion species were used, (with different masses and different $\{k_i\}$ - see section~\ref{sec:theory/mathieu-inversly}), accommodating the algorithm for that case has proved to be too complex, and too slow.}
 
-More importantly, we expect time dependent temperature measurements to be offset from the initial temperature $T_i$ on the order of magnitude of the Coulomb energy. Since we also wish to start cooling when the system is thermodynamically stable, the Coulomb energy offset requires us to wait for a few $\mathrm{ms}$, before beginning cooling, as can also be seen from the oscillations in figure. % TODO: \ref{fig:} from 
+More importantly, we expect time dependent temperature measurements to be offset from the initial temperature $T_i$ on the order of magnitude of the Coulomb energy. Since we also wish to start cooling when the system is thermodynamically stable, the Coulomb energy offset requires us to wait for a few $\mathrm{ms}$, before beginning cooling, as can also be seen from the oscillations in figure~\ref{fig:convergence-example}.
 
-\subsection{A Non-Trivial Secular Frequency Mass Dependence}\label{ssec:non-trivial-mass-dep}
+\subsection{A Non-Trivial Secular Frequency Mass Dependence}\label{sec:theory/non-trivial-mass-dep}
 
 In my literature review I have seen no authors discuss the secular frequency related implications encountered when 2 different masses are trapped in the same Ion trap. This detail is particularly relevant to us, as we are interested in sympathetic cooling, and initiating our simulations in thermodynamic equilibrium, according to equation~\ref{eq:position-probability}.
 
@@ -375,7 +374,6 @@ This is a good place to pause and list all the simulation parameters we collecte
 \end{itemize}
 
 Lastly, the relation of the Rabi frequency $\Omega$ to the actual LASER intensity\cite{CJFootOmega2I}, is worth mentioning\footnote{The software is capable of displaying $\Omega$ dependence in the scale of the intensity $I$, but this behavior wasn't activated in the results presented.}:
-% TODO: Make sure the above footnote is correct
 
 \begin{equation}
 	I = \frac{2\pi h c \Gamma}{3 \lambda^3} \cdot \left(\frac{\Omega}{\Gamma}\right)^2
@@ -386,7 +384,6 @@ Lastly, the relation of the Rabi frequency $\Omega$ to the actual LASER intensit
 
 \subsection{Time Periods}
 
-% TODO: This should be rephrased
 
 To fully define a simulation, one has to define a few more parameters. Two of which are related to the timeline and are called \emph{cooling} and \emph{stabilizing} time. The cooling time period has trivial meaning and increasing it can be usually interesting but naturally the price is higher computing resources demands. The stabilization time is the time since $t=0$ up to the point where the LASER cooling force enters.
 
@@ -436,9 +433,8 @@ Naturally, the main result that interests us is the temperature. Which is essent
 
 \subsection{Temperature's Random Variables}
 
-Under the approximated treatment of the Ion trap's potential as a perfect harmonic potential, and with the long range Coulomb potential neglected, one can treat the positions analogously, and hence almost identically to the velocities. This is done by multiplying each particle's position $x_i$ in the $i$'th axis, by $2\pi f_i x_i$, where $f_i$ is the secular frequency of the Ion trap in the $i$'th axis.\footnote{Although not implied by an existence of an additional index besides $i$, there is a different, non-trivial set of $f_i$ secular frequencies per particle species, as described in section~\ref{ssec:non-trivial-mass-dep}.}
+Under the approximated treatment of the Ion trap's potential as a perfect harmonic potential, and with the long range Coulomb potential neglected, one can treat the positions analogously, and hence almost identically to the velocities. This is done by multiplying each particle's position $x_i$ in the $i$'th axis, by $2\pi f_i x_i$, where $f_i$ is the secular frequency of the Ion trap in the $i$'th axis.\footnote{Although not implied by an existence of an additional index besides $i$, there is a different, non-trivial set of $f_i$ secular frequencies per particle species, as described in section~\ref{sec:theory/non-trivial-mass-dep}.}
 
-% TODO: Use labels per these temperatures related subsections, and \ref to them in the technical part of the thesis.
 \subsection{Temperature's Probabilistic Methods}\label{ssec:T_method}
 
 Given $N$ particles, which were 'measured' during the computer simulation in a certain time, 2 arrays of shapes \texttt{(N,3)} are obtained for velocities and positions. The positions' array can be scaled by the proper secular frequencies as described above, and the question of how to compute a temperature given such an array has multiple legitimate answers. To layout all available answers we'll denote the random variable $u_i \in \{v_i, 2\pi f_i x_i\}$ for axis $i$. The $i$'th slice of length \texttt{N} from the above \texttt{(N,3)} shaped array is a distribution of the $u_i$ random variable.
