@@ -43,46 +43,23 @@ The origin of this asymmetry is yet an open question, but the Standard Model of 
 
 \subsection{Why Chiral Molecular Ions?}\label{sec:intro/why-molecular-ions}
 
-In most chiral molecules, $\Delta_\mathrm{PV} \ll 1 \mathrm{Hz}$, where the transitions are in the mid \& far IR regime. However, a study of the differences in the vibrational spectra of opposite enantiomers of several chiral molecules, has shown that \ce{CHDBrI^+} has a maximal $\Delta_\mathrm{PV} \approx 1.8 \mathrm{Hz}$\cite{EduardusCHDBrI}, as depicted in figure~\ref{fig:EduardusCHDBrI}.
+In most chiral molecules, $\Delta_\mathrm{PV} \ll 1 \mathrm{Hz}$, where the transitions are in the mid \& far IR regime. Measuring such a small frequency shift directly should be very hard, due to Doppler effect caused by temperature, and the requirement for an ultra-narrow LASER. Using cold molecular ions could help overcome Doppler effect \& increase coherence time, thanks to the ability to trap the molecule for long time periods.
+
+Apparently, when one chooses to use chiral molecular ions for measuring $\Delta_\mathrm{PV}$, the energy shift is usually enlarged\cite{EduardusCHDBrI}. In particular, for \ce{CHDBrI^+}, we found a maximal $\Delta_\mathrm{PV} \approx 1.8 \mathrm{Hz}$\cite{EduardusCHDBrI}, as depicted in figure~\ref{fig:EduardusCHDBrI}.
 
 \begin{figure}
 	\centering
-	\begin{subfigure}{0.3\textwidth}
+	\begin{subfigure}{0.35\textwidth}
 	\input{artifacts/CHDBrI-vibrations.tex}
 	\caption{Names \& indices of the vibrational modes.}
 	\end{subfigure}
-	~
 	\begin{subfigure}[b]{0.6\textwidth}
 		\centering
 		\includegraphics[width=0.83\linewidth]{graphics/CHDBrI-DeltaPV-ions-vs-neutrals.pdf}
 		\caption{$\Delta_\mathrm{PV}$ per vibrational mode.}
 	\end{subfigure}
-	\caption{Overview of the absolute values of $\Delta_\mathrm{PV}$ between the two enantiomers of \ce{CHDBrI} and of \ce{CHDBrI^+} for all 9 fundamental vibrational transitions\cite{EduardusCHDBrI}, where $\nu_6 \approx 33.3\ \mathrm{THz}$!}
+	\caption{Overview of the absolute values of $\Delta_\mathrm{PV}$ between the two enantiomers of \ce{CHDBrI} and of \ce{CHDBrI^+} for all 9 fundamental vibrational transitions\cite{EduardusCHDBrI}, where $\nu_6 \approx 33.3\ \mathrm{THz}$.}
 	\label{fig:EduardusCHDBrI}
-\end{figure}
-
-The existence of multiple vibrational transitions in a molecule, and trying to measure a specific vibration of a high energy, can cause a phenomenon termed Intra Vibrational Redistribution (IVR). The term describes the potential of the energy of an excited high-energy vibration, to be redistributed into a combination of multiple lower energy vibrations. To assess the possibility of this to happen, I wrote a small Python script that computes this. The computation method and the results are given in chapter~\ref{chap:IVR}, and were reported briefly in out published research too\cite{IVR_article}.
-
-\subsection{Why Cool the Molecular Ions Fast?}\label{sec:intro/why-cool-fast}
-
-To measure $\Delta_\mathrm{PV}$, we decided use Ramsey Ramsey spectroscopy. The complete discussion that led to this decision\cite{IVR_article,EduardusCHDBrI,ItayErezThesis} is out of scope for this thesis, but here I'll list 2 advantages of Ramsey spectroscopy that have particularly motivated this research: (1) We don't need to tune ultra-narrow CW-IR LASERs, and instead we only need to tune the time duration between pulses; (2) We can directly map decoherence effects in the time domain, and not the frequency domain.
-
-Performing Ramsey spectroscopy on molecular ions, has a few more implications further motivating this research: (1) Molecular Ions are trappable for long times and therefor can be cooled and be coherent; (2) We can't use fluorescence for state detection due to too low ion number, but we can use photo-dissociation, as depicted in figure~\ref{fig:photo-dissociation}.
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.5\textwidth]{graphics/Photo-Dissociation.pdf}
-	\caption{Illustration of a molecule's dissociation, done with a photon of energy $\hbar \omega_{PD}$. If the photon's energy was tuned right, the molecule will be dissociated, depending on the energy level it was in.}
-	\label{fig:photo-dissociation}
-\end{figure}
-
-The important implication of using photo-dissociation state detection after a Ramsey spectroscopy sequence, is that we need to reload (synthesize) new molecules for every Ramsey sequence. Not only that, we must remember that in Ramsey spectroscopy, the uncertainty in a frequency measurement goes like $1/\left(\tau \sqrt{N}\right)$, were $\tau$ is the coherence time. Increasing $\tau$ (by cooling) will increases the amount of periods after which we focus the measurement efforts, and thus decreases the uncertainty even further, as depicted in figure~\ref{fig:ramsey-uncertainty}.
-
-\begin{figure}
-	\centering
-	\includegraphics[width=\linewidth]{graphics/Ramsey-critical-point-marked.pdf}
-	\caption{Illustration of a typical Ramsey Spectroscopy: The opaque blue line depicts the real change the excited population goes through in time, corresponding to $\left(e^{-t/\tau} \cos(2\pi f t + \phi) + 1\right)/2$; The orange dots represent measurements of the population fraction after various time durations between $\pi/2$ pulses; The green dot represents a point in time with the greatest significance on the measurement of the frequency $f$, located at the crossing point closest to $\tau$, which in this case equals exactly $4 T$.}
-	\label{fig:ramsey-uncertainty}
 \end{figure}
 
 \subsection{How to Cool a Molecular Ion?}
@@ -94,6 +71,33 @@ The solution we went with is to use sympathetic cooling - a process in which 2 s
 To ensure efficient kinetic energy exchange between the LASER cooled (lc) and sympathetically cooled (sc) ions, we chose to use \ce{Yb^+} ions as LASER cooled ions, because their mass ($m_\mathrm{lc} = 174\mathrm{amu}$) is not too far from \ce{CHDBrI^+}'s mass ($m_\mathrm{sc} = 222\mathrm{amu}$), and they are known to have a LASER cooling transition\cite{RansfordThesis}. This choice is both intuitive, and is somewhat justified by Baba \& Waki's numerical study on the subject\cite{BabaWakiSympatheticCooling}, in the context of linear Paul traps (a bit different kind of ion traps).
 
 This decision dictates the two main experimental components this thesis focuses upon - trapping \& cooling, both of which optimized for fast cooling. The models of both trapping \& cooling are discussed in detail in chapter~\ref{chap:theory}.
+
+\subsection{Why Cool the Molecular Ions Fast?}\label{sec:intro/why-cool-fast}
+
+To measure $\Delta_\mathrm{PV}$, we decided use Ramsey Ramsey spectroscopy\cite{IVR_article,EduardusCHDBrI,ItayErezThesis}, due to several advantages. However, since we use Ramsey spectroscopy on molecular ions, we can't use fluorescence for state detection due to too low ion number, so we chose instead to use photo-dissociation, as depicted in figure~\ref{fig:photo-dissociation} and figure~\ref{fig:ramsey-sequence}. The important implication of using photo-dissociation state detection after every Ramsey sequence, is that we need to reload (synthesize) new molecules for every Ramsey sequence.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{graphics/Photo-Dissociation.pdf}
+	\caption{Illustration of a molecule's dissociation, done with a photon of energy $\hbar \omega_{PD}$. If the photon's energy was tuned right, the molecule will be dissociated, depending on the energy level it was in.}
+	\label{fig:photo-dissociation}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{graphics/Ramsey_fringes_pulse_sequence.pdf}
+	\caption{Typical Ramsey sequence along with preparation and readout. Preparation includes molecule synthesis and cooling.}
+	\label{fig:ramsey-sequence}
+\end{figure}
+
+The uncertainty in a frequency measurement of a Ramsey sequence goes like $1/\left(\tau \sqrt{N}\right)$, where $\tau$ is the coherence time, and $N$ is the amount of measurements. See figure~\ref{fig:ramsey-uncertainty}. Increasing $\tau$ (by cooling) increases the amount of periods after which we focus the measurement efforts. Cooling fast, however, means that the preparation time is smaller, allowing us to also increase $N$, and decrease the uncertainty even further.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{graphics/Ramsey-critical-point-marked.pdf}
+	\caption{Illustration of a typical Ramsey Spectroscopy: The opaque blue line depicts the real change the excited population goes through in time, corresponding to $\left(e^{-t/\tau} \cos(2\pi f t + \phi) + 1\right)/2$; The orange dots represent measurements of the population fraction after various time durations between $\pi/2$ pulses; The green dot represents a point in time with the greatest significance on the measurement of the frequency $f$, located at the crossing point closest to $\tau$, which in this case equals exactly $4 T$.}
+	\label{fig:ramsey-uncertainty}
+\end{figure}
 
 \subsection{Ion Trapping}\label{sec:intro/ion-trap}
 
