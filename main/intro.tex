@@ -1,26 +1,23 @@
 \chapter{Introduction}
 
-In this chapter, we'll first describe why we are interested in studying chiral molecules (section~\ref{sec:intro/about-chirality}), and why we chose chiral molecular ions for our measurement (section~\ref{sec:intro/why-molecular-ions}). Then we'll discuss why we need to cool them fast (section~\ref{sec:intro/why-cool-fast}), how our ion trap (section~\ref{sec:intro/ion-trap}) and detection scheme (section~\ref{sec:intro/VMI}) further motivate optimizing the cooling time. % TODO: Maybe rephrase:
-In section~\ref{sec:intro/simulation} we'll describe briefly how we performed simulations of trapping and cooling, both in terms of software, and the models of trapping and cooling.
+% TODO: Make sure this is phrased good after the whole intro is fully reviewed.
+
+In this chapter, we'll first describe why we are interested in studying chiral molecules (section~\ref{sec:intro/about-chirality}), and why we chose chiral molecular ions for our measurement (section~\ref{sec:intro/why-molecular-ions}). Then we'll discuss why we need to cool them fast (section~\ref{sec:intro/why-cool-fast}), how our ion trap (section~\ref{sec:intro/ion-trap}) and detection scheme (section~\ref{sec:intro/VMI}) further motivate optimizing the cooling time. In section~\ref{sec:intro/simulation} we'll describe briefly how we performed simulations of trapping and cooling, both in terms of software, and the models of trapping and cooling.
 
 \section{Motivation}
 
 \subsection{What are Chiral Molecules?}\label{sec:intro/about-chirality}
 
-% TODO: this is copied too verbatim from Itay Erez's thesis. Use ChatGPT to rephrase these 2 paragraphs.
-
-The word chirality is derived from the Greek word for ”hand”. We define an object as chiral if it is distinguishable from its mirror image, with the classic example of our hands. In other words, the two mirror images of a chiral object, usually referred to as the left and right hands of the object, cannot be superimposed. That means they cannot be related by rotational and/or translational transformations alone. The first documented observation of chirality was of L. Pasteur in 1848, where he examined salt crystals and found they appear in two mirrored structures\cite{PasteurChirality}.
-
-A molecule consists of multiple atoms bound together. Molecules of 2 or 3 atoms must be linear or planar, therefore they must exhibit an internal reflection symmetry about, at least, one of their planes. On the other hand, a molecule of 4 or more atoms, can take a 3D form which might exhibit no reflection symmetries at all. In this case, the molecule is chiral since its two mirror images, i.e. left and right hands, are distinguishable, as the example in figure~\ref{fig:chirality-with-hands}. The two hands of a chiral molecule are often called enantiomers.
+The word chirality is derived from the Greek word for ”hand”. We define an object as chiral if it is distinguishable from its mirror image, with the classic example of our hands. Alternatively, the two mirror images of a chiral object, usually referred to as the left and right hands of the object, cannot be superimposed. This also means they cannot be related by rotational and/or translational transformations alone. The first documented observation of chirality in molecules was of L. Pasteur in 1848, where he examined salt crystals and found they appear in two mirrored structures\cite{PasteurChirality}. A classic example of 2 chiral molecules is given in figure~\ref{fig:chirality-with-hands}.
 
 \begin{figure}
 	\centering\includegraphics[width=0.5\textwidth]{graphics/chirality_with_hands.pdf}
 	\caption{The two hands of a chiral molecule, also known as enantiomers, cannot be superimposed. In other words, mapping the enantiomers to each other can’t be done by rotations and/or translations alone, but requires a mirror transformation.}\label{fig:chirality-with-hands}
 \end{figure}
 
-Apparently, opposite enantiomers of the same molecule can have substantially different chemical properties, although having an almost identical structure. A classic example is that of glucose \& fructose - two enantiomers of sugars found mostly in white sugar and fruits, respectively. Apparently, when you shine light over liquid solutions containing these types of sugar, they will each rotate the light polarization differently, allowing you to easily measure the concentration of each enantiomer\cite{sugarChirality}. This specific measurement scheme of chirality works for sugars for non-obvious reasons, and cannot be generalized to any pair of chiral molecules.
+Chirality is a fundamental property of many molecules in nature, referring to their existence in two mirror-image forms called \emph{enantiomers}. A striking and intuitive demonstration of chirality can be found in the molecule \emph{limonene}, which occurs in citrus fruits. The two enantiomers of limonene have identical molecular formulas and connectivity, yet they interact differently with olfactory receptors in the human nose. One enantiomer smells distinctly like oranges, while the other smells like lemons~\cite{smellChirality}. This vivid difference in perception, caused solely by molecular chirality, underscores how profoundly chirality can influence biological interactions.
 
-The existence of glucose \& fructose mostly in white sugar \& fruits respectively, is in fact an example of a broader natural phenomenon called homo-chirality - meaning nature's preference of 1 chirality in certain contexts, over another. Sugar, and other examples for homo-chirality in nature are depicted in figure~\ref{fig:homo-chirality}.
+Despite the structural symmetry allowed by chemistry, living organisms consistently use only one enantiomer out of the two possible forms for many biologically relevant molecules. This selective usage is not mandated by fundamental physics, yet it is universally observed across all known forms of life — a phenomenon known as \emph{homochirality}. Figure~\ref{fig:homo-chirality} illustrates several such examples.
 
 \begin{figure}
 \centering
@@ -36,14 +33,13 @@ The existence of glucose \& fructose mostly in white sugar \& fruits respectivel
 ~
 \begin{subfigure}{0.3\textwidth}
 \includegraphics[width=\linewidth]{graphics/DNA.pdf}
-%\includegraphics[width=\linewidth]{graphics/L-amino_acid_structure.pdf}
 \caption{DNA molecule}
 \end{subfigure}
 \caption{Examples of organic molecules found in nature exclusively in only 1 chirality.}%
 \label{fig:homo-chirality}
 \end{figure}
 
-In contrast to other chemically analytical methods, we wish to study the effect of chirality over the vibrational spectrum of chiral molecules. In the standard model, the only elementary particles that interact differently with other elementary left and right particles, are the $Z$ and $W$ bosons. This symmetry braking mechanism is called parity violation, and therefor the energy difference between the opposite enantiomers' vibrations is termed $\Delta_\mathrm{PV}$.
+The origin of this asymmetry is yet an open question, but the Standard Model of Physics suggests perhaps this is due to Parity Violation (PV)\cite{QuackChiralitySM}. In this field of research, the energy difference between the opposite enantiomers' vibrations is termed $\Delta_\mathrm{PV}$, and we wish to measure this energy shift in the vibrational spectrum of chiral molecules.
 
 \subsection{Why Chiral Molecular Ions?}\label{sec:intro/why-molecular-ions}
 
