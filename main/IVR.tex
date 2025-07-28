@@ -2,4 +2,73 @@
 
 % TODO: Yuval gave a review on this paragraph in the 1st iteration...
 
-The existence of multiple vibrational transitions in a molecule (see figure~\ref{fig:EduardusCHDBrI}), and trying to measure a specific vibration of a high energy, can cause a phenomenon termed Intra Vibrational Redistribution (IVR). The term describes the potential of the energy of an excited high-energy vibration, to be redistributed into a combination of multiple lower energy vibrations. To assess the possibility of this to happen, I wrote a small Python script that computes this. The computation method and the results are given in chapter~\ref{chap:IVR}, and were reported briefly in our published research too\cite{IVR_article}.
+The existence of multiple vibrational transitions in a molecule (see figure~\ref{fig:EduardusCHDBrI}), and trying to measure a specific vibration of a high energy, can cause a phenomenon termed Intra Vibrational Redistribution (IVR). When a molecule is in an excited high-energy state, it's internal energy can be redistributed into other parts of the molecule\cite{IVR_review}. This chapter describes a computational method to asses the possibility for IVR to happen between vibrational states in particular.
+
+% TODO: Explain why was this important for Measuring chirality?
+
+The computation employed here is best explained in an example: Say you have a molecule with the following vibrational eigen modes:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|c|c|c|c}
+	modes & 1 & 2 & 3 & 4 \\
+	\hline
+	energies [Arb.u] & $1.5$ &  $2.5$ & $5$ & $6.5$ \\
+\end{tabular}
+\end{table}
+
+Now, if the molecule's 4th vibrational mode is excited, meaning $\nu_3 = 1$, the same internal energy can be redistributed into a double excitation of the 2nd mode, meaning $1 \nu_3 = 2\nu_2$. Likewise, $ 1 \nu_4$ can be redistributed into $2 \nu_2 + 1 \nu_1$ or $1 \nu_3 + 1 \nu_1$. % TODO: In real life the vibrational energies are not that rational, but still the lifetime (width) of the vibrational levels should 
+
+Here's how we generalized this: Take a linear combination of modes, where all coefficients are non-negative integers; What is the probability that this combination of modes will approximate another such combination of energies? To answer this we computed all of these combinations, up to a certain point, and plotted their density as a function of energy. This essentially a histogram we call \emph{IVR histogram}. The histogram for our target \ce{CHDBrI^+} molecule, along with dashed lines marking the vibrational modes is depicted in figure~\ref{fig:IVR_CHDBrI}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{graphics/IVR-CHDBrI.pdf}
+	\caption{IVR histogram computed for \ce{CHDBrI^+}, given the eigen modes also given in table~\ref{tbl:CHDBrI-vibrations}. The different colors represent two different computational methods\cite{IVR_article}. Dashed lines represent the input vibrational modes, and their colors match the colors of the ascending histogram lines.}
+	\label{fig:IVR_CHDBrI}
+\end{figure}
+
+We compared with the same method the IVR histograms of different molecular ions candidates for our Parity Violation measurement, and found outstanding differences between them, as depicted in figure~\ref{fig:IVR-molecules-comparison}. It seems that using a heavier atom in combination with \ce{CH} and \ce{BrX} is increasing the density of states and thus probably increases the chances for IVR.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{graphics/IVR-molecules-comparison.pdf}
+	\caption{A comparison of all molecules mentioned in our ab-initio calculations\cite{IVR_article}, all eigen modes were computed with the \texttt{B97} method.}
+	\label{fig:IVR-molecules-comparison}
+\end{figure}
+
+\section{Technical Notes}
+
+The source code for computing all possible energy combinations and plotting them, is available at \url{https://gitlab.com/doronbehar/IVR-calculator}. It consists mainly of 2 Python scripts, one for generating the data, and the other for plotting it. The main Python dependencies are Numpy\cite{numpy} \& Matplotlib\cite{Matplotlib} and for generating IVR data, \texttt{progressbar2}\footnote{\url{https://pypi.org/project/progressbar2/}} is required too.
+
+\subsection{\texttt{./calc.py}}
+
+Must be given a simple text file with a list of numbers, each corresponding to an eigen energy in any units you wish to use. In all calculations above and as usually in vibrational modes energy units are $\mathrm{cm}^{-1}$, and these are the units the plotting script \texttt{./plot.py} uses too. The way it iterates the combinations looks like this:
+
+\begin{verbatim}
+[prompt] $ ./calc.py <your-energies-file>.txt
+Energies are [132.0, 144.7, 205.0, 442.0, 500.0, 520.0, 894.0, 1091.0, 3182.0]
+Cutoff energy (cumputed) used will be 3578.0
+Will save all combinations to example.omegas.combinations.npz
+maximal coefficients are:               = (28, 25, 18, 09, 08, 07, 05, 04, 02)
+ [Elapsed Time: 0:00:00] |# |combination: (00, 00, 03, 06, 00, 00, 00, 00, 00)
+\end{verbatim}
+
+The last line is a progress bar where \texttt{\#} are used to mark progress in the calculation, and takes the full terminal width. The coefficients calculated at any given time are printed there as well. The maximal coefficients are calculated such that each the maximal coefficient of any eigen energy alone doesn't go beyond the cutoff energy declared at the 2nd line. The cutoff energy is computed somewhat heuristically to avoid calculating too much beyond the last energy, such that the graphs stop just a bit after the highest eigen energy.
+
+This computation takes a long time, and unfortunately is not parallelized as of yet. When this finishes, it creates a \texttt{.npz} file as declared in the 3rd line printed above, and this file can be given as an argument to \texttt{./plot.py}.
+
+\subsection{\texttt{./plot.py}}
+
+Plotting is fairly easy - you just give it as arguments \texttt{.npz} suffixed files that contain calculations generated by \texttt{./calc.py}. The command contains several aesthetic command line options that are self explanatory when you run \texttt{./plot.py --help}. However \texttt{--bins} is of worth mentioning: Since we are calculating density of states combinations as a function of energy, we need to actually calculate a histogram. \texttt{--bins} simply specifies the number of bins used for the histograms. It defaults to the $\sqrt{}$ of the number of total combinations, which comes out best.
+
+\subsection{\texttt{./density-printer.py}}
+
+If you wish to calculate the densities of states exactly near the eigen energies, you can use this script. It will print these in the format of a table in different formats: (1) ASCII to stderr and (2) LaTeX to stdout. This can be useful if you wish to put this information in an article. The density of states of the molecules in figure~\ref{fig:IVR-molecules-comparison} at their eigen energies is printed in table~\ref{tbl:IVR-densities}.
+
+\begin{table}[h]
+	\centering
+	\input{artifacts/IVR-densities.tex}
+	\caption{Density of states of our $\Delta_\mathrm{PV}$ candidates, at each vibrational energy.}
+	\label{tbl:IVR-densities}
+\end{table}
