@@ -220,7 +220,10 @@ Controls whether the secular frequencies experienced by both ion species are imp
 
 Now that we have gained confidence in our Mathieu solving capabilities, Let's demonstrate that indeed the reversely solved Mathieu equations presented in section~\ref{sec:theory/trapping} indeed produces $(a_i, q_i)$ pairs with the requested secular frequencies. Figure~\ref{fig:LAMMPS_summarized_naive_freqs-micromotion} demonstrates that decoupling the \texttt{micromotion} and \texttt{naive\_freqs} parameters was done successfully.
 
-\begin{figure}
+The color-varied behavior in figure~\ref{fig:LAMMPS_summarized_naive_freqs-micromotion}, demonstrates the non-negligible difference between the naive, $\sqrt{m_r}$-based calculation and the correct 'Mathieu frequencies' that are experienced in a real ion trap. The fact the two $\times$ \& $\circ$ markers appear on the same spots, proves that indeed the simulation code has successfully created the correct forces no matter whether \texttt{micromotion} was enabled or not. The only physically implementable dots are the blue $\times$ points.
+
+% Using H placeholder here because otherwise it comes out too far away - after cooling section has began.
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{graphics/micromotion_and_sqrt_freqs_effect.pdf}
     \caption{
@@ -228,8 +231,6 @@ The collective $x$-axis movement's frequencies of a 2-species-mixed ion cloud, p
 }
     \label{fig:LAMMPS_summarized_naive_freqs-micromotion}
 \end{figure}
-
-The color-varied behavior in figure~\ref{fig:LAMMPS_summarized_naive_freqs-micromotion}, demonstrates the non-negligible difference between the naive, $\sqrt{m_r}$-based calculation and the correct 'Mathieu frequencies' that are experienced in a real ion trap. The fact the two $\times$ \& $\circ$ markers appear on the same spots, proves that indeed the simulation code has successfully created the correct forces no matter whether \texttt{micromotion} was enabled or not. The only physically implementable dots are the blue $\times$ points.
 
 \section{Cooling}
 
