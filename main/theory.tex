@@ -484,13 +484,30 @@ Dimension   & \multicolumn{5}{c}{Optional values}\\
 \label{tbl:T_methods}
 \end{table}
 
-\subsection{Further Summarizing Analyzes}\label{ssec:intro/SummarizedMeasurement}
+\subsection{Further Summarizing Analysis}\label{ssec:intro/SummarizedMeasurement}
 
-Up until now we discussed time dependent properties of our ion clouds - the per spatial axis size and the various temperatures. We can also summarize these results to obtain various measures of how fast did we cool our ions, and how much smaller did the cloud get due to the LASER cooling etc. This is termed both in the code and here as summarized results.
+Up until now we discussed time dependent properties of our ion clouds - the per spatial axis size and the various temperatures. We can also summarize these results to obtain various measures of how fast did we cool our ions, and how much smaller did the cloud get due to the LASER cooling etc. These kind of results are termed both in the code and here as summarized results.
 
-The simplest summarized result type is the temperature/size after the cooling process, which is defined (slightly arbitrarily) as the average temperature/size of the ion cloud in the last 1/4 of the time before cooling or before the end. The first \textit{part} is referred to as \textit{stabilizing part} and the later \textit{cooling part}. The standard deviation of the temperature/size in each such \textit{part} defines the uncertainty for each such summarized measurement. The size measurement, both in the time dependent form and in the summarized form depends on the spatial axis (x,y,z), and the temperatures, in either the summarized or time dependent form, depend on the 3 dimensions described in section~\ref{ssec:T-options-summery}.
+\subsubsection{Temperatures and Cloud Size}
 
-Another summarized measurement is the cooling frequency, defined (for simplicity, only for temperatures) as follows: Given a $T(t)$ defined using any of the parameters of section~\ref{ssec:T-options-summery}, we take $\mathrm{Log}(T(t)/\mathrm{kelvin})$, and apply a continuous piecewise linear fit\cite{pwlf}, with 2 segments. This gives 2 cooling frequencies in the units of $\mathrm{kHz}$ that depend on a dimension referred to as \texttt{regime} - corresponding to the segments. This design choice stems from the observation that in many simulations most of the ion cloud is cooled quickly and efficiently whereas afterwards the rest of the cooling happens in a mixed thermodynamic phase of an ion crystal (massive and highly charged) with a gas of ions surrounding it. The initial, faster and more efficient part of the cooling process corresponds to the 1st segment of exponential temperature decay, and the rest of the cooling is significantly slower, and hence invite defining a 2nd segment of cooling.
+The simplest summarized result type is the temperature/size before/after cooling. The time periods before/after the cooling are termed \textit{stabilizing part}/\textit{cooling part} respectively. If we'll denote the stabilizing \& cooling times $t_s$ and $t_c$, the summarized temperatures/sizes are defined (slightly arbitrarily) as the average temperature/size in the time periods $(\sfrac{3}{4},1)t_s$ and $t_s + (\sfrac{3}{4}, 1)t_c$. The standard deviation of the temperature/size in each of those \textit{part}s defines the uncertainty of the summarized measurement.
 
-Lastly, only for verifying the frequencies expected from the Mathieu equations of the ion trap, as explained in section~\ref{sec:theory/trapping}, we define the following analysis referred to as the \textit{cloud's frequencies}: Given the time dependent positions of all ions, we average over the ions to get the cloud's center position (still time and spatial axis dependent). With it, we can take the Fourier transform and get the dominant frequency via \texttt{scipy.signal.find\_peaks}\cite{scipy}, or simply via \texttt{numpy.argmax}\cite{numpy}. If the collective movement is very harmonic (due to e.g collective offset in which the ion cloud was intentionally placed at $t=0$), a fit for a $\cos(2\pi f x_i + \phi)$ can be attempted, and the fit's frequency is the dominant frequency of movement. The time range of the simulation dictates the uncertainty in the dominant frequency obtained via a Fourier transform, and the dominant frequency of the fit produces uncertainties via the covariance matrix returned by \texttt{scipy.optimize.curve\_fit}.
+\subsubsection{Cooling Frequency}
+
+Another summarized measurement is the cooling frequency, defined (only for temperatures) as follows: Given a $T(t)$ defined using any of the parameters of section~\ref{ssec:T-options-summery}, we take $\mathrm{Log}(T(t)/\mathrm{kelvin})$, and apply a continuous piecewise linear fit\cite{pwlf}, with 2 segments. This gives 2 cooling frequencies in the units of $\mathrm{kHz}$ that depend on a dimension referred to as \texttt{regime} - corresponding to each of the segments.
+
+We chose to use 2 segments due to the observation that in many simulations most of the ion cloud is cooled quickly and efficiently whereas afterwards the rest of the cooling happens in a mixed thermodynamic phase of an ion crystal (massive and highly charged) with a gas of ions surrounding it.
+
+\subsubsection{Collective Cloud Movement Frequencies}
+
+Lastly, only for verifying the frequencies expected from the Mathieu equations of the ion trap, as explained in section~\ref{sec:theory/trapping}, we define the following analysis referred to as the \textit{cloud's frequencies}: Given the time dependent positions of all ions, we average over the ions to get the cloud's center position (still time and spatial axis dependent). With it, we can take the Fourier transform and get the dominant frequency via \texttt{scipy.signal.find\_peaks}\cite{scipy}, or simply via \texttt{numpy.argmax}\cite{numpy}. Such a Fourier transform is depicted in figure~\ref{fig:cloudFreq-fft-plot-example}.
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{graphics/cloudFreq-fft-plot-example.pdf}
+\caption{Example of a Fourier transform for one of the points in figure~\ref{fig:LAMMPS_summarized_naive_freqs-micromotion}. The peaks of the expected frequencies per mass are marked in the dashed lines, and fit satisfyingly to the peaks of the Fourier transform.}
+\label{fig:cloudFreq-fft-plot-example}
+\end{figure}
+
+If the collective movement is very harmonic (due to e.g collective offset at $t=0$), a fit for a $\cos(2\pi f x_i + \phi)$ can be attempted, and the fit's frequency is the dominant frequency of the movement. The time range of the simulation dictates the uncertainty in the dominant frequency obtained via a Fourier transform, and the dominant frequency of the fit produces uncertainties via the covariance matrix returned by \texttt{scipy.optimize.curve\_fit}.
 
