@@ -4,24 +4,22 @@ This chapter will iterate the theoretical background necessary for understanding
 
 \section{Trapping}\label{sec:theory/trapping}
 
-% TODO: Cite more places that solve the Mathieu equation from a geometry of electrodes.
-Real-life ion traps are implemented using electrodes designed in a specific geometry, attached to oscillating electric potentials of specific forms. In literature, one often finds attempts to derive analytical expressions for electric potential given a certain geometry and voltages. Usually\cite{AkermanThesis} these derivations are at least somewhat inaccurate, due to the finite size of the electrodes.
+Real-life ion traps are implemented using electrodes designed in a specific geometry, attached to oscillating electric potentials of specific forms. In literature, one often finds analytical expressions for electric potentials given a certain geometry and voltages\cite{AkermanThesis}. These expressions are highly tied to the parameters of the geometry, and cannot be easily generalized for our trap design. Our trap can be analyzed pretty easily in SIMION\cite{SIMION}, but it is not capable of combining also ion-ion Coulomb interactions\cite{SimionHybridCoulombInteractions}\footnote{Developing a software that computes both the Laplace equation \emph{and} Coulomb interactions should be immensely complicated, due to image charges, and I am unaware of any software tool capable of that efficiently.}
 
-LAMMPS is not capable of solving the Laplace equation (\ref{eq:laplace-original}) given a design of electrodes and voltages. Plus, even software tools that do specialize in such calculations (e.g \cite{FEniCS} \& \cite{SIMION}), are not capable of combining also Coulomb interactions\footnote{Developing a software that computes both the Laplace equation \emph{and} Coulomb interactions should be immensely complicated, due to image charges, and I'm unaware of any software tool capable of that.}. Therefor we chose to focus the effort on producing analytical expressions with abstract parameters, that trap our ions in desired secular frequencies. The basic form of the electric field we simulated is:
+LAMMPS\cite{LAMMPS}, is not designed for solving the Laplace equation (\ref{eq:laplace-original}) given a design of electrodes and voltages. It is great however for computing ion-ion interactions, within electric fields given as analytical expressions. Therefore we chose to focus our efforts on producing analytical expressions with abstract parameters, that trap our ions in desired secular frequencies. The basic form of the electric field we simulated is:
 
 \begin{equation}
     E_i = (a_i + q_i \cos(\omega_\mathrm{rf} t)) x_i
     \label{eq:mathieu-source}
 \end{equation}
 
-For the $i$th spatial dimension, and the dimensions of $a_i$ \& $q_i$ are naturally $\mathrm{Volt}/\mathrm{distance^2}$. The 1D equation of motion you get for a single ion under this field is:
+For the $i^\mathrm{th}$ spatial dimension, and the dimensions of $a_i$ \& $q_i$ are naturally $\mathrm{Volt}/\mathrm{distance^2}$. The 1D equation of motion you get for a single ion under this field is:
 
 \begin{equation}
     (a + 2 q \cos(2 \tau)) x = \ddot{x}
 \end{equation}
 
-% TODO: Cite literature?
-Where $2\tau \equiv \omega_\mathrm{rf} t$, and $(a_i, q_i)$ were rescaled to be dimensionless and therefor given no $i$ subscript to reflect that. This is called the Mathieu equation\cite{MathieuOriginal}, and for the sake of completeness, I'll present here how I solved it, in a way that is more tailored for semi-numerical calculations.
+Where $2\tau \equiv \omega_\mathrm{rf} t$, and $(a_i, q_i)$ were rescaled to be dimensionless and therefore given no $i$ subscript to reflect that. This is called the Mathieu equation\cite{MathieuOriginal}, and I'll present here how \emph{I} solved it, in a way that is more tailored for semi-numerical calculations.
 
 \subsection{Solving the Mathieu Equation in 1D}
 
@@ -129,30 +127,32 @@ Most Mathieu stability diagrams found in literature, assume that geometry dictat
     \label{fig:mathieu-stability}
 \end{figure}
 
-\subsection{Initial Conditions \& Coulomb Energy}\label{sec:theory/init-coulomb}
+Now that we know how to implement an ion trap with any secular frequencies we want, we need to discuss how to initiate the simulations in a thermodynamically stable state. Distributing the velocities is trivial with a Maxwell-Boltzmann distribution, but distributing the positions is harder. The next two sections describe implications relevant to the initial positions.
 
-We wish to study sympathetic cooling starting from a thermodynamically stable state. This raises a few important questions: How significant is the Coulomb potential energy in the Boltzmann ensemble? Should it be considered when initiating the positions and velocities of the ions?
+\subsection{Initial Conditions \& Ion-Ion Coulomb Energy}\label{sec:theory/init-coulomb}
 
-Under the secular approximation, and when ignoring the Coulomb potential, the Maxwell-Boltzmann partition function dictates the probability of finding an ion in a position $\mathbf{x}$ to be:
+The questions we wish to answer in this section are: How significant is the ion-ion Coulomb energy (ICE) in the Boltzmann ensemble? Should it be considered when initiating the positions and velocities of the ions? If so, how? To assess the ICE in the temperature scale, we divided it by $N$ - the amount of particles, and denoted it as $E_c/N$.
+
+Under the secular approximation, and when ignoring the ICE, the Maxwell-Boltzmann partition function dictates the probability of finding an ion in a position $\mathbf{x}$ to be:
 
 \begin{equation}
     \prod_{i=1}^3 \sqrt{\frac{k_i}{2\pi K_\text{B} T}} \exp\left(\frac{-k_i x_i^2}{2 K_\text{B} T}\right)
     \label{eq:position-probability}
 \end{equation}
 
-Where $k_i$ is the spring-like coefficients of the harmonic trap. This distributions couples naturally density and temperature. We are interested in measuring the Coulomb energy per particle (denoted as $E_c/N$) as a function of the parameters of the distribution function above. Since the real temperature is affected by the Coulomb energy, we will not use the symbol $T$ in the following usages of expression \ref{eq:position-probability}, but rather we'll use $\tau$. The parameters that can affect $E_c/N$ are: $\{k_i\}$, $\tau$, and most importantly the number of ions $N$.
+Where $k_i$ is the spring-like coefficients of the harmonic trap. Since the real temperature is affected by the ICE, in the next usages if this expression we will not use the symbol $T$, but rather we'll use $\tau$.
 
-The relation of $E_c/N$ to it's parameters is not analytical, yet we still expect a smooth behavior if we'd average over enough randomness. In figure~\ref{fig:coulomb_energy} we can see that (expectedly), dense and cold ion clouds produce a higher Coulomb energy, that even exceeds $\tau$.\footnote{Figure~\ref{fig:coulomb_energy_normalized} to appendix shows the same results normalized to $\tau$.}
+This distribution couples naturally density and temperature. More precisely: $E_c/N$ is a function $N$, and the distribution parameters of expression~\ref{eq:position-probability} - $\{k_i\}$ and $\tau$. The relation of $E_c/N$ to $\{k_i\}$, $\tau$ and $N$ is not analytical of course, yet we still expect a smooth behavior if we'd average over enough randomness. In figure~\ref{fig:coulomb_energy} we can see that (expectedly), dense and cold ion clouds produce a higher ICE, that even exceeds $\tau$.\footnote{Figure~\ref{fig:coulomb_energy_normalized} to appendix shows the same results normalized to $\tau$.}
 
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{graphics/coulomb_energy_example@coulomb_energy.pdf}
-    \caption{Example dependence of $E_c/N$ to $N$ and $\tau$ for a trap of \ce{Yb^+} with secular frequencies of $(8.5, 8.5, 1.5) \mathrm{kHz}$, in the range of $\tau\in[2, 200]\mathrm{K}$.}\label{fig:coulomb_energy}
+    \caption{Example dependence of $E_c/N$ to $N$ and $\tau$ for a trap of \ce{Yb^+} (in varying amounts), with secular frequencies of $(8.5, 8.5, 1.5) \mathrm{kHz}$, in the range of $\tau\in[2, 200]\mathrm{K}$.}\label{fig:coulomb_energy}
 \end{figure}
 
 To produce this color-mesh, we distributed the ions in space multiple times per $(\tau,N)$ point, until the relative standard deviation of all $E_c/N$ results in that point was lower then $0.12$ (arbitrary number), with a minimum of 5 distributions (also termed 'iterations'). Statistical results of figure~\ref{fig:coulomb_energy} is depicted in figures \ref{fig:coulomb_energy_std} and \ref{fig:coulomb_energy_iterations}.
 
-Naturally, the value of the highest Coulomb energy found escalates with the trap's tightness, as can be seen in figure~\ref{fig:coulomb_energy_f_z}.
+Naturally, the value of the highest ICE found escalates with the trap's tightness, as can be seen in figure~\ref{fig:coulomb_energy_f_z}.
 
 \begin{figure}
     \centering
@@ -162,9 +162,9 @@ Naturally, the value of the highest Coulomb energy found escalates with the trap
 
 \subsubsection{Summary}
 
-The Coulomb energy is not negligible for dense \& cold distributions. Our ability to initiate a distribution of ions in a thermodynamically stable set of positions is limited by the effects of strong Coulomb energy, and by the tightness of our trap. To avoid too strong Coulomb energy effects, we thereby avoid distributing ions in $T < 5\mathrm{K}$.\footnote{During the research period I tried to construct an algorithm that would get a real temperature $T \ne \tau$, $N$ and a set of secular frequencies, and compute a $\tau$ with which the system will be more thermodynamically stable initially. When this algorithm was used for a single ion species it was slightly effective. However when 2 ion species were used, (with different masses and different $\{k_i\}$ - see section~\ref{sec:theory/mathieu-inversly}), accommodating the algorithm for that case has proved to be too complex, and too slow.}
+The ICE is not negligible for dense \& cold distributions. Our ability to initiate a distribution of ions in a thermodynamically stable set of positions is limited by the effects of strong ICE, and by the tightness of our trap. To avoid too strong ICE effects, we thereby avoid distributing ions in $T < 5\mathrm{K}$.\footnote{During the research period I tried to construct an algorithm that would get a real temperature $T \ne \tau$, $N$ and a set of secular frequencies, and compute a $\tau$ with which the system will be more thermodynamically stable initially. When this algorithm was used for a single ion species it was slightly effective. However when 2 ion species were used, (with different masses and different $\{k_i\}$ - see section~\ref{sec:theory/mathieu-inversly}), accommodating the algorithm for that case has proved to be too complex, and too slow.}
 
-More importantly, we expect time dependent temperature measurements to be offset from the initial temperature $T_i$ on the order of magnitude of the Coulomb energy. Since we also wish to start cooling when the system is thermodynamically stable, the Coulomb energy offset requires us to wait for a few $\mathrm{ms}$, before beginning cooling, as can also be seen from the oscillations in figure~\ref{fig:convergence-example}.
+More importantly, we expect time dependent temperature measurements to be offset from the initial temperature $T_i$ on the order of magnitude of $E_c/N$. Since we also wish to start cooling when the system is thermodynamically stable, the ICE offset requires us to wait for a few $\mathrm{ms}$, before beginning cooling, as can also be seen from the oscillations in figure~\ref{fig:T-stabilizes-example}.
 
 \subsection{A Non-Trivial Secular Frequency Mass Dependence}\label{sec:theory/non-trivial-mass-dep}
 
@@ -290,7 +290,7 @@ If we'll take:
     \item \ce{Yb^+} and the cooling transition at $c/\lambda = 811.2891 \mathrm{THz}$ with the line width $\Gamma/2\pi \equiv \gamma = 19.6 \mathrm{MHz}$.\cite{RansfordThesis}
 \end{itemize}
 
-We'd get $x_o \approx 2.1 \mathrm{mm}$, where the trap's harmonic region is of about $25 \mathrm{mm}$ from the origin. This offset might not be very significant for only LASER cooling a single ion like \ce{Yb^+}, but sympathetic cooling will suffer from this offset, as the target molecule won't experience an identical offsetting force, and would not collide frequently enough with the cooling ion and therefor will not lose kinetic energy, as seen in figure~\ref{fig:LASER-cool-offset3D}. Naturally increasing the secular frequencies of the trap greatly reduces this offset, but our trap's design doesn't allow much higher secular frequencies.
+We'd get $x_o \approx 2.1 \mathrm{mm}$, where the trap's harmonic region is of about $25 \mathrm{mm}$ from the origin. This offset might not be very significant for only LASER cooling a single ion like \ce{Yb^+}, but sympathetic cooling will suffer from this offset, as the target molecule won't experience an identical offsetting force, and would not collide frequently enough with the cooling ion and therefore will not lose kinetic energy, as seen in figure~\ref{fig:LASER-cool-offset3D}. Naturally increasing the secular frequencies of the trap greatly reduces this offset, but our trap's design doesn't allow much higher secular frequencies.
 
 \begin{figure}
     \centering
