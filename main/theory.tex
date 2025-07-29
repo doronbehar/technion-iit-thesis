@@ -16,10 +16,10 @@ LAMMPS\cite{LAMMPS}, is not designed for solving the Laplace equation (\ref{eq:l
 For the $i^\mathrm{th}$ spatial dimension, and the dimensions of $a_i$ \& $q_i$ are naturally $\mathrm{Volt}/\mathrm{distance^2}$. The 1D equation of motion you get for a single ion under this field is:
 
 \begin{equation}
-    (a + 2 q \cos(2 \tau)) x = \ddot{x}
+    (a + 2 q \cos(2 \tau)) x = \partial_\tau^2{x}
 \end{equation}
 
-Where $2\tau \equiv \omega_\mathrm{rf} t$, and $(a_i, q_i)$ were rescaled to be dimensionless and therefore given no $i$ subscript to reflect that. This is called the Mathieu equation\cite{MathieuOriginal}, and I'll present here how \emph{I} solved it, in a way that is more tailored for semi-numerical calculations.
+Where $2\tau \equiv \omega_\mathrm{rf} t$, and $a_i$, $q_i$ and $x_i$ were rescaled to be dimensionless and therefore given no $i$ subscript to reflect that. This is called the Mathieu equation\cite{MathieuOriginal}, and I'll present here how I solved it, in a way that is more tailored for semi-numerical calculations.
 
 \subsection{Solving the Mathieu Equation in 1D}
 
