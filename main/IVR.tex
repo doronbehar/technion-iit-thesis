@@ -1,12 +1,10 @@
 \chapter{Calculating Intra-molecular Vibration Redistribution (IVR)}\label{chap:IVR}
 
-% TODO: Yuval gave a review on this paragraph in the 1st iteration...
+Before we decided to use \ce{CHDBrI^+} for our $\Delta_\mathrm{PV}$ measurement, we wanted to assess the natural life time of the vibrational levels. Apparently when a molecule is in an excited vibrational state, it's internal energy can be redistributed into other degrees of freedom of the molecule - hence the term Intra Vibrational Redistribution (IVR)\cite{IVR_review}. This is a contributing factor to the life times of the vibrational levels, in addition to black body radiation.
 
-The existence of multiple vibrational transitions in a molecule (see figure~\ref{fig:EduardusCHDBrI}), and trying to measure a specific vibration of a high energy, can cause a phenomenon termed Intra Vibrational Redistribution (IVR). When a molecule is in an excited high-energy state, it's internal energy can be redistributed into other parts of the molecule\cite{IVR_review}. This chapter describes a computational method to asses the possibility for IVR to happen between vibrational states in particular.
+The chance for IVR to happen depends on the structure of the molecule in ways out of scope for the assessment presented here. We did however developed a simple, brute-force model that would give as a hint on how likely this is to happen, while also focusing solely on vibrational levels.
 
-% TODO: Explain why was this important for Measuring chirality?
-
-The computation employed here is best explained in an example: Say you have a molecule with the following vibrational eigen modes:
+To explain our model, we can start with an example: Say you have a molecule with the following vibrational eigen modes:
 
 \begin{table}[h]
 \centering
@@ -17,23 +15,27 @@ The computation employed here is best explained in an example: Say you have a mo
 \end{tabular}
 \end{table}
 
-Now, if the molecule's 4th vibrational mode is excited, meaning $\nu_3 = 1$, the same internal energy can be redistributed into a double excitation of the 2nd mode, meaning $1 \nu_3 = 2\nu_2$. Likewise, $ 1 \nu_4$ can be redistributed into $2 \nu_2 + 1 \nu_1$ or $1 \nu_3 + 1 \nu_1$. % TODO: In real life the vibrational energies are not that rational, but still the lifetime (width) of the vibrational levels should 
 
-Here's how we generalized this: Take a linear combination of modes, where all coefficients are non-negative integers; What is the probability that this combination of modes will approximate another such combination of energies? To answer this we computed all of these combinations, up to a certain point, and plotted their density as a function of energy. This essentially a histogram we call \emph{IVR histogram}. The histogram for our target \ce{CHDBrI^+} molecule, along with dashed lines marking the vibrational modes is depicted in figure~\ref{fig:IVR_CHDBrI}.
+Now, if the molecule's 4th vibrational mode is excited, meaning $\nu_3 = 1$, the same internal energy can be redistributed into a double excitation of the 2nd mode, meaning $1 \nu_3 = 2\nu_2$. Likewise, $ 1 \nu_4$ can be redistributed into $2 \nu_2 + 1 \nu_1$ or $1 \nu_3 + 1 \nu_1$. In real life the vibrational energies are not that rational, but still the line widths of the vibrational levels might allow such transitions.
 
-\begin{figure}
+Here's how we generalized this: Take a linear combination of modes, where all coefficients are non-negative integers; What is the probability that this combination of modes will approximate another such combination of energies? More importantly, given $\nu_n$, what is the probability that such a linear combination of several $\{\nu_i\}_i^k$?
+
+To answer this we computed all of these combinations, up to a certain point, and plotted their \emph{density} as a function of energy. This is essentially a histogram, we call \emph{IVR histogram}. The histogram for our target \ce{CHDBrI^+} molecule, along with dashed lines marking the input vibrational modes is depicted in figure~\ref{fig:IVR_CHDBrI}.
+
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{graphics/IVR-CHDBrI.pdf}
 	\caption{IVR histogram computed for \ce{CHDBrI^+}, given the eigen modes also given in table~\ref{tbl:CHDBrI-vibrations}. The different colors represent two different computational methods\cite{IVR_article}. Dashed lines represent the input vibrational modes, and their colors match the colors of the ascending histogram lines.}
 	\label{fig:IVR_CHDBrI}
 \end{figure}
 
-We compared with the same method the IVR histograms of different molecular ions candidates for our Parity Violation measurement, and found outstanding differences between them, as depicted in figure~\ref{fig:IVR-molecules-comparison}. It seems that using a heavier atom in combination with \ce{CH} and \ce{BrX} is increasing the density of states and thus probably increases the chances for IVR.
+We compared with the same method the IVR histograms of different molecular ions candidates for our Parity Violation measurement, and found outstanding differences in favor of \ce{CHDBrI^+}, as depicted in figure~\ref{fig:IVR-molecules-comparison}. It seems that using a heavier atom in combination with \ce{CH} and \ce{BrX} is increasing the density of states and thus probably increases the chances for IVR.
 
-\begin{figure}
+% Two reasons for using H here: (1) we want it to be on the same page as the previous figure, and (2) we want the verbatim environment below to be on a single page too.
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{graphics/IVR-molecules-comparison.pdf}
-	\caption{A comparison of all molecules mentioned in our ab-initio calculations\cite{IVR_article}, all eigen modes were computed with the \texttt{B97} method.}
+	\caption{A comparison of IVR histograms for all molecules mentioned in our ab-initio calculations\cite{IVR_article}. All eigen modes were computed with the \texttt{B97} method.}
 	\label{fig:IVR-molecules-comparison}
 \end{figure}
 
