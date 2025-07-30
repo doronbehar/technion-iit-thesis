@@ -152,7 +152,9 @@ Another motivating point for cooling the ions in general, is our detection schem
 
 \section{Simulations Overview}\label{sec:intro/simulation}
 
-Since the main mechanism of sympathetic cooling is Coulomb interactions, we chose to simulate trapping and cooling with LAMMPS\cite{LAMMPS}. It is a time propagation software package, capable of calculating $N(N-1)$ coulomb interactions very fast using the GPU - faster then writing the results to disk. LAMMPS is capable of simulating numerous classical models relevant in many contexts, but in our case, we picked a simple model of charged point particles with only long-range coulomb interactions.
+Since the main mechanism of sympathetic cooling is Coulomb interactions, we chose to simulate trapping and cooling with LAMMPS\cite{LAMMPS}. It is a time propagation software package, capable of utilizing the GPU for simulating numerous classical models relevant in many contexts. In our case, we selected a simple model of charged point particles with only long-range Coulomb interactions.
+
+Given $N$ particles and $C$ available GPU cores, the amount of Coulomb interactions LAMMPS is capable of computing all at once is $N(N-1)/(2C)$. With 1000 ions, and our GPU, we found that the bottleneck of such simulations is writing the results to disk, and not the computing the Coulomb interactions\footnote{More technical details on how we save results to disk throughout a simulation are available in chapter~\ref{chap:software}.}.
 
 \subsection{Initial Conditions}
 
@@ -164,4 +166,4 @@ Another detail taken care of thoroughly in this work, is the temperature measure
 
 \subsection{Convergence}\label{sec:theory/convergence}
 
-In every simulation based research, one has to make sure their results converge, and that is mainly dictated by the time step. Convergence means that no matter if you lower the time steps, the results stay qualitatively the same. LAMMPS is particularly convenient for controlling the time step, and tuning it such that simulations don't take too long, but are accurate enough. In chapter~\ref{chap:theory} we also discuss how we picked the time step of the simulations, with respect to the trapping model, and we prove that our time step choice is adequate to ensure convergence.
+In every numerical simulation based research, one has to make sure their results converge, and that is mainly dictated by the time step. Convergence means that lowering the time steps, the results stay qualitatively the same. LAMMPS is particularly convenient for controlling the time step, and tuning it such that simulations don't take too long, but do converge. In chapter~\ref{chap:theory} we also discuss how we picked the time step of the simulations, with respect to the trapping model, and we prove that our time step choice is adequate to ensure convergence.

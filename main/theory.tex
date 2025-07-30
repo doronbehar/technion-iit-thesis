@@ -1,10 +1,10 @@
 \chapter{Theory}\label{chap:theory}
 
-This chapter will iterate the theoretical background necessary for understanding how we trap and cool our ions, and the available measures we performed on the simulation results. With respect to trapping, we present 2 small innovations in the field, which are (1) inverse solution of the Mathieu equation (section~\ref{sec:theory/mathieu-inversly}, and (2) non-trivial dependence of mass to secular frequencies (section~\ref{sec:theory/non-trivial-mass-dep}, which is particularly relevant for thermodynamically stable initial conditions.
+This chapter will iterate the theoretical background necessary for understanding how we trap (section~\ref{sec:theory/trapping}) and cool (section~\ref{sec:theory/cooling}) our ions, and how we analyzed the simulation results. With respect to trapping, we present 2 small innovations in the field, which are (1) inverse solution of the Mathieu equation (section~\ref{sec:theory/mathieu-inversly}, and (2) non-trivial dependence of mass to secular frequencies (section~\ref{sec:theory/non-trivial-mass-dep}, which is particularly relevant for thermodynamically stable initial conditions.
 
 \section{Trapping}\label{sec:theory/trapping}
 
-Real-life ion traps are implemented using electrodes designed in a specific geometry, attached to oscillating electric potentials of specific forms. In literature, one often finds analytical expressions for electric potentials given a certain geometry and voltages\cite{AkermanThesis}. These expressions are highly tied to the parameters of the geometry, and cannot be easily generalized for our trap design. Our trap can be analyzed pretty easily in SIMION\cite{SIMION}, but it is not capable of combining also ion-ion Coulomb interactions\cite{SimionHybridCoulombInteractions}\footnote{Developing a software that computes both the Laplace equation \emph{and} Coulomb interactions should be immensely complicated, due to image charges, and I am unaware of any software tool capable of that efficiently.}
+Realized ion traps are implemented using electrodes designed in a specific geometry, attached to oscillating electric potentials of specific forms. In literature, one often finds analytical expressions for electric potentials given a certain geometry and voltages\cite{AkermanThesis}. These expressions are highly tied to the parameters of the geometry, and cannot be easily generalized for our trap design. Our trap can be analyzed pretty easily in SIMION\cite{SIMION}, but it is not capable of including also ion-ion Coulomb interactions in simulations\cite{SimionHybridCoulombInteractions}\footnote{Developing a software that computes both the Laplace equation \emph{and} Coulomb interactions should be immensely complicated, due to image charges, and I am unaware of any software tool capable of that efficiently.}
 
 LAMMPS\cite{LAMMPS}, is not designed for solving the Laplace equation (\ref{eq:laplace-original}) given a design of electrodes and voltages. It is great however for computing ion-ion interactions, within electric fields given as analytical expressions. Therefore we chose to focus our efforts on producing analytical expressions with abstract parameters, that trap our ions in desired secular frequencies. The basic form of the electric field we simulated is:
 
@@ -131,7 +131,7 @@ Now that we know how to implement an ion trap with any secular frequencies we wa
 
 \subsection{Initial Conditions \& Ion-Ion Coulomb Energy}\label{sec:theory/init-coulomb}
 
-The questions we wish to answer in this section are: How significant is the ion-ion Coulomb energy (ICE) in the Boltzmann ensemble? Should it be considered when initiating the positions and velocities of the ions? If so, how? To assess the ICE in the temperature scale, we divided it by $N$ - the amount of particles, and denoted it as $E_c/N$.
+The questions we wish to answer in this section are: How significant is the ion-ion Coulomb energy (ICE) in the Boltzmann ensemble? Should it be considered when initiating the positions and velocities of the ions? If so, how? To assess the ICE in the temperature scale, we divided it by $N$ - the amount of particles, and denoted it as $E_c/N$. This is essentially an assessment of the mean-field ICE energy.
 
 Under the secular approximation, and when ignoring the ICE, the Maxwell-Boltzmann partition function dictates the probability of finding an ion in a position $\mathbf{x}$ to be:
 
@@ -166,9 +166,16 @@ The ICE is not negligible for dense \& cold distributions. Our ability to initia
 
 More importantly, we expect time dependent temperature measurements to be offset from the initial temperature $T_i$ on the order of magnitude of $E_c/N$. Since we also wish to start cooling when the system is thermodynamically stable, the ICE offset requires us to wait for a few $\mathrm{ms}$, before beginning cooling, as can also be seen from the oscillations in figure~\ref{fig:T-stabilizes-example}.
 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{graphics/T-stabilizes-example.pdf}
+    \caption{Several temperature measurements of \ce{Yb^+}, without LASER cooling, and $6\ \mathrm{ms}$ stabilization time. RF heating is observed for $T_\mathrm{initial} = 5\ \mathrm{ms}$.}
+    \label{fig:T-stabilizes-example}
+\end{figure}
+
 \subsection{A Non-Trivial Secular Frequency Mass Dependence}\label{sec:theory/non-trivial-mass-dep}
 
-In my literature review I have seen no authors discuss the secular frequency related implications encountered when 2 different masses are trapped in the same Ion trap. This detail is particularly relevant to us, as we are interested in sympathetic cooling, and initiating our simulations in thermodynamic equilibrium, according to equation~\ref{eq:position-probability}.
+To the best of my knowledge, there aren't any discussions in literature on the secular frequency related implications encountered when 2 different masses are trapped in the same Ion trap. This detail is particularly relevant to us, as we are interested in sympathetic cooling, and initiating our simulations in thermodynamic equilibrium, according to equation~\ref{eq:position-probability}.
 
 Let's discuss this question in 1 spatial dimension: Given a $(a,q)$ pair producing a dimensionless secular frequency $\beta_0$ for mass $m_{cooler}$, what would be the secular frequency experienced by a mass $m_{target}$ experiencing the same forces? In a pure harmonic oscillator, the same $k = m_{cooler} \omega_{\mathrm{sec(cooler)}}^2 = m_{cooler} (\beta_0 \omega_\mathrm{rf}/2)^2$ is applied to any mass, and we get a secular frequency for $m_{target}$ of:
 
@@ -176,20 +183,21 @@ Let's discuss this question in 1 spatial dimension: Given a $(a,q)$ pair produci
     \omega_\mathrm{sec(target)} = \omega_\mathrm{sec(cooler)}\sqrt{\frac{m_{cooler}}{m_{target}}} 
 \end{equation}
 
-Is that true in a Mathieu trap? The process of generating a dimensionless $(a,q)$ from the original equation of motion (equation \ref{eq:mathieu-source}) involves dividing the equation by the mass, meaning that $(a,q)\propto 1/m_{cooler}$. Hence the real secular frequency of $m_{target}$ can be obtained by calculating $\beta_{target}$ given the pair:
+Is that true in an RF quadrupole trap? The process of generating a dimensionless $(a,q)$ from the original equation of motion (equation \ref{eq:mathieu-source}) involves dividing the equation by the mass, meaning that $(a,q)\propto 1/m_{cooler}$. Hence the real secular frequency of $m_{target}$ can be obtained by calculating $\beta_{target}$ given the pair:
 
 $$(a,q)\cdot \frac{m_{cooler}}{m_{target}}$$
 
-The dependence of $\beta_{target}$ as a function of the mass ratio is depicted in figure~\ref{fig:mathieu-mass-dep}. This insight invites defining 2 decoupled, boolean parameters for the simulation, named \texttt{micromotion} \& \texttt{naive\_freqs}. Table~\ref{tbl:naive_freqs-micromotion} is a truth table explaining what trapping forces are applied in each combination of these parameters. A separate definition of these parameters is laid out afterwards for completeness.
+The dependence of $\beta_{target}$ as a function of the mass ratio is depicted in figure~\ref{fig:mathieu-mass-dep}. This insight invites defining 2 decoupled, boolean parameters for the simulation, named \texttt{micromotion} \& \texttt{naive\_freqs}. Table~\ref{tbl:naive_freqs-micromotion} is a truth table explaining what trapping forces are applied in each combination of these parameters, and a separate definition of these parameters is laid out below.
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{graphics/mathieu-mass-dep.pdf}
-    \caption{A Matplotlib interactive plot showing the non-trivial dependence of the secular frequencies of a 'target' mass (represented in blue), given a Mathieu trap with $(a,q)$ that define a certain secular frequency for a 'cooler' mass, termed $\beta_0$. The $(a,q)$ values used here, produce $\beta_0 = 2\cdot 8.5/50$ - like the $x$ \& $y$ axis Mathieu forces of figure~\ref{fig:LAMMPS_summarized_naive_freqs-micromotion}.}
-    \label{fig:mathieu-mass-dep}
-\end{figure}
+\subsubsection*{\texttt{naive\_freqs} ($\sqrt{m_r}$)}
 
-\begin{table}[h]
+Controls whether the secular frequencies experienced by the target \ce{CHDBrI^+} ion are defined using the 'naive' $\sqrt{m_r}$ relation. Turning this option on naturally implements a trap that is not physically implementable.
+
+\subsubsection*{\texttt{micromotion} (\texttt{mm})}
+
+Controls whether the secular frequencies experienced by both ion species are implemented using a Mathieu like force like in equation \ref{eq:mathieu-source}, or using a perfect harmonic trap force like $k \mathbf{x}$. A perfectly harmonic trap is of course not implementable.
+
+\begin{table}
 \centering
 \begin{tabularx}{\textwidth}{cccX}
 \toprule
@@ -208,13 +216,12 @@ $\times$ & $\times$ & $\times$ & Two different \(k \mathbf{x}\)-like forces are 
 \label{tbl:naive_freqs-micromotion}
 \end{table}
 
-\subsubsection*{\texttt{naive\_freqs} ($\sqrt{m_r}$)}
-
-Controls whether the secular frequencies experienced by the target \ce{CHDBrI^+} ion are defined using the 'naive' $\sqrt{m_r}$ relation. Turning this option on naturally implements a trap that is not physically implementable.
-
-\subsubsection*{\texttt{micromotion} (\texttt{mm})}
-
-Controls whether the secular frequencies experienced by both ion species are implemented using a Mathieu like force like in equation \ref{eq:mathieu-source}, or using a perfect harmonic trap force like $k \mathbf{x}$. A perfectly harmonic trap is of course not implementable.
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{graphics/mathieu-mass-dep.pdf}
+    \caption{A Matplotlib interactive plot showing the non-trivial dependence of the secular frequencies of a 'target' mass (represented in blue), given a Mathieu trap with $(a,q)$ that define a certain secular frequency for a 'cooler' mass, termed $\beta_0$. The $(a,q)$ values used here, produce $\beta_0 = 2\cdot 8.5/50$ - like the $x$ \& $y$ axis Mathieu forces of figure~\ref{fig:LAMMPS_summarized_naive_freqs-micromotion}.}
+    \label{fig:mathieu-mass-dep}
+\end{figure}
 
 \subsubsection{LAMMPS Verification of Mathieu Understanding}
 
@@ -232,7 +239,7 @@ The collective $x$-axis movement's frequencies of a 2-species-mixed ion cloud, p
     \label{fig:LAMMPS_summarized_naive_freqs-micromotion}
 \end{figure}
 
-\section{Cooling}
+\section{LASER Cooling}\label{sec:theory/cooling}
 
 The theory of LASER cooling is well established for 2-level systems. The semi-classical model implemented in the simulations presented in this work is explained well in literature\cite{TannoudjiCooling,SteckCooling} and can be expressed as follows:
 
@@ -253,9 +260,13 @@ Where:
     \item $\omega$ is the LASER's Rabi frequency normalized to $\Gamma/2\pi$. Very similarly to $d$ and $\delta$ the following can be stated: $\omega \equiv \Omega/\Gamma$.
 \end{itemize}
 
+Apparently, applying such a force on a trapped particle induces an offset that is particularly relevant in ion traps like ours - ion traps of $\mathrm{kHz}$ secular frequencies. This offset is calculated in the next section, and was verified in simulations too in figure~\ref{fig:LASER-cool-offset3D}. We also describe how we overcame this offset as much as we could, in the section afterwards.
+
+\subsection{Ion Cloud Offset Induced by LASER Cooling Force}
+
 % TODO: Explain also the more intuitive reason for putting an odd expression - the offset is apparent also without a Taylor expression - like in the seminar
 
-In principal, there is a Taylor expansion for the above expression for low $\mathbf{v}/\lambda/\gamma$. Let's observe this expansion for a slightly simplified, 1 spatial dimensional form of the force - with $\mathbf{v} = (v,0,0)$ and $\hat{k} = (1,0,0)$:
+In principal, there is a Taylor expansion for expression~\ref{eq:laser-cool-force}, for $\mathbf{v}/\lambda/\gamma \ll 1$. Let's observe this expansion for a slightly simplified, 1 spatial dimensional form of the force - with $\mathbf{v} = (v,0,0)$ and $\hat{k} = (1,0,0)$:
 
 \begin{equation}
     \frac{h \pi \gamma}{\lambda} \cdot \frac{\omega^2/2}{1/4 + \omega^2/2 + d^2} \left(
@@ -267,25 +278,25 @@ In principal, there is a Taylor expansion for the above expression for low $\mat
 To understand the effect of the 0th order force component, let's observe a simplistic system of a 1 dimensional harmonic oscillator with a damping force of the form above:
 
 \begin{equation}
-    \ddot{x} = - \omega_{sec}^2 x + F_0/m - 2 \xi \omega_{sec} \dot{x}
+    \ddot{x} = - \omega_\mathrm{sec}^2 x + F_0/m - 2 \xi \omega_\mathrm{sec} \dot{x}
 \end{equation}
 
-Where $\omega_{sec}$ is the secular frequency well defined by our trap as explained in section~\ref{sec:theory/trapping} and $\xi$ is derived from the 1st order force component in expression \ref{eq:laser-cool-taylor-force}. The well known solution is of the form: 
+Where $\omega_\mathrm{sec}$ is the secular frequency well defined by our trap as explained in section~\ref{sec:theory/trapping} and $\xi$ is derived from the 1st order force component in expression \ref{eq:laser-cool-taylor-force}. The well known solution is:
 
 \begin{equation}
-    x(t) = \frac{F_0}{m \omega_{sec}^2} + A e^{-\xi \omega_{sec} t} \sin(\sqrt{1-\xi^2}\ \omega_{sec} t + \phi)
+    x(t) = \frac{F_0}{m \omega_\mathrm{sec}^2} + A e^{-\xi \omega_\mathrm{sec} t} \sin(\sqrt{1-\xi^2}\ \omega_\mathrm{sec} t + \phi)
 \end{equation}
 
-Where $A$ and $\phi$ are determined by initial conditions. The steady state's offset from the origin $F_0/m\omega_{sec}^2$ in the case of a LASER cooling force equals:
+Where $A$ and $\phi$ are determined by initial conditions. The steady state's offset from the origin $F_0/m\omega_\mathrm{sec}^2$ in the case of a LASER cooling force is
 
 \begin{equation}
-x_o = \frac{h \pi \gamma}{\lambda}\cdot\frac{\omega^2/2}{1/4+\omega^2/2 + d^2} \cdot\frac{1}{m \omega_{sec}^2}
+x_o = \frac{h \pi \gamma}{\lambda}\cdot\frac{\omega^2/2}{1/4+\omega^2/2 + d^2} \cdot\frac{1}{m \omega_\mathrm{sec}^2}
 \end{equation}
 
 If we'll take:
 
 \begin{itemize}
-    \item Secular frequency $\omega_{sec}$ in the order of magnitude of $\sim 2\pi\cdot 1.5\mathrm{kHz}$.
+    \item Secular frequency $\omega_\mathrm{sec}$ in the order of magnitude of $\sim 2\pi\cdot 1.5\mathrm{kHz}$.
     \item LASER intensity of $\omega \equiv \Omega/\Gamma = 1$.\footnote{See also relation to actual intensity in subsubsection \ref{sec:theory/cooling-summary}}
     \item A common LASER detuning of $d \equiv \delta/\Gamma = 1/2$. % TODO: Cite or footnote why is this considered common.
     \item \ce{Yb^+} and the cooling transition at $c/\lambda = 811.2891 \mathrm{THz}$ with the line width $\Gamma/2\pi \equiv \gamma = 19.6 \mathrm{MHz}$.\cite{RansfordThesis}
@@ -299,6 +310,8 @@ We'd get $x_o \approx 2.1 \mathrm{mm}$, where the trap's harmonic region is of a
     \caption{The offset produced by a single LASER coming in the $z$ axis, where secular frequencies are $f_x = f_y = 8.5\ \mathrm{kHz}$ and $f_z = 1.5\ \mathrm{kHz}$. The offset measured fits exactly the analytical prediction of $x_0 \approx 2.1 \mathrm{mm}$.}
     \label{fig:LASER-cool-offset3D}
 \end{figure}
+
+\subsection{Overcoming the Offset}
 
 % TODO: Consider citing and discuss a bit about what kind of forces other people use in simulations - discuss with Yuval about the fact the real expression for any \hat{k} and \mathbf{v} includes many cross-terms and looks very messy.
 
@@ -350,19 +363,18 @@ Causing a slight imperfect oddness (with respect to $\mathbf{v}$) of the force, 
 %
 %This result can be used to optimize the cooling process via changing the detuning \& intensity of the cooling LASERs dynamically. Writing an algorithm that would play with the detuning \& intensity to optimize the cooling according to intermediate temperature measurements could be an interesting topic for further research, either via simulations or directly in experiment.
 
-\subsection{Summary}\label{sec:theory/cooling-summary}
+\subsection{Summary of LASER Cooling Parameters}\label{sec:theory/cooling-summary}
 
-This is a good place to pause and list all the simulation parameters we collected from the theory above:
+This is a good place to pause and list all the simulation parameters we collected from the theory of LASER cooling:
 
 \begin{itemize}
     \item The LASER cooled ion. Choosing an ion and a cooling transition is effectively choosing $\lambda$, $\gamma$ and the mass $m$.\footnote{Cooling transitions and line-widths were taken from \cite{CoolingBeParameters,CoolingCaParameters1,CoolingCaParameters2,RansfordThesis,RadiumData}}. Current experimental efforts as well as all simulations presented focus on \ce{Yb^+}, but in principal this parameter is not hard-coded, and 
     \item The normalized LASER's intensity $\omega \equiv \Omega/\Gamma$.
     \item The normalized LASER's detuning $d \equiv \delta/\Gamma$.
-    \item The spatial direction(s) of the LASER(s). This can be parameterized by a list of $(\theta, \phi)$ pairs - a pair per LASER, defining each LASER's $\hat{k}$ using a spherical coordinates transformation.
+    \item The spatial direction(s) of the LASER(s). This can be parameterized by a list of $(\theta, \phi)$ pairs - a pair per LASER, defining each LASER's $\hat{k}$ using a spherical coordinates transformation, as depicted in figure~\ref{fig:laserAngles-general}.
     % TODO: Consider whether adding this
     %\item Whether to use the approximated Taylor expression with only the 1st order term. This is not really a physical simulation parameter, but it was studied because I couldn't find simulations simulations in literature not using the approximation.
-    \item The Vacuum chamber's windows' attenuation. Our experiment's attenuation is $\alpha = 0.7$, and most simulations use this value.\footnote{Besides figure ... which displays it's effect.}
-    % TODO: \ref{fig:windows-attenuation-effect} in the results
+    \item The Vacuum chamber's windows' attenuation. Our experiment's attenuation is $\alpha = 0.7$, and most simulations used this value.\footnote{Besides figure \ref{fig:LASER-cool-offset3D} which displays it's effect.}
 \end{itemize}
 
 Lastly, the relation of the Rabi frequency $\Omega$ to the actual LASER intensity\cite{CJFootOmega2I}, is worth mentioning\footnote{The software is capable of displaying $\Omega$ dependence in the scale of the intensity $I$, but this behavior wasn't activated in the results presented.}:
@@ -372,21 +384,13 @@ Lastly, the relation of the Rabi frequency $\Omega$ to the actual LASER intensit
     \label{eq:omega2intensity}
 \end{equation}
 
-\section{Technical Parameters}
+\section{Simulations Parameters \& Convergence}
 
 \subsection{Time Periods}
-
 
 To fully define a simulation, one has to define a few more parameters. Two of which are related to the timeline and are called \emph{cooling} and \emph{stabilizing} time. The cooling time period has trivial meaning and increasing it can be usually interesting but naturally the price is higher computing resources demands. The stabilization time is the time since $t=0$ up to the point where the LASER cooling force enters.
 
 For researching cooling parameters, and for most initial temperatures, there is no need for more then $5-7\mathrm{ms}$ of stabilizing time, just to let the thermodynamic instabilities of the initial conditions minimize. Figure~\ref{fig:T-stabilizes-example} can serve as a good example in which the width of $T(t)$ before the LASER cooling starts, decreases enough after $6 \mathrm{ms}$, which is good enough for several initial temperatures.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{graphics/T-stabilizes-example.pdf}
-    \caption{Several temperature measurements of \ce{Yb^+}, without LASER cooling, and $6\ \mathrm{ms}$ stabilization time. RF heating is observed for $T_\mathrm{initial} = 5\ \mathrm{ms}$.}
-    \label{fig:T-stabilizes-example}
-\end{figure}
 
 Another usage for varying the stabilization time, is for measuring the eigenfrequencies of the trap, without cooling ($0$ cooling time), and all cooling parameters irrelevant.
 
@@ -417,17 +421,17 @@ To further tighten the demand of the RF division's independence from potential n
 
 Lastly, the initial conditions were obtained using a random number generator with a specific seed. Each seed integer represents a reproducible set of initial conditions, given the algorithm distributing positions and velocities stays the same. To decouple the (small) effects of initial conditions upon the results, the same simulations but with different seeds were ran, and in most results displayed this dimension was averaged over.
 
-\section{Measuring}\label{sec:intro/-y-options}
+\section{Simulation Results Analysis}\label{sec:intro/-y-options}
 
-Naturally, the main result that interests us is the temperature. Which is essentially a common measure for the average kinetic energy, and in our case, since we use a VMI, it is a measure of the velocities' distribution's width. A physically related property of our ion clouds is the size, that can be measured per axis simply via a \texttt{std}. As for the temperatures, there are a few more ways to measure them, laid out below. 
+In this section we will discuss how we analyzed the simulation results. Naturally, the main quantity that interests us is the temperature, as a measure for the average kinetic energy. In our case since we use a VMI, it is also a way to estimate the velocities' distribution's width. A related property of our ion clouds is their size, that can be computed per spatial dimension simply via a \texttt{std}. As for the temperatures, there are a apparently many more methods to extract them, laid out below.
 
 \subsection{Temperature's Random Variables}
 
-Under the approximated treatment of the Ion trap's potential as a perfect harmonic potential, and with the long range Coulomb potential neglected, one can treat the positions analogously, and hence almost identically to the velocities. This is done by multiplying each particle's position $x_i$ in the $i$'th axis, by $2\pi f_i x_i$, where $f_i$ is the secular frequency of the Ion trap in the $i$'th axis.\footnote{Although not implied by an existence of an additional index besides $i$, there is a different, non-trivial set of $f_i$ secular frequencies per particle species, as described in section~\ref{sec:theory/non-trivial-mass-dep}.}
+Under the approximated treatment of the Ion trap's potential as a perfect harmonic potential, and with the long range Coulomb potential neglected, one can treat the positions analogously, and hence almost identically to the velocities. This is done by multiplying each particle's position in the $i^\mathrm{th}$ spatial dimension, by $2\pi f_i$, where $f_i$ is the secular frequency of the Ion trap in the $i^\mathrm{th}$ axis.\footnote{Although not implied by an existence of an additional index besides $i$, there is a different, non-trivial set of $f_i$ secular frequencies per particle species, as described in section~\ref{sec:theory/non-trivial-mass-dep}.}
 
 \subsection{Temperature's Probabilistic Methods}\label{ssec:T_method}
 
-Given $N$ particles, which were 'measured' during the computer simulation in a certain time, 2 arrays of shapes \texttt{(N,3)} are obtained for velocities and positions. The positions' array can be scaled by the proper secular frequencies as described above, and the question of how to compute a temperature given such an array has multiple legitimate answers. To layout all available answers we'll denote the random variable $u_i \in \{v_i, 2\pi f_i x_i\}$ for axis $i$. The $i$'th slice of length \texttt{N} from the above \texttt{(N,3)} shaped array is a distribution of the $u_i$ random variable.
+Given $N$ particles, which were sampled during the computer simulation in a certain time, 2 arrays of shapes \texttt{(N,3)} are obtained for velocities and positions. The positions' array can be scaled by the proper secular frequencies as described above, and the question of how to compute a temperature given such an array has multiple legitimate answers. To layout all available answers we'll denote the random variable $u_i \in \{v_i, 2\pi f_i x_i\}$ for axis $i$. The $i^\mathrm{th}$ slice of length \texttt{N} from the above \texttt{(N,3)} shaped array is a distribution of the $u_i$ random variable.
 
 One simple answer which is most intuitive in the context of VMI based measurements is to simply compute $m \mathrm{Var}(u_i)/K_\text{B}$, as derived from the Maxwell-Boltzmann distribution expression:
 
@@ -435,7 +439,7 @@ One simple answer which is most intuitive in the context of VMI based measuremen
     f(\mathbf{u}) \mathrm{d}^{3}\mathbf{u} = \left[\frac{m}{2\pi k_{\text{B}}T}\right]^{3/2}\,\exp \left(-{\frac {m \mathbf{u}^2}{2K_\text{B} T}}\right) \mathrm{d}^{3}\mathbf{u}
 \end{equation}
 
-Another approach, is to integrate over a solid angle of $\mathbf{u}$ in the probabilistic model above, and write a speeds-like distribution function:
+Another approach, is to integrate over a solid angle of $\mathbf{u}$ in this probabilistic model, and write a speeds-like distribution function:
 
 \begin{equation}
     f(|\mathbf{u}|) = \left[{\frac{m}{2\pi K_\text{B} T}}\right]^{3/2} 4\pi |\mathbf{u}|^{2}\exp\left(-{\frac{m |\mathbf{u}|^{2}}{2k_{\text{B}}T}}\right)
@@ -447,7 +451,7 @@ Which has a variance equal to $K_\text{B} T/m \cdot (3 - 8/\pi)$, and a squared 
 
 In addition to the velocities and/or positions choice of random variable(s), and in addition to the above probabilistic model approaches, one has to decide how to imitate the secular approximation computationally. The physical justification for doing it, is the fact that in a crystal phase (which we aim achieving), the movement of the ions is strongly coupled to the RF field which we have direct control over. Essentially the model states that the collective movement due to the RF field is predictable and so well defined, that it is not a random variable.
 
-Experimentally speaking, we are capable of measuring positions and velocities always at the beginning/end of each RF cycle, and hence always use an integer number of RF cycles. This is the simplest and probably the only way of implementing a secular approximation experimentally, and it should work best for ions that have formed a crystal. In the following, we'll describe what other techniques are available to a computer simulation that might help achieve time dependent, secularly approximated temperature measurements.\footnote{There's also a technical motivation to imitate some kind of secular approximation when measuring temperatures, and that is reducing the amount of disk writes required when simulating $\sim 3,000$ RF cycles divided to $\sim 1500$ time steps. Reducing the amount of disk writes not only reduces disk usage of simulation result files, but also speeds up the total time required for simulating.}
+Experimentally speaking, we are capable of measuring positions and velocities always at the beginning/end of each RF cycle, and hence always use an integer number of RF cycles. This is the simplest and probably the only way of implementing a secular approximation experimentally, and it should work best for ions that have formed a crystal. In the following, we'll describe what other techniques are available to a computer simulation that might help achieve time dependent, secularly approximated temperature assessments.\footnote{There's also a technical motivation to imitate some kind of secular approximation when measuring temperatures, and that is reducing the amount of disk writes required when simulating $\sim 3,000$ RF cycles divided to $\sim 1500$ time steps. Reducing the amount of disk writes not only reduces disk usage of simulation result files, but also speeds up the total time required for simulating.}
 
 % TODO: Cite stuff from zothero regarding RF averaging..
 Besides sampling the velocities and positions in the beginning of each RF cycle, many simulations based research found in literature average over an RF period each particle's per-axis velocity, and then construct a temperature. You might hope that the same can be done for $2\pi f_i x_i$, but apparently, even for ion clouds initiated in a thermal gas phase equilibrium in temperatures as low as $5\mathrm{K}$, each particle reaches many spatial areas of the trap, and it's RF averaged position produce (incorrect) temperatures in the $\mathrm{\mu K}$ regime! This proves that this approach is not accurate also for the velocities, at least for gas like phases, as it suggests that ions go through a big part of the phase-space. Never the less, I decided to do save the RF averaged velocities (but not the positions) to the disk during simulations, and the software displaying the simulation results provides the option to use this data.
@@ -470,13 +474,13 @@ Dimension   & \multicolumn{5}{c}{Optional values}\\
 \texttt{T\_method}  & $\mathrm{Ave}\left(|u|\right)^2(\pi/8)$      & $\mathrm{Var}\left(|u|\right)/(3 - 8/\pi)$   & $\mathrm{Var}\left(u_x\right)$               & $\mathrm{Var}\left(u_y\right)$ & $\mathrm{Var}\left(u_z\right)$ \\
 \hline
 \end{tabular}
-\caption{Ways to measure temperatures, obtained from a generalized maxwell-Boltzmann model. $\circlearrowright$ marks an RF cycle, and $\left\langle\circlearrowright\right\rangle$ marks an average over RF cycle. The functions $\mathrm{Ave}$ and $\mathrm{Var}$ operate upon a 1 dimensional array of length $N$ - the number of per specie's particles.}
+\caption{Methods to extract temperatures, obtained from a generalized maxwell-Boltzmann model. $\circlearrowright$ marks an RF cycle, and $\left\langle\circlearrowright\right\rangle$ marks an average over RF cycle. The functions $\mathrm{Ave}$ and $\mathrm{Var}$ operate upon a 1 dimensional array of length $N$ - the number of per specie's particles.}
 \label{tbl:T_methods}
 \end{table}
 
 \subsection{Further Summarizing Analysis}\label{ssec:intro/SummarizedMeasurement}
 
-Up until now we discussed time dependent properties of our ion clouds - the per spatial axis size and the various temperatures. We can also summarize these results to obtain various measures of how fast did we cool our ions, and how much smaller did the cloud get due to the LASER cooling etc. These kind of results are termed both in the code and here as summarized results.
+Up until now we discussed time dependent properties of our ion clouds - the per spatial axis size and the various temperatures. We can also summarize these results to obtain various measures of how fast did we cool our ions, and how much smaller did the cloud get due to the LASER cooling. These kind of results are termed both in the code and here as summarized results.
 
 \subsubsection{Temperatures and Cloud Size}
 
@@ -484,13 +488,13 @@ The simplest summarized result type is the temperature/size before/after cooling
 
 \subsubsection{Cooling Frequency}
 
-Another summarized measurement is the cooling frequency, defined (only for temperatures) as follows: Given a $T(t)$ defined using any of the parameters of section~\ref{ssec:T-options-summery}, we take $\mathrm{Log}(T(t)/\mathrm{kelvin})$, and apply a continuous piecewise linear fit\cite{pwlf}, with 2 segments. This gives 2 cooling frequencies in the units of $\mathrm{kHz}$ that depend on a dimension referred to as \texttt{regime} - corresponding to each of the segments.
+Another way to summarize the temperature measurements is as follows: Given a $T(t)$ defined using any of the parameters of section~\ref{ssec:T-options-summery}, we take $\mathrm{Log}(T(t)/\mathrm{kelvin})$, and apply a continuous piecewise linear fit\cite{pwlf}, with 2 segments. This gives 2 cooling frequencies in the units of $\mathrm{kHz}$ that depend on a dimension referred to as \texttt{regime} - corresponding to each of the segments.
 
 We chose to use 2 segments due to the observation that in many simulations most of the ion cloud is cooled quickly and efficiently whereas afterwards the rest of the cooling happens in a mixed thermodynamic phase of an ion crystal (massive and highly charged) with a gas of ions surrounding it.
 
 \subsubsection{Collective Cloud Movement Frequencies}
 
-Lastly, only for verifying the frequencies expected from the Mathieu equations of the ion trap, as explained in section~\ref{sec:theory/trapping}, we define the following analysis referred to as the \textit{cloud's frequencies}: Given the time dependent positions of all ions, we average over the ions to get the cloud's center position (still time and spatial axis dependent). With it, we can take the Fourier transform and get the dominant frequency via \texttt{scipy.signal.find\_peaks}\cite{scipy}, or simply via \texttt{numpy.argmax}\cite{numpy}. Such a Fourier transform is depicted in figure~\ref{fig:cloudFreq-fft-plot-example}.
+Lastly, only for verifying the frequencies expected from the Mathieu equations of the ion trap, as explained in section~\ref{sec:theory/trapping}, we define the following analysis referred to as the \textit{cloud's frequencies}: Given the time dependent positions of all ions, we average over the ions to get the cloud's center position (still time and spatial axis dependent). With it, we can take the Fourier transform and get the dominant frequency via \texttt{scipy.signal.find\_peaks}\cite{scipy}, or simply via \texttt{numpy.argmax}\cite{numpy}. Such a Fourier transform is depicted in figure~\ref{fig:cloudFreq-fft-plot-example}. The uncertainty of this computation is defined by the Fourier transform resolution limit, dictated by the total time range available.
 
 \begin{figure}
 \centering
@@ -499,5 +503,11 @@ Lastly, only for verifying the frequencies expected from the Mathieu equations o
 \label{fig:cloudFreq-fft-plot-example}
 \end{figure}
 
-If the collective movement is very harmonic (due to e.g collective offset at $t=0$), a fit for a $\cos(2\pi f x_i + \phi)$ can be attempted, and the fit's frequency is the dominant frequency of the movement. The time range of the simulation dictates the uncertainty in the dominant frequency obtained via a Fourier transform, and the dominant frequency of the fit produces uncertainties via the covariance matrix returned by \texttt{scipy.optimize.curve\_fit}.
+If the collective movement is very harmonic (due to e.g collective offset at $t=0$), a fit for a $\cos(2\pi f x_i + \phi)$ can be attempted, and the fit's frequency is the dominant frequency of the movement. The uncertainty of this fit, is obtained from the covariance matrix returned by \texttt{scipy.optimize.curve\_fit}. An example of such attempted fit is available in figure~\ref{fig:cloudFreq-fit-plot-example}
 
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{graphics/cloudFreq-fit-plot-example.pdf}
+\caption{Example of a cosine fit for one of the points in figure~\ref{fig:LAMMPS_summarized_naive_freqs-micromotion}. Only a few cycles are presented in order for the fit's convergence to be clear.}
+\label{fig:cloudFreq-fit-plot-example}
+\end{figure}
