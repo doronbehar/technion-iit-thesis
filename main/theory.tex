@@ -168,7 +168,7 @@ More importantly, we expect time dependent temperature measurements to be offset
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{graphics/T-stabilizes-example.pdf}
-    \caption{Several temperature measurements of \ce{Yb^+}, without LASER cooling, and $6\ \mathrm{ms}$ stabilization time. RF heating is observed for $T_\mathrm{initial} = 5\ \mathrm{ms}$.}
+    \caption{Several temperature measurements of \ce{Yb^+}, without laser cooling, and $6\ \mathrm{ms}$ stabilization time. RF heating is observed for $T_\mathrm{initial} = 5\ \mathrm{ms}$.}
     \label{fig:T-stabilizes-example}
 \end{figure}
 
@@ -238,9 +238,9 @@ The collective $x$-axis movement's frequencies of a 2-species-mixed ion cloud, p
     \label{fig:LAMMPS_summarized_naive_freqs-micromotion}
 \end{figure}
 
-\section{LASER Cooling}\label{sec:theory/cooling}
+\section{Laser Cooling}\label{sec:theory/cooling}
 
-The theory of LASER cooling is well established for 2-level systems. The semi-classical model implemented in the simulations presented in this work is explained well in literature\cite{TannoudjiCooling,SteckCooling} and can be expressed as follows:
+The theory of laser cooling is well established for 2-level systems. The semi-classical model implemented in the simulations presented in this work is explained well in literature\cite{TannoudjiCooling,SteckCooling} and can be expressed as follows:
 
 \begin{equation}
     \mathbf{F}(\mathbf{v}) = \frac{h \pi \gamma \hat{k}}{\lambda} \cdot \frac{\omega^2/2}{1/4 + \omega^2/2 + (d - \hat{k}\cdot\mathbf{v}/\lambda/\gamma)^2}
@@ -251,17 +251,17 @@ Where:
 
 \begin{itemize}
     \item $h$ is Planck's constant.
-    \item $\hat{k}$ is the LASER's spatial direction.
+    \item $\hat{k}$ is the laser's spatial direction.
     \item $\lambda$ is the cooling transition.
     \item $\gamma$, is the cooling transition's lifetime in Hz dimensions. The more commonly used $\mathrm{rad}/\mathrm{s}$ scaled lifetime is usually denoted as $\Gamma = 2\pi \gamma$.
-    \item $d$ is the LASER's detuning normalized to $\Gamma$. Sometimes the not normalized detuning in the dimensions of $\mathrm{rad}/\mathrm{sec}$ is denoted as $\delta$ and with it we can denote $d \equiv \delta/\Gamma$.
+    \item $d$ is the laser's detuning normalized to $\Gamma$. Sometimes the not normalized detuning in the dimensions of $\mathrm{rad}/\mathrm{sec}$ is denoted as $\delta$ and with it we can denote $d \equiv \delta/\Gamma$.
     \item $\mathbf{v}$ is the velocity of the cooled atom.
-    \item $\omega$ is the LASER's Rabi frequency normalized to $\Gamma/2\pi$. Very similarly to $d$ and $\delta$ the following can be stated: $\omega \equiv \Omega/\Gamma$.
+    \item $\omega$ is the laser's Rabi frequency normalized to $\Gamma/2\pi$. Very similarly to $d$ and $\delta$ the following can be stated: $\omega \equiv \Omega/\Gamma$.
 \end{itemize}
 
-Apparently, applying such a force on a trapped particle induces an offset that is particularly relevant in ion traps like ours - ion traps of $\mathrm{kHz}$ secular frequencies. This offset is calculated in the next section, and was verified in simulations too in figure~\ref{fig:LASER-cool-offset3D}. We also describe how we overcame this offset as much as we could, in the section afterwards.
+Apparently, applying such a force on a trapped particle induces an offset that is particularly relevant in ion traps like ours - ion traps of $\mathrm{kHz}$ secular frequencies. This offset is calculated in the next section, and was verified in simulations too in figure~\ref{fig:laser-cool-offset3D}. We also describe how we overcame this offset as much as we could, in the section afterwards.
 
-\subsection{Ion Cloud Offset Induced by LASER Cooling Force}
+\subsection{Ion Cloud Offset Induced by Laser Cooling Force}
 
 % TODO: Explain also the more intuitive reason for putting an odd expression - the offset is apparent also without a Taylor expression - like in the seminar
 
@@ -286,7 +286,7 @@ Where $\omega_\mathrm{sec}$ is the secular frequency well defined by our trap as
     x(t) = \frac{F_0}{m \omega_\mathrm{sec}^2} + A e^{-\xi \omega_\mathrm{sec} t} \sin(\sqrt{1-\xi^2}\ \omega_\mathrm{sec} t + \phi)
 \end{equation}
 
-Where $A$ and $\phi$ are determined by initial conditions. The steady state's offset from the origin $F_0/m\omega_\mathrm{sec}^2$ in the case of a LASER cooling force is
+Where $A$ and $\phi$ are determined by initial conditions. The steady state's offset from the origin $F_0/m\omega_\mathrm{sec}^2$ in the case of a laser cooling force is
 
 \begin{equation}
 x_o = \frac{h \pi \gamma}{\lambda}\cdot\frac{\omega^2/2}{1/4+\omega^2/2 + d^2} \cdot\frac{1}{m \omega_\mathrm{sec}^2}
@@ -296,18 +296,18 @@ If we'll take:
 
 \begin{itemize}
     \item Secular frequency $\omega_\mathrm{sec}$ in the order of magnitude of $\sim 2\pi\cdot 1.5\mathrm{kHz}$.
-    \item LASER intensity of $\omega \equiv \Omega/\Gamma = 1$.\footnote{See also relation to actual intensity in subsubsection \ref{sec:theory/cooling-summary}}
-    \item A common\cite{TannoudjiCooling} LASER detuning of $d \equiv \delta/\Gamma = 1/2$.
+    \item laser intensity of $\omega \equiv \Omega/\Gamma = 1$.\footnote{See also relation to actual intensity in subsubsection \ref{sec:theory/cooling-summary}}
+    \item A common\cite{TannoudjiCooling} laser detuning of $d \equiv \delta/\Gamma = 1/2$.
     \item \ce{Yb^+} and the cooling transition at $c/\lambda = 811.2891 \mathrm{THz}$ with the line width $\Gamma/2\pi \equiv \gamma = 19.6 \mathrm{MHz}$.\cite{RansfordThesis}
 \end{itemize}
 
-We'd get $x_o \approx 2.1 \mathrm{mm}$, where the trap's harmonic region is of about $25 \mathrm{mm}$ from the origin. This offset might not be very significant for only LASER cooling a single ion like \ce{Yb^+}, but sympathetic cooling will suffer from this offset, as the target molecule won't experience an identical offsetting force, and would not collide frequently enough with the cooling ion and therefore will not lose kinetic energy, as seen in figure~\ref{fig:LASER-cool-offset3D}. Naturally increasing the secular frequencies of the trap greatly reduces this offset, but our trap's design doesn't allow much higher secular frequencies.
+We'd get $x_o \approx 2.1 \mathrm{mm}$, where the trap's harmonic region is of about $25 \mathrm{mm}$ from the origin. This offset might not be very significant for only laser cooling a single ion like \ce{Yb^+}, but sympathetic cooling will suffer from this offset, as the target molecule won't experience an identical offsetting force, and would not collide frequently enough with the cooling ion and therefore will not lose kinetic energy, as seen in figure~\ref{fig:laser-cool-offset3D}. Naturally increasing the secular frequencies of the trap greatly reduces this offset, but our trap's design doesn't allow much higher secular frequencies.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{graphics/LASER-cool-offset3D.pdf}
-    \caption{The offset produced by a single LASER coming in the $z$ axis, where secular frequencies are $f_x = f_y = 8.5\ \mathrm{kHz}$ and $f_z = 1.5\ \mathrm{kHz}$. The offset measured fits exactly the analytical prediction of $x_0 \approx 2.1 \mathrm{mm}$.}
-    \label{fig:LASER-cool-offset3D}
+    \includegraphics[width=0.5\textwidth]{graphics/laser-cool-offset3D.pdf}
+    \caption{The offset produced by a single laser coming in the $z$ axis, where secular frequencies are $f_x = f_y = 8.5\ \mathrm{kHz}$ and $f_z = 1.5\ \mathrm{kHz}$. The offset measured fits exactly the analytical prediction of $x_0 \approx 2.1 \mathrm{mm}$.}
+    \label{fig:laser-cool-offset3D}
 \end{figure}
 
 \subsection{Overcoming the Offset}
@@ -315,12 +315,12 @@ We'd get $x_o \approx 2.1 \mathrm{mm}$, where the trap's harmonic region is of a
 % TODO: Consider citing and discuss a bit about what kind of forces other people use in simulations - discuss with Yuval about the fact the real expression for any \hat{k} and \mathbf{v} includes many cross-terms and looks very messy.
 
 % TODO: Ask Yuval whether more references for using counter-propagating beams would be useful here:
-As suggested in a more classical LASER cooling model presented by Dan Steck\cite{SteckClassicalCooling}, we can use 2 counter propagating LASER beams, that will apply 2 forces which sum up to $\mathbf{F}(\mathbf{v}) - \mathbf{F}(-\mathbf{v})$, forming an odd function in $\mathbf{v}$, with no 0th order component. Creating 2 such counter-propagating beams in experiment is simply done with a mirror. However, the vacuum chamber's windows induce a small attenuation on the intensity, as illustrated in figure~\ref{fig:windows-attenuation}.
+As suggested in a more classical laser cooling model presented by Dan Steck\cite{SteckClassicalCooling}, we can use 2 counter propagating laser beams, that will apply 2 forces which sum up to $\mathbf{F}(\mathbf{v}) - \mathbf{F}(-\mathbf{v})$, forming an odd function in $\mathbf{v}$, with no 0th order component. Creating 2 such counter-propagating beams in experiment is simply done with a mirror. However, the vacuum chamber's windows induce a small attenuation on the intensity, as illustrated in figure~\ref{fig:windows-attenuation}.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.95\textwidth]{graphics/windows-attenuation.pdf}
-    \caption{The effect of the Vaccum Chamber's windows' attenuation upon the LASER cooling intensities.}\label{fig:windows-attenuation}
+    \caption{The effect of the Vaccum Chamber's windows' attenuation upon the laser cooling intensities.}\label{fig:windows-attenuation}
 \end{figure}
 
 Since $\omega \equiv \Omega/\Gamma$ and $I \propto \Omega^2$, if we'd define\footnote{The experimentalist's most intuitive measurement is to measure $I_2/I_0$, but it should equal $I_4/I_1$ assuming all windows are made of identical glass, and the intensity lost in the mirror is 0.} $\alpha \equiv I_4/I_1$, the actual force we are imposed to apply upon our ions is:
@@ -335,7 +335,7 @@ Causing a slight imperfect oddness (with respect to $\mathbf{v}$) of the force, 
 %
 %% TODO: Think about this content... Do I really want it?
 %
-%Without simulating, it is interesting to wonder: What would be the ideal detuning ($\delta$) and intensity ($\Omega$) given an ion cloud in temperature $T$? This depends upon the dependence of the effectiveness of the LASER cooling force. As for the detuning, the intuitive answer would be:
+%Without simulating, it is interesting to wonder: What would be the ideal detuning ($\delta$) and intensity ($\Omega$) given an ion cloud in temperature $T$? This depends upon the dependence of the effectiveness of the laser cooling force. As for the detuning, the intuitive answer would be:
 %
 %\begin{equation}
 %    d_\mathrm{opt} = \frac{\sqrt{K_\text{B} T/m}}{\lambda\gamma}
@@ -356,40 +356,78 @@ Causing a slight imperfect oddness (with respect to $\mathbf{v}$) of the force, 
 %\begin{figure}
 %    \centering
 %    \includegraphics[width=0.5\textwidth]{graphics/laser_cool_overlap.pdf}
-%    \caption{Optimal LASER cooling parameters calculated for a general ion cloud, using a maximisation of integral \ref{eq:laser-cool-overlap-integral}. The 'Back of the envelope' line is of \ref{eq:back-of-envelope-detuning-T}. The maximisation was done using \texttt{scipy.optimize.minimize} with \texttt{method='TNC'}\cite{scipy}. Similar results were obtained with other optimization methods, but this was the fastest method that also produced smooth results.}
+%    \caption{Optimal laser cooling parameters calculated for a general ion cloud, using a maximisation of integral \ref{eq:laser-cool-overlap-integral}. The 'Back of the envelope' line is of \ref{eq:back-of-envelope-detuning-T}. The maximisation was done using \texttt{scipy.optimize.minimize} with \texttt{method='TNC'}\cite{scipy}. Similar results were obtained with other optimization methods, but this was the fastest method that also produced smooth results.}
 %    \label{fig:laser-cool-optimal-overlap}
 %\end{figure}
 %
-%This result can be used to optimize the cooling process via changing the detuning \& intensity of the cooling LASERs dynamically. Writing an algorithm that would play with the detuning \& intensity to optimize the cooling according to intermediate temperature measurements could be an interesting topic for further research, either via simulations or directly in experiment.
+%This result can be used to optimize the cooling process via changing the detuning \& intensity of the cooling lasers dynamically. Writing an algorithm that would play with the detuning \& intensity to optimize the cooling according to intermediate temperature measurements could be an interesting topic for further research, either via simulations or directly in experiment.
 
-\subsection{Summary of LASER Cooling Parameters}\label{sec:theory/cooling-summary}
+\subsection{Summary of Laser Cooling Parameters}\label{sec:theory/cooling-summary}
 
-This is a good place to pause and list all the simulation parameters we collected from the theory of LASER cooling:
+This is a good place to pause and list all the simulation parameters we collected from the theory of laser cooling:
 
 \begin{itemize}
-    \item The LASER cooled ion. Choosing an ion and a cooling transition is effectively choosing $\lambda$, $\gamma$ and the mass $m$.\footnote{Cooling transitions and line-widths were taken from \cite{CoolingBeParameters,CoolingCaParameters1,CoolingCaParameters2,RansfordThesis,RadiumData}}. Current experimental efforts as well as all simulations presented focus on \ce{Yb^+}, but in principal this parameter is not hard-coded, and 
-    \item The normalized LASER's intensity $\omega \equiv \Omega/\Gamma$.
-    \item The normalized LASER's detuning $d \equiv \delta/\Gamma$.
-    \item The spatial direction(s) of the LASER(s). This can be parameterized by a list of $(\theta, \phi)$ pairs - a pair per LASER, defining each LASER's $\hat{k}$ using a spherical coordinates transformation, as depicted in figure~\ref{fig:laserAngles-general}.
+    \item The laser cooled ion. Choosing an ion and a cooling transition is effectively choosing $\lambda$, $\gamma$ and the mass $m$.\footnote{Cooling transitions and line-widths were taken from \cite{CoolingBeParameters,CoolingCaParameters1,CoolingCaParameters2,RansfordThesis,RadiumData}}. Current experimental efforts as well as all simulations presented focus on \ce{Yb^+}, but in principal this parameter is not hard-coded, and 
+    \item The normalized laser's intensity $\omega \equiv \Omega/\Gamma$.
+    \item The normalized laser's detuning $d \equiv \delta/\Gamma$.
+    \item The spatial direction(s) of the laser(s). This can be parameterized by a list of $(\theta, \phi)$ pairs - a pair per laser, defining each laser's $\hat{k}$ using a spherical coordinates transformation, as depicted in figure~\ref{fig:laserAngles-general}.
     % TODO: Consider whether adding this
     %\item Whether to use the approximated Taylor expression with only the 1st order term. This is not really a physical simulation parameter, but it was studied because I couldn't find simulations simulations in literature not using the approximation.
-    \item The Vacuum chamber's windows' attenuation. Our experiment's attenuation is $\alpha = 0.7$, and most simulations used this value.\footnote{Besides figure \ref{fig:LASER-cool-offset3D} which displays it's effect.}
+    \item The Vacuum chamber's windows' attenuation. Our experiment's attenuation is $\alpha = 0.7$, and most simulations used this value.\footnote{Besides figure \ref{fig:laser-cool-offset3D} which displays it's effect.}
 \end{itemize}
 
-Lastly, the relation of the Rabi frequency $\Omega$ to the actual LASER intensity\cite{CJFootOmega2I}, is worth mentioning\footnote{The software is capable of displaying $\Omega$ dependence in the scale of the intensity $I$, but this behavior wasn't activated in the results presented.}:
+Lastly, the relation of the Rabi frequency $\Omega$ to the actual laser intensity\cite{CJFootOmega2I}, is worth mentioning\footnote{The software is capable of displaying $\Omega$ dependence in the scale of the intensity $I$, but this behavior wasn't activated in the results presented.}:
 
 \begin{equation}
     I = \frac{2\pi h c \Gamma}{3 \lambda^3} \cdot \left(\frac{\Omega}{\Gamma}\right)^2
     \label{eq:omega2intensity}
 \end{equation}
 
+With \ce{Yb^+}'s parameters\cite{RansfordThesis}, we conveniently get: $I \approx 1 \mathrm{mW}/\mathrm{cm}^2 (\Omega/\Gamma)^2$.
+
+Now that we know how to fully characterise laser cooling and ion trapping, we will take revise some models we found in literature that try to predict cooling rates and energy exchange rates in multi-species ensembles. 
+
+\section{State of the art Sympathetic Cooling Models}\label{sec:theory/models}
+
+Most models we found in literature\cite{Plasma2T1,Plasma2T2,BabaWakiSympatheticCooling} did not include explicitly all parameters we can tweak here such as the laser intensity \& detuning. Not only that, the authors of these models were usually concerned with the energy exchange rate between the different species, as a function of each species' temperatures. On the other hand we were more concerned with optimizing this energy exchange, and establish propensity rules for effective cooling. The first drawbacks of the cited models was their analytical complexity.
+
+Baba \& Waki's model\cite{BabaWakiSympatheticCooling}, is the least complex model we found though it is still thorough and rigorous. They were also concerned like us with sympathetic cooling, and not plasma physics. However, they were mainly concerned with the limits for sympathetic cooling as a function of the mass ratio between the laser cooling (lc) ions, and the sympathetically cooled (sc) ions.
+
+Their model is essentially a differential equation, that involves $\partial_t T_\mathrm{sc}$, $T_\mathrm{sc}(t)$ and $T_\mathrm{lc}(t)$. Other parameters included there are ion trap geometrical parameters and the ions' masses. The other models we found, although not necessarily for the purpose of sympathetic cooling, also developed differential equations.
+
+In figure~\ref{fig:babaWaki} we see two of their main results - the sympathetic cooling rate in figure~\ref{fig:babaWakiCoolingRate} as a function of $T_\mathrm{lc}$ and $W_\mathrm{sc} \propto T_\mathrm{sc}$, and molecular dynamics simulations results in figure~\ref{fig:babaWakiSimulations}. Their results show that masses lighter then $(0.54\pm 0.04)m_\mathrm{lc}$ cannot be sympathetically cooled.
+
+\begin{figure}
+\begin{subfigure}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{graphics/BabaWaki-CoolingRate.pdf}
+    \caption{ cooling rate's dependence on the temperatures of both the laser cooled (lc) and sympathetically cooled (sc) ions\cite{BabaWakiSympatheticCooling}. $W_\mathrm{sc} \propto T_\mathrm{sc}$ is the sympathetically cooled ions' total kinetic energy.}
+	\label{fig:babaWakiCoolingRate}
+\end{subfigure}
+~
+\begin{subfigure}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{graphics/BabaWaki-simulations.pdf}
+    \caption{Molecular dynamics (MD) simulation results of sympathetic cooling, for several different $m_\mathrm{sc}$ values. Heating instead of cooling is demonstrated when $m_\mathrm{sc}$ is below a certain threshold.}
+	\label{fig:babaWakiSimulations}
+\end{subfigure}
+\caption{Baba \& Waki's two main results.}
+\label{fig:babaWaki}
+\end{figure}
+
+We also tried to model the cooling rate, with simpler differential equations. Our modeling attempts considered a perfect, static $T = 0\ \mathrm{K}$ crystal, and collisions of sympathetically cooled ions in it. We had a good model for the size of the perfect ion crystal\cite{Madelung1991}, based also on trap's secular frequencies, and not $(a_i, q_i)$ Mathieu parameters like in Baba \& Waki's model. We tried to use the secular frequencies also to estimate the collision rate, and hence the temperature decay.
+
+In the next chapter we will see why any model that derives a differential equation that includes \emph{scalar} thermodynamic variables such as the temperature, is likely to not fit our simulation results. More explicitly, these models fail to describe a \emph{hysteresis} phenomenon we observe - something that is hard to describe in a differential equation of temperatures.
+
 \section{Simulations Parameters \& Convergence}
+
+To fully define a simulation, one has to define a few more parameters, laid out in this section.
 
 \subsection{Time Periods}
 
-To fully define a simulation, one has to define a few more parameters. Two of which are related to the timeline and are called \emph{cooling} and \emph{stabilizing} time. The cooling time period has trivial meaning and increasing it can be usually interesting but naturally the price is higher computing resources demands. The stabilization time is the time since $t=0$ up to the point where the LASER cooling force enters.
+We define two time periods for a simulation called \emph{cooling} and \emph{stabilizing}. The cooling time period has trivial meaning and increasing it can be usually interesting but obviously it takes more time. The stabilization time is the time since $t=0$ up to the point where the laser cooling force enters.
 
-For researching cooling parameters, and for most initial temperatures, there is no need for more then $5-7\mathrm{ms}$ of stabilizing time, just to let the thermodynamic instabilities of the initial conditions minimize. Figure~\ref{fig:T-stabilizes-example} can serve as a good example in which the width of $T(t)$ before the LASER cooling starts, decreases enough after $6 \mathrm{ms}$, which is good enough for several initial temperatures.
+For researching cooling parameters, and for most initial temperatures, there is no need for more then $5-7\mathrm{ms}$ of stabilizing time, just to let the thermodynamic instabilities of the initial conditions minimize. Figure~\ref{fig:T-stabilizes-example} can serve as a good example in which the width of $T(t)$ before the laser cooling starts, decreases enough after $6 \mathrm{ms}$, which is good enough for several initial temperatures.
 
 Another usage for varying the stabilization time, is for measuring the eigenfrequencies of the trap, without cooling ($0$ cooling time), and all cooling parameters irrelevant.
 
@@ -478,7 +516,7 @@ Dimension   & \multicolumn{5}{c}{Optional values}\\
 
 \subsection{Further Summarizing Analysis}\label{ssec:intro/SummarizedMeasurement}
 
-Up until now we discussed time dependent properties of our ion clouds - the per spatial axis size and the various temperatures. We can also summarize these results to obtain various measures of how fast did we cool our ions, and how much smaller did the cloud get due to the LASER cooling. These kind of results are termed both in the code and here as summarized results.
+Up until now we discussed time dependent properties of our ion clouds - the per spatial axis size and the various temperatures. We can also summarize these results to obtain various measures of how fast did we cool our ions, and how much smaller did the cloud get due to the laser cooling. These kind of results are termed both in the code and here as summarized results.
 
 \subsubsection{Temperatures and Cloud Size}\label{sec:intro/time-parts}
 
@@ -488,7 +526,7 @@ The simplest summarized result type is the temperature/size before/after cooling
 
 Another way to summarize the temperature measurements is as follows: Given a $T(t)$ defined using any of the parameters of section~\ref{ssec:T-options-summery}, we take $\mathrm{Log}(T(t)/\mathrm{kelvin})$, and apply a continuous piecewise linear fit\cite{pwlf}, with 2 segments. This gives 2 cooling frequencies in the units of $\mathrm{kHz}$ that depend on a dimension referred to as \texttt{regime} - corresponding to each of the segments.
 
-We chose to use 2 segments due to the observation that in many simulations most of the ion cloud is cooled quickly and efficiently whereas afterwards the rest of the cooling happens in a mixed thermodynamic phase of an ion crystal (massive and highly charged) with a gas of ions surrounding it.
+We chose to use 2 segments due to the observation that in many simulations most of the ion cloud is cooled quickly and efficiently whereas afterwards the rest of the cooling happens in a mixed thermodynamic phase of an ion crystal (massive and highly charged) with a gas of ions surrounding it. An example of such a fit is available in figure~\ref{fig:crystal-stronger-trap:Ti20:T}.
 
 \subsubsection{Collective Cloud Movement Frequencies}
 

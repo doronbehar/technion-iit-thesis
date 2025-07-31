@@ -56,7 +56,7 @@ The following parameters always get a single value, even if not specified explic
     \item \texttt{--rf-divisor}: How many timesteps to put in a single RF cycle (default: [1597]), see also section~\ref{sec:theory/convergence}.
     \item \texttt{--windows-attenuation}: By what fraction the intensity decreases after passing 2 windows (default: [0.7])
     % TODO: Consider whether maybe this should be deleted 
-    \item \texttt{--approximate-laser-force} (boolean): Simulate LASER cooling with the approximated $\alpha \cdot v$-like expression
+    \item \texttt{--approximate-laser-force} (boolean): Simulate laser cooling with the approximated $\alpha \cdot v$-like expression
     \item \texttt{--offset x[mm] y[mm] z[mm]}: Put the ion cloud in an offset from the center (default: [0.0, 0.0, 0.0])
 \end{itemize}
 
@@ -540,7 +540,7 @@ All other Python files in the repository collect functions related to a certain 
 \hline
 \texttt{coulomb.py}             & Implement Coulomb energies calculation, using Freud's\cite{freud} \texttt{locality.AABBQuery} - allowing to iterate all nearest-neighbors efficiently. & Can calculate \& plot data like presented in section~\ref{sec:theory/init-coulomb} and in appendix~\ref{chap:coulomb}.                                                                                                                                      \\
 \hline
-\texttt{laser\_cool.py}         & Implement LASER cooling related functions.                                                                                                             & Opens a Matplotlib plot solving the equation of motion of a single particle under a harmonic force and the LASER cooling force. Including sliders for various parameters that affect the results, similarly to figure~\ref{fig:pure-mathieu-fft}.    \\
+\texttt{laser\_cool.py}         & Implement laser cooling related functions.                                                                                                             & Opens a Matplotlib plot solving the equation of motion of a single particle under a harmonic force and the laser cooling force. Including sliders for various parameters that affect the results, similarly to figure~\ref{fig:pure-mathieu-fft}.    \\
 \hline
 \texttt{mathieu.py}             & Implement a \texttt{Trap} class solving the Mathieu equations given, as described in section~\ref{sec:theory/mathieu-inversly}.                                  & Can open figures \ref{fig:pure-mathieu-coefficients}, \ref{fig:pure-mathieu-fft}, \ref{fig:mathieu-stability} \& \ref{fig:mathieu-mass-dep}.Is also capable of exploring the dependence of $\{(a_i, q_i)\}$ solutions given $\beta_i$ in other ways. \\
 \hline
@@ -548,7 +548,7 @@ All other Python files in the repository collect functions related to a certain 
 \hline
 \texttt{physical\_constants.py} & Put all physical and technical parameters in the same place.                                                                                           & Does nothing.                                                                                                                                                                                                                                        \\
 \hline
-\texttt{pwlfWrapper.py}         & Wraps the PWLF algorithm to ease handling of the fit parameters' uncertainties.                                                                        & Does nothing.                                                                                                                                                                                                                                        \\
+\texttt{pwlfWrapper.py}         & Wraps the PWLF algorithm to ease handling of the fit parameters' uncertainties\cite{uncertainties}.                                                                        & Does nothing.                                                                                                                                                                                                                                        \\
 \hline
 \texttt{bolg.py}                & Implements an algorithm (written by Claude.ai), that performs an opposite of file path globbing (hence the name). Used for picking figures' titles.    & Tests the algorithm using simply file paths arguments.                                                                                                                                                                                               \\
 \end{tabularx}

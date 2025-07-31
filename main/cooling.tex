@@ -1,12 +1,14 @@
-\chapter{Cooling Simulations}\label{chap:results}
+\chapter{Cooling Simulation Results}\label{chap:results}
 
-Before trapping both \ce{Yb^+} and \ce{CHDBrI^+}, we wanted to make sure we are able to cool efficiently only \ce{Yb^+}. We believe that cooling fast the \ce{Yb^+} ions, must help cool fast the \ce{CHDBrI^+} ions. This led us to investigate first how to cool \ce{Yb^+} alone fast, and the main results of this research are in section~\ref{sec:results/laserAngles}. % TODO: If LASER detuning results will be added to this chapter, they should be mentioned in this sentence.
+Before trapping both \ce{Yb^+} and \ce{CHDBrI^+}, we wanted to make sure we are able to cool efficiently only \ce{Yb^+}. We believe that cooling fast the \ce{Yb^+} ions, must help cool fast the \ce{CHDBrI^+} ions. This led us to investigate first how to cool \ce{Yb^+} alone fast, and the main results of this research are in section~\ref{sec:results/laserAngles}. Next we added \ce{CHDBrI^+} and varied the intensities and the initial temperatures, to see how sensitive is the sympathetic cooling to these parameters.
 
-The next thing we checked was... % TODO: Finish the next sentences...
+\section{Laser Cooling Intrusion Angle(s) \& Trap Geometry}\label{sec:results/laserAngles}
 
-\section{LASER Cooling Intrusion Angle(s) \& Trap Geometry}\label{sec:results/laserAngles}
+When our experimentalists first tried to cool the \ce{Yb^+}, they had less then a total of $1\mathrm{mW}$ of power. This summons testing: Is using 1 laser enough? If so, which intrusion angle to use it with? If we split the all our power to multiple laser beams, which angles to use?
 
-To date, in our lab, the amount of LASER power we have available for LASER cooling our \ce{Yb^+} is scarce. If obliged to use a single LASER angle, the intuitive choice might be to use the $z$ axis, which is the symmetry axis of the trap, and in which there is also no micromotion. Apparently, the main conclusion from this endeavor is that you \emph{want} to break the symmetry of the trap, and using the $z$ axis is actually the worst choice of them all. The next paragraphs describe how we modeled this, and why we think breaking the symmetry helps.
+In the case of 1 laser beam, the naive choice might be to use the $z$ axis, which is the symmetry axis of the trap, and in which there is also no micromotion. It turns out that using the $z$ axis is actually the worst choice of them all, and in fact you \emph{do} want the laser beam to mix the principal axes of the trap as much as possible. The next sections describe how we parameterized this, and why we think mixing the principal axes helps.
+
+\subsection{Laser Angles Parametrization}
 
 Our vacuum chamber has only a finite set of windows we can use, so we gave each of them a name, as depicted in figure~\ref{fig:vacuum-chamber-laserAngles}. Each intrusion window is mapped to a $(\theta, \phi)$ pair, as listed in table~\ref{tbl:laserAngles-list}, according to the standard spherical solid angle parametrization depicted in figure~\ref{fig:laserAngles-solid-angle}.
 
@@ -22,7 +24,7 @@ Our vacuum chamber has only a finite set of windows we can use, so we gave each 
 \begin{subfigure}{0.46\textwidth}
     \centering
     \includegraphics[width=\linewidth]{graphics/vacuum-chamber-windows.pdf}
-    \caption{Our vacuum chamber CAD design\cite{ElianaThesis}, annotated with the names we gave of the available windows through which our LASER can intrude.}
+    \caption{Our vacuum chamber CAD design\cite{ElianaThesis}, annotated with the names we gave of the available windows through which our laser can intrude.}
     \label{fig:vacuum-chamber-laserAngles}
 \end{subfigure}
 ~
@@ -32,54 +34,75 @@ Our vacuum chamber has only a finite set of windows we can use, so we gave each 
     \caption{Our (standard) solid angles parametrization}
     \label{fig:laserAngles-solid-angle}
 \end{subfigure}
-\caption{Our LASER intrusion angles parametrization.}
+\caption{Our laser intrusion angles parametrization.}
 \label{fig:laserAngles-general}
 \end{figure}
 
-We simulated cooling of $1000$ \ce{Yb^+} ions, in a trap with frequencies $(f_x, f_y, f_z, f_\mathrm{rf}) = (8.5, 8.5, 1.5, 100)\ \mathrm{kHz}$, with a selection of LASER angles groups. By \emph{group}, I mean either one or more LASERs. In figure~\ref{fig:laserAngles-temperatures}, we can see the significance of the choice of the LASER angles group.
+No matter how many lasers we use, we give them \textbf{all of them} a single intensity $I \propto \Omega/\Gamma$. This means that comparing 3 lasers of a total intensity of $I$, to a single laser of the same intensity, would require using $\Omega \propto \sqrt{I/3}$ in the 3 lasers simulations. For a total intensity of $\Omega/\Gamma = 1$ dividing into $3$ laser beams, we conclude each of them should be using $\Omega/\Gamma \approx 0.57$.
+
+In the results presented below, markers represent the intensities of \textbf{each one} of the lasers, and colors represent laser angles \emph{group}s. A group includes one or more lasers. They were performed with a laser detuning of $\delta/\Gamma = -2.6$, over $1000$ \ce{Yb^+} ions and in a trap with frequencies $(f_x, f_y, f_z, f_\mathrm{rf}) = (8.5, 8.5, 1.5, 100)\ \mathrm{kHz}$.
+
+\subsection{Simulation Results}
+
+In figure~\ref{fig:laserAngles-temperatures}, we see that with a total intensity of $\Omega/\Gamma = 1$, we can get a wide range of cooling rates. The cooling rates are summarized in table~\ref{tbl:laserAngles-cooling-rates}. The propensity rule we derive from this comparison is that mixing the principal axes of the trap is what helps cool faster.
+
+This is not only a matter of breaking the cylindrical symmetry of the trap, as e.g the $x$ laser does that too, and it cools slower then $r^-$, which is almost parallel to it. We also think there is no meaning to the $\phi$ direction of all laser angles, and the most important parameter is how much the laser is mixing $z$ principal axis movement with the $x,y$ plane.
 
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{graphics/laserAngles-dependence--thesis.pdf}
-    \caption{Temperatures as a function of time, for several different LASER angles groups. Every LASER entering these simulations had $\Omega/\Gamma = 1$ and $\delta/\Gamma = -2.6$.}
+    \caption{Temperatures as a function of time, for several different laser angles groups. For laser angle group $e^+,e^-,e^*$, the per-laser-beam intensity $\Omega/\Gamma = 0.55$ sums up to $\Omega/\Gamma = 1$.}
     \label{fig:laserAngles-temperatures}
 \end{figure}
 
-Of course using multiple LASERs ($e^+, e^-, e^*$ in this example), all with the same intensities is the most efficient way to cool the ion cloud. However even with a single LASER, you can cool the ion cloud rather effectively. Choosing $e^-$ gives slightly better results in comparison to $r^-$, but the later is parallel to the optical table, and hence is slightly easier to setup technically in the lab.
+\begin{table}
+    \begin{tabular}{ccccc}
+    \hline
+    $e^+, e^-, e^*$ & $e^-$ & $r^-$ & $x$ & $z$ \\
+    \hline
+    $1.3(0.0)\ \mathrm{kHz}$ & $980.7(28.1)\ \mathrm{Hz}$ & $806.3(8.4)\ \mathrm{Hz}$ & $348.8(8.0)\ \mathrm{Hz}$ & $353.0(22.2)\ \mathrm{Hz}$ \\
+    \hline
+    \end{tabular}
+    \caption{Cooling rates computed with a linear fits to $\mathrm{Log}(T(t))$ lines presented in figure~\ref{fig:laserAngles-temperatures}.}
+    \label{tbl:laserAngles-cooling-rates}
+\end{table}
 
-In the next section we wanted to explore several parameters simultaneously when we add also \ce{CHDBrI^+} ions. Per the results above we did that with only an $r^-$ LASER, while also varying LASER intensity ($\Omega$) and initial temperatures.
+If obliged to use one laser, using $e^-$ gives slightly better results in comparison to $r^-$, but the latter is parallel to the optical table, and hence is slightly easier to setup technically in the lab. This is why we chose $r^-$ for the next scan, in which we also added \ce{CHDBrI^+} ions and modulated the intensity ($\Omega$), in multiple initial temperatures.
 
 \section{Scanning $\Omega$ \& Initial Temperatures with \ce{CHDBrI^+}}\label{sec:results/sympathetic-omega-dep}
 
-In this section we will see several phenomena that would have been hard to model, and hence demonstrate the significance of our results. We will start by focusing on the \ce{Yb^+} temperatures, as a function the LASER intensity and the initial temperature. For reference, in this section all of the simulations had $299$ \ce{CHDBrI^+} ions, $701$ \ce{Yb^+} ions, and share the parameters laid out in table~\ref{tbl:sympathetic-omega-dep}.
+In this section we will see several phenomena that are hard to model, and hence demonstrate the significance of our results. We will start by focusing on the \ce{Yb^+} temperatures, as a function the laser intensity and the initial temperature. For reference, in this section all of the simulations had $299$ \ce{CHDBrI^+} ions, $701$ \ce{Yb^+} ions, and used the parameters presented in table~\ref{tbl:sympathetic-omega-dep}.
 
 \begin{table}[h]
 	\centering
 	\input{artifacts/sympathetic-omega-dep@parameters.tex}
-	\caption{Shared parameters used for multi-dimensional scan of Intensities ($\Omega/\Gamma$) and initial temperatures ($T_i$)}
+	\caption{Parameters commonly used for multi-dimensional scan of Intensities ($\Omega/\Gamma$) and initial temperatures ($T_i$)}
 	\label{tbl:sympathetic-omega-dep}
 \end{table}
 
-In figure~\ref{fig:Yb-cooling-limit:T_i10:T} we can see the temperatures of only the \ce{Yb^+} ions, with colors varying per intensity. The positions of the ions at the end of one of these simulations are depicted in figure~\ref{fig:Yb-cooling-limit:T_i10:p:O1}. Intriguingly, although we started at only $10\ \mathrm{K}$, we see in the animation many \ce{CHDBrI^+} ions joining the \ce{Yb^+} crystal, but still roughly 10 \ce{Yb^+} ions are outside of the crystal, and haven't yet joined it. These rogue \ce{Yb^+} ions, are what make the overall \ce{Yb^+} temperature hit a limit of roughly $1\ \mathrm{K}$, to the extent of this cooling time. 
+\subsection{\ce{Yb^+} Temperatures in the Presence of \ce{CHDBrI^+}}
 
-In figure~\ref{fig:Yb-cooling-limit:T_i5:p:O2.5}, we can see that if we start at $5\ \mathrm{K}$, we \emph{are} capable of assembling a fuller \ce{Yb^+} crystal without rogue ions, and this is observable in the temperatures extracted in figure~\ref{fig:Yb-cooling-limit:T_i5:T}.
+In figure~\ref{fig:Yb-cooling-limit:T_i10:T} we can see the temperatures of only the \ce{Yb^+} ions, with colors for different intensities. Intriguingly, we see they stabilize to a certain value, after an intensity dependent amount of time. When we looked at the animations for each of those lines, we saw a varying number of rogue \ce{Yb^+} outside of the crystal, that are precluded from joining it, due to \ce{CHDBrI^+} that have already adsorbed. In figure~\ref{fig:Yb-cooling-limit:T_i10:p:O1} we see an example of this phenomenon, with roughly 10 rogue \ce{Yb^+} ions.
+
+In the examples above both species started at $10\ \mathrm{K}$, but if we start at $5\ \mathrm{K}$, we \emph{are} capable of assembling a fuller \ce{Yb^+} crystal without rogue ions. This is apparent in the animation snapshot in figure~\ref{fig:Yb-cooling-limit:T_i5:p:O2.5}, where we also used an intensity of $\Omega / \Gamma = 2.5$. The lack of rogue \ce{Yb^+} ions is also apparent in the temperatures extracted to figure~\ref{fig:Yb-cooling-limit:T_i5:T}.
 
 \begin{figure}
 \centering
 \begin{subfigure}{0.46\textwidth}
     \centering
     \includegraphics[width=\linewidth]{graphics/Yb-Cooling-Limit/p@Ti=10O=1.pdf}
-    \caption{The positions of the ions at the end of the simulation, when all ions began at $10\ \mathrm{K}$, and $\Omega/\Gamma$ was equal to $1$. The red arrows represent the LASER beams.}
+    \caption{The positions of the ions at the end of the simulation, when all ions began at $10\ \mathrm{K}$, and $\Omega/\Gamma$ was equal to $1$. The red arrows represent the laser beams.}
     \label{fig:Yb-cooling-limit:T_i10:p:O1}
 \end{subfigure}
 ~
 \begin{subfigure}{0.5\textwidth}
     \centering
     \includegraphics[width=\linewidth]{graphics/Yb-Cooling-Limit--thesis/T@T_i=10.pdf}
-    \caption{Temperatures of \ce{Yb^+} ions - atomic mass of $174$, for several LASER intensities.}
+    \caption{Temperatures of \ce{Yb^+} ions - atomic mass of $174$, for several laser intensities.}
     \label{fig:Yb-cooling-limit:T_i10:T}
 \end{subfigure}
-\caption{The temperatures of \ce{Yb^+}, hitting a limit as a consequence of several \ce{Yb^+} ions not joining the crystal.}
+\caption{The temperatures of \ce{Yb^+} ions, hitting a limit as a consequence of several ions not joining the crystal.}
+\label{fig:Yb-cooling-limit:T_i10}
 \end{figure}
 
 \begin{figure}
@@ -87,33 +110,35 @@ In figure~\ref{fig:Yb-cooling-limit:T_i5:p:O2.5}, we can see that if we start at
 \begin{subfigure}{0.46\textwidth}
     \centering
     \includegraphics[width=\linewidth]{graphics/Yb-Cooling-Limit/p@Ti=5O=2.5.pdf}
-    \caption{The positions of the ions at the end of the simulation, when all ions began at $10\ \mathrm{K}$, and $\Omega/\Gamma$ was equal to $2.5$ - a more powerful LASER in comparison to figure~\ref{fig:Yb-cooling-limit:T_i10:p:O1}.}
+    \caption{The positions of the ions at the end of the simulation, when all ions began at $10\ \mathrm{K}$, and $\Omega/\Gamma$ was equal to $2.5$ - a more powerful laser in comparison to figure~\ref{fig:Yb-cooling-limit:T_i10:p:O1}.}
 	\label{fig:Yb-cooling-limit:T_i5:p:O2.5}
 \end{subfigure}
 ~
 \begin{subfigure}{0.5\textwidth}
     \centering
     \includegraphics[width=\linewidth]{graphics/Yb-Cooling-Limit--thesis/T@T_i=5.pdf}
-    \caption{Temperatures of \ce{Yb^+} ions - atomic mass of $174$, for several LASER intensities.}
+    \caption{Temperatures of \ce{Yb^+} ions - atomic mass of $174$, for several laser intensities.}
 	\label{fig:Yb-cooling-limit:T_i5:T}
 \end{subfigure}
-\caption{The temperatures of \ce{Yb^+}, hitting a limit as a consequence of several \ce{Yb^+} ions not joining the crystal.}
+\caption{The temperatures of \ce{Yb^+}, reaching lower temperatures when they started colder in comparison to results in figure~\ref{fig:Yb-cooling-limit:T_i10}}
 \end{figure}
 
-After observing these results we realized we might not be able to completely crystallize all \ce{Yb^+} ions with only a single LASER. However, this may not be a devastating issue for cooling the \ce{CHDBrI^+} ions, as it might still be possible to cool it efficiently.
+After observing these results we realized we might not be able to completely crystallize all \ce{Yb^+} ions with only a single laser. However, this may not be a devastating issue for sympathetically cooling the \ce{CHDBrI^+} ions, as it might still be possible to cool it efficiently. The sympathetic cooling results, also with only $r^-$ laser are shown in the next section.
 
-In figure~\ref{fig:sympathetic-omega-dep:T:m222} we can see the \ce{CHDBrI^+} ions' temperatures for the initial temperatures presented above, and with a line color per every LASER intensity (targeting the \ce{Yb^+} ions of course). The easy conclusion we can derive, is that a stronger LASER helps cooling, at least to the extent of these range of intensities we scanned. This is easily justified by expression~\ref{eq:laser-cool-force} of the LASER cooling force, introduced in section~\ref{sec:theory/cooling}.
+\subsection{Sympathetic Cooling with Varying Intensities}
+
+In figure~\ref{fig:sympathetic-omega-dep:T:m222} we can see the \ce{CHDBrI^+} ions' temperatures for initial temperatures $\{5, 10\}\mathrm{K}$, and with a different color per laser intensity. It seems that in this range of intensities (targeting only \ce{Yb^+} ions of course), one can conclude that a stronger laser helps cooling. This is easily justified by expression~\ref{eq:laser-cool-force} of the laser cooling force introduced in section~\ref{sec:theory/cooling}, and also by the phenomenon of power broadening\cite{SteckCooling}.
 
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{graphics/T@sympathetic-omega-dep@m=222.pdf}
-\caption{The \ce{CHDBrI^+} ions' temperatures, starting in initial temperatures $\{5\ \mathrm{K}, 10\ \mathrm{K}\}$, and in various LASER intensities.}
+\caption{The \ce{CHDBrI^+} ions' temperatures, starting in initial temperatures $\{5\ \mathrm{K}, 10\ \mathrm{K}\}$, and in various laser intensities.}
 \label{fig:sympathetic-omega-dep:T:m222}
 \end{figure}
 
-We conclude from these results that generally speaking, cooling the \ce{Yb^+} ions faster is better also for cooling the \ce{CHDBrI^+} ions. Although we often see rogue \ce{Yb^+} ions outside the crystal, one might argue that for cooling the \ce{CHDBrI^+} ions efficiently, we might want to cool the \ce{Yb^+} ions not as fast as possible - with say $\Omega = 0.4\Gamma$. This indeed might increase the total number of crystallized \ce{CHDBrI^+} after a long time. However we focus in this research on improving the cooling on time scales of roughly $50\ \mathrm{ms}$.
+The existence of rogue \ce{Yb^+} ions, might suggest that for cooling the \ce{CHDBrI^+} ions efficiently, we might want to cool the \ce{Yb^+} ions not as fast as possible - with say $\Omega = 0.4\Gamma$. This indeed might increase the total number of crystallized \ce{CHDBrI^+} after a long time. However we focus in this research on improving the cooling on time scales of roughly $50\ \mathrm{ms}$, so we decided to stick with the attempt to cool the \ce{Yb^+} ions as fast as we can.
 
-A more intriguing phenomena we noticed in the $\Omega/\Gamma \geq 1$ lines of figure~\ref{fig:sympathetic-omega-dep:T:m222}, is the inconsistent cooling rates (slopes) of the lines. More precisely, the descend is stronger when you start colder, and seems to decay no matter what temperature you start at. To illustrate this phenomena more clearly, we took the $\Omega/\Gamma = 1$ lines, and continued the $T_i = 10\ \mathrm{K}$ simulation for $20$ more $\mathrm{ms}$. We then plotted both lines while giving the $T_i = 5\ \mathrm{K}$ line a simple time offset of $37.0\ \mathrm{ms}$ - such that the lines meet when $T_i = 5\ \mathrm{K}$ starts cooling. The result is depicted in figure~\ref{fig:sympathetic-Ti-dep4m222}.
+A more intriguing phenomenon we noticed in the $\Omega/\Gamma \geq 1$ lines of figure~\ref{fig:sympathetic-omega-dep:T:m222}, is the inconsistent cooling rates (slopes). More explicitly, the descent is steeper when you start colder, and seems to decay independently of temperature you start at. To illustrate this phenomena more clearly, we took the $\Omega/\Gamma = 1$ lines, and continued the $T_i = 10\ \mathrm{K}$ simulation for $20$ more $\mathrm{ms}$. In figure~\ref{fig:sympathetic-Ti-dep4m222}, we show both lines while giving the $T_i = 5\ \mathrm{K}$ line a simple time offset of $37.0\ \mathrm{ms}$, such that the lines meet when $T_i = 5\ \mathrm{K}$ starts cooling.
 
 \begin{figure}
 \centering
@@ -143,79 +168,64 @@ A more intriguing phenomena we noticed in the $\Omega/\Gamma \geq 1$ lines of fi
 \label{fig:sympathetic-Ti-dep4m222}
 \end{figure}
 
-We see in figure~\ref{fig:sympathetic-omega-dep:T:m222} that when the \ce{CHDBrI^+}'s temperature starts at $T_i = 10\ \mathrm{K}$, it descends slower when it reaches $T_i = 5\ \mathrm{K}$ - slower then if it had started at $T_i = 5\ \mathrm{K}$ initially! We identify this phenomenon as \emph{hysteresis} - the \ce{CHDBrI^+}'s cooling rate seem to depend on the initial temperature on long time scales, and that limits their cooling rate. 
+We see in figure~\ref{fig:sympathetic-omega-dep:T:m222} that when the \ce{CHDBrI^+}'s temperature starts at $T_i = 10\ \mathrm{K}$, it descends slower when it reaches $T_i = 5\ \mathrm{K}$ - slower then if it had started at $T_i = 5\ \mathrm{K}$ initially! We identify this phenomenon as \emph{hysteresis} - the \ce{CHDBrI^+}'s cooling rate seem to depend on the initial temperature on long time scales, and that limits their cooling rate.
 
-Before we were sure we observe a hysteresis, we tried to find models in literature and even to model ourselves the sympathetic cooling rate, and this venture is described in the next section.
+Our attempts to fit our results to the models presented in section~\ref{sec:theory/models} failed due to the hysteresis. We managed to identify the root cause for the conservation of energy, when we looked at the animations, as described in the next section.
 
-\section{Modelling Attempts}
+\section{Angular Momentum Conservation}
 
-Most models we found\cite{Plasma2T1,Plasma2T2,BabaWakiSympatheticCooling} did not include explicitly all parameters we can tweak here such as the LASER intensity, detuning. Not only that, the authors of these models were usually concerned with the energy exchange rate between the different species, as a function of each species' temperatures. As we were hoping in this research venture to establish propensity rules for effective cooling, the first drawbacks of these models was their analytical complexity.
+As depicted in figure~\ref{fig:angular-momentum-conserved}, we noticed that many gas-phase \ce{CHDBrI^+} ions are rotating around the crystal. Their rotation axis is the $z$ axis, which is also the symmetry axis of our cylindrically symmetric trap, meaning $f_x = f_y > f_z$.
 
-Even if one accepts the analytical complexity, the main problem we found with these models, is that they did not describe any such behavior as this hysteresis. To establish this argument, let's see a main result of Baba \& Waki's model\cite{BabaWakiSympatheticCooling}, which is also not incomprehensibly complex, and is depicted in figure~\ref{fig:babaWakiModel}.
+This collective movement around the $z$ axis limits the cooling rate because the ions don't have any reason to collide with the ion crystal, and thereby lose kinetic energy. This is the core of our disagreement with Baba \& Waki's model described in section~\ref{sec:theory/models} - the angular momentum, and no other vector like variables are treated in their model.
 
 \begin{figure}
-\centering
-\begin{subfigure}{0.46\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{graphics/BabaWaki-CoolingRate.pdf}
-    \caption{Baba \& Waki's cooling rate's dependence on the temperatures of both the LASER cooled (lc) and sympathetically cooled (sc) ions\cite{BabaWakiSympatheticCooling}. $W_\mathrm{sc} \propto T_\mathrm{sc}$ is the sympathetically cooled ions' total kinetic energy.}
-	\label{fig:babaWakiModel}
-\end{subfigure}
-~
-\begin{subfigure}{0.5\textwidth}
 	\centering
-	\includegraphics[width=\linewidth]{graphics/CHDBrI-Rotating-around-z.pdf}
-	\caption{An animation snapshot in which one can clearly see the ions are rotating around the $z$ axis - which is also the symmetry axis of the cylindrically shaped trap.}
+	\includegraphics[width=0.5\linewidth]{graphics/CHDBrI-Rotating-around-z.pdf}
+	\caption{A snapshot of an animation in which one can clearly see the ions are rotating around the $z$ axis - which is also the symmetry axis of the cylindrically shaped trap.}
 	\label{fig:angular-momentum-conserved}
-\end{subfigure}
-\caption{Our disagreement with Baba \& Waki's model, due to angular momentum conservation.}
 \end{figure}
 
-Their model is essentially a differential equation, that involves $\partial_t T_\mathrm{sc}$, $T_\mathrm{sc}(t)$ and $T_\mathrm{lc}(t)$. Other parameters included there are ion trap geometrical parameters, and the ions' masses. Any form of a differential equation that treats only these scalar thermodynamic variables, is likely to fail to recognise and predict any form of hysteresis.
-
-% TODO: Mention the modeling attempts with the Madelung energies German article from 1991? If so, it should require a subsection I think.
-
-After unsuccessful attempts to fit a model to our results, we did manage to explain why the temperatures stop descending after a certain point, by looking at the animations. As depicted in figure~\ref{fig:angular-momentum-conserved}, we noticed when looking closely, that many gas-phase \ce{CHDBrI^+} ions are rotating around the crystal. The rotating axis is the $z$ axis, which is also the symmetry axis of our cylindrically symmetric trap, meaning $f_x = f_y > f_z$.
-
-This collective movement around the $z$ axis limits the cooling rate because the ions don't have any reason to collide with the ion crystal, and thereby lose kinetic energy. It is only natural for the angular momentum of the \ce{CHDBrI^+} ions to be conserved in such a system, as no force induced on them can break the symmetry.
-
-Although we encountered this limitation, we still tried to improve our cooling rates while still using cylindrically symmetric traps, but of different frequencies. This is described in the next section.
+Since the sympathetic cooling rate naturally and evidently depends strongly on the collision rates, we tried to increase the secular frequencies, to increase the collision rates. We scanned multiple sets of trap frequencies, all with a cylindrically symmetry, and the results are described in the next section.
 
 \section{Varying Secular Frequencies}
 
-In this scan of many different trap frequencies, we wanted to eliminate the effects of rogue \ce{Yb^+} ions we saw on  section~\ref{sec:results/sympathetic-omega-dep}. We did that by ensuring they are all cooled almost instantly, using multiple high intensity LASERs. We also chose per trap, secular frequencies with similar ratios between $f_x = f_y$ and $f_z$ - to reduce the risk to mix effects related to the crystal eccentricity. Lastly, these simulation also were with $299$ \ce{CHDBrI^+} ions and $701$ \ce{Yb^+} ions, and the shared parameters of them all are available in table~\ref{tbl:trap_dependence_strong_laser}.
+In this scan of many different trap frequencies, we wanted to eliminate the effects of rogue \ce{Yb^+} ions we saw on  section~\ref{sec:results/sympathetic-omega-dep}. We did that by ensuring they are all cooled almost instantly, using multiple high intensity lasers. We also chose secular frequencies with similar ratios between $f_x = f_y$ and $f_z$ - to reduce the risk to mix effects related to the trap's eccentricity. Lastly, these simulation also were with $299$ \ce{CHDBrI^+} ions and $701$ \ce{Yb^+} ions, and the parameters presented in table~\ref{tbl:trap_dependence_strong_laser}.
 
 \begin{table}[h]
 	\centering
 	\input{artifacts/trap_dependence_strong_laser@parameters.tex}
-	\caption{Shared parameters used for multi-dimensional scan of trap secular frequencies and initial temperatures ($T_i$)}
+	\caption{Parameters common for the multi-dimensional scan of trap secular frequencies and initial temperatures ($T_i$)}
 	\label{tbl:trap_dependence_strong_laser}
 \end{table}
 
-We first noticed in most of the animations, there are no rogue \ce{Yb^+} ions found, thanks to the strong LASERs group. Naturally this was apparent in the \ce{Yb^+} temperatures as well, and is depicted in figure~\ref{fig:crystal-stronger-trap:Ti20}.
+In all of these simulations we had $4$ different initial conditions per trap and initial temperature. We found consistently rogue \ce{Yb^+} ions only for $f_r = (8.5,8.5,1.5)$ and $f_r = (17,17,3)$. Their amounts for for these traps, with $T_i = 10\ \mathrm{K}$ was (respectively) $7.25\pm 2.3$ and $5.5\pm 1$. The amount of rogue \ce{Yb^+} for $T_i = 20\ \mathrm{K}$, was roughly twice as much.
+
+Never the less, the lower amounts of rogue \ce{Yb^+} ions is observable in their temperatures, as depicted in figure~\ref{fig:crystal-stronger-trap:Ti20}. The absence of rogue \ce{Yb^+} ions in the traps given there, allows us to observe fast and efficient laser cooling in the presence of a sympathetically cooled ions, with rates of almost $1 \mathrm{kHz}$\footnote{Calculated with PieceWise Linear Fits\cite{pwlf}.}.
 
 \begin{figure}
 \centering
 \begin{subfigure}{0.46\textwidth}
     \centering
     \includegraphics[width=\linewidth]{graphics/crystal-with-stronger-trap@Ti=20k.pdf}
-	\caption{Positions at the end of a simulation, with no rogue \ce{Yb^+} ions outside the crystal.}
+	\caption{Positions at the end of a simulation, with no rogue \ce{Yb^+} ions outside the crystal, and arrows depicting the multiple laser beams used in these simulation.}
 	\label{fig:crystal-stronger-trap:Ti20:p}
 \end{subfigure}
 ~
 \begin{subfigure}{0.5\textwidth}
     \centering
     \includegraphics[width=\linewidth]{graphics/T@no-rogue-Yb.pdf}
-    \caption{Temperatures of \ce{Yb^+} ions when no rogue \ce{Yb^+} were observed. $T_i = 20\ \mathrm{K}$, and we reach the sub-kelvin regime in less then $10\ \mathrm{ms}$, with the presence of \ce{CHDBrI^+}.}
+    \caption{Temperatures of \ce{Yb^+} ions when no rogue \ce{Yb^+} were observed. $T_i = 20\ \mathrm{K}$, and we reach the sub-kelvin regime in less then $10\ \mathrm{ms}$, with the presence of \ce{CHDBrI^+}. The exact rates for the $1^\mathrm{st}$ piecewise linear fit segments, are $933.7(3.9)\mathrm{Hz}$ and $986.1(5.4)\mathrm{Hz}$ for $f_r = (15,15,2.5)$ and $f_r = (5.5,5.5,1)$ respectively.}
 	\label{fig:crystal-stronger-trap:Ti20:T}
 \end{subfigure}
 \caption{Temperatures of \ce{Yb^+}, along with a positions snapshot of $f_r = (15, 15, 2.5)$ (in $\mathrm{kHz}$).}
 \label{fig:crystal-stronger-trap:Ti20}
 \end{figure}
 
-The next thing we checked was how much better is the sympathetic cooling with the stronger traps. In figure~\ref{fig:trap-comparison:T:m222} we see a similar $T(t)$ plot with various colors and markers per traps and initial temperatures, respectively. Clearly using a stronger trap almost always helps, especially with high initial temperatures.
+The next thing we show, is how much better is the sympathetic cooling with the stronger traps. In figure~\ref{fig:trap-comparison:T:m222} we see a similar $T(t)$ plot with various colors and markers per traps and initial temperatures, respectively. Clearly using a stronger trap almost always helps, especially with high initial temperatures. This rule of thumb is intuitive since higher secular frequencies induce more collisions between \ce{CHDBrI^+} ions and the ion crystal.
 
-This propensity rule however is violated when there are rogue \ce{Yb^+} ions. In the results presented in figure~\ref{fig:trap-comparison:T:m222}, when beginning at $T_i = 10\ \mathrm{K}$, the $f_r = (15, 15, 2.5)$ line reaches lower temperatures then $f_r = (17,17,3)$, and hence disagrees with this propensity rule. When looking at the animations of $f_r = (17,17,3)$, we observe roughly 5 \ce{Yb^+} ions out of the crystal - similarly to figure~\ref{fig:Yb-cooling-limit:T_i10:p:O1}. These \ce{Yb^+} undermine the sympathetic cooling.
+However, with $T_i = 10\ \mathrm{K}$, and comparing $f_r = (17,17,3)$ v.s $f_r = (15, 15, 2.5)$, we observe a violation of this rule of thumb. Our best explanation for this violation is the $5.5\pm 1$ rogue \ce{Yb^+} ions we counted earlier for $f_r = (17,17,3)$, which seem to undermine the sympathetic cooling.
+
+When comparing $f_r = (5.5,5.5,1)$ v.s $f_r = (8.5,8.5,1.5)$, we don't see such a violation, even though we for $f_r = (8.5,8.5,1.5)$ even more rogue ions - $7.25\pm 2.3$. We think that the higher secular frequencies inducing more \ce{CHDBrI^+} collisions compete with the disturbance of the rogue \ce{Yb^+} ions.
 
 \begin{figure}
 	\centering
@@ -224,7 +234,7 @@ This propensity rule however is violated when there are rogue \ce{Yb^+} ions. In
 	\label{fig:trap-comparison:T:m222}
 \end{figure}
 
-We then summarized these results by normalizing the final temperatures of the \ce{CHDBrI^+} ions to the temperatures before cooling (denoted $T_s$, not $T_i$ - see section~\ref{sec:intro/time-parts}). This gives us a scalar out of every simulation, and thus was plotted as a function of the trap frequencies, with colors per $T_i$ in figure~\ref{fig:trap_dependence_summary}. The bare difference we see between the points of $f_r = (15, 15, 2.5)$ v.s $f_r = (17,17,3)$, is well explained also by the rogue \ce{Yb^+} ions discussed earlier, observed consistently in all simulations with $T_i \geq 10\ \mathrm{K}$.
+These results are summarized in figure~\ref{fig:trap_dependence_summary} in the following way: We normalize the final temperatures ($T_f$) of the \ce{CHDBrI^+} ions to the temperatures before cooling.\footnote{denoted $T_s$, not $T_i$ - see section~\ref{sec:intro/time-parts}.} This gives us a scalar out of every simulation, which is plotted as a function of the trap frequencies, with colors per $T_i$. The bare difference we see between the points of $f_r = (15, 15, 2.5)$ v.s $f_r = (17,17,3)$, is well explained also by the rogue \ce{Yb^+} ions discussed earlier, observed consistently in all simulations with $T_i \geq 10\ \mathrm{K}$.
 
 \begin{figure}
 \centering
