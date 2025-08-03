@@ -204,7 +204,7 @@ Controls whether the secular frequencies experienced by both ion species are imp
 \midrule
 $\checkmark$ & $\times$ & $\checkmark$ & A single electric field exhibiting 3 dimensional Mathieu equations - The only physically possible kind of trap, with non-trivial secular frequencies as presented in figure~\ref{fig:mathieu-mass-dep}. \\
 \midrule
-$\times$ & $\checkmark$ & $\times$ & A single \(k \mathbf{x}\)-like force is acting upon all ions — implementing the naive frequencies you'd expect from a perfect Harmonic oscillator. \\
+$\times$ & $\checkmark$ & $\times$ & A single \(k \mathbf{x}\)-like force is acting upon all ions - implementing the naive frequencies you'd expect from a perfect Harmonic oscillator. \\
 \midrule
 $\checkmark$ & $\checkmark$ & $\times$ & Two different Mathieu forces are applied to each mass, such that the naive frequencies related by $\sqrt{m_r} \equiv \sqrt{m_{cooler}/m_{target}}$ are experienced by the two ion species. \\
 \midrule
@@ -383,41 +383,52 @@ Lastly, the relation of the Rabi frequency $\Omega$ to the actual laser intensit
     \label{eq:omega2intensity}
 \end{equation}
 
-With \ce{Yb^+}'s parameters\cite{RansfordThesis}, we conveniently get: $I \approx 1 \mathrm{mW}/\mathrm{cm}^2 (\Omega/\Gamma)^2$.
+With \ce{Yb^+}'s parameters\cite{RansfordThesis}, we conveniently get:
+
+\begin{equation}
+I \approx \frac{1 \mathrm{mW}}{\mathrm{cm}^2}\cdot \left(\frac{\Omega}{\Gamma}\right)^2
+\end{equation}
 
 Now that we know how to fully characterise laser cooling and ion trapping, we will take revise some models we found in literature that try to predict cooling rates and energy exchange rates in multi-species ensembles. 
 
 \section{State of the art Sympathetic Cooling Models}\label{sec:theory/models}
 
-Most models we found in literature\cite{Plasma2T1,Plasma2T2,BabaWakiSympatheticCooling} did not include explicitly all parameters we can tweak here such as the laser intensity \& detuning. Not only that, the authors of these models were usually concerned with the energy exchange rate between the different species, as a function of each species' temperatures. On the other hand we were more concerned with optimizing this energy exchange, and establish propensity rules for effective cooling. The first drawbacks of the cited models was their analytical complexity.
+Among the literature we surveyed, the only theoretical model we found that explicitly treats sympathetic cooling between two ion species confined in an ion trap is the one developed by Baba \& Waki~\cite{BabaWakiSympatheticCooling}. Other works tend to focus either on laser cooling of single-species crystals\cite{Simple1IonLaserCoolingModel}, or on plasma-like behavior\cite{Plasma2T1,Plasma2T2} where temperatures evolve through bulk approximations. In contrast, Baba \& Waki's model directly addresses the exchange of energy between a laser-cooled species and a second, sympathetically cooled species, both in the gas-phase regime of a linear radio-frequency quadrupole (RFQ) trap.
 
-Baba \& Waki's model\cite{BabaWakiSympatheticCooling}, is the least complex model we found though it is still thorough and rigorous. They were also concerned like us with sympathetic cooling, and not plasma physics. However, they were mainly concerned with the limits for sympathetic cooling as a function of the mass ratio between the laser cooling (lc) ions, and the sympathetically cooled (sc) ions.
+Their work combines detailed molecular dynamics (MD) simulations with a simplified analytical model based on binary energy exchange. In their simulations, laser-cooled (lc) \ce{^{24}Mg^+} ions form a cold, dense cloud in the trap. When sympathetically cooled (sc) ions of various masses are introduced with higher initial kinetic energies, their behavior depends critically on their mass: $m_\mathrm{sc} \gtrsim (0.54 \pm 0.04) m_\mathrm{lc}$ are efficiently cooled, while lighter ions are instead heated. This mass threshold arises from the structure of micromotion in the linear RFQ trap, which lacks radio-frequency confinement in the axial $z$ direction.
 
-Their model is essentially a differential equation, that involves $\partial_t T_\mathrm{sc}$, $T_\mathrm{sc}(t)$ and $T_\mathrm{lc}(t)$. Other parameters included there are ion trap geometrical parameters and the ions' masses. The other models we found, although not necessarily for the purpose of sympathetic cooling, also developed differential equations.
+To interpret the MD results, the authors developed a `heat-exchange' model, where the sympathetic cooling rate is described as the product of two components:
 
-In figure~\ref{fig:babaWaki} we see two of their main results - the sympathetic cooling rate in figure~\ref{fig:babaWakiCoolingRate} as a function of $T_\mathrm{lc}$ and $W_\mathrm{sc} \propto T_\mathrm{sc}$, and molecular dynamics simulations results in figure~\ref{fig:babaWakiSimulations}. Their results show that masses lighter then $(0.54\pm 0.04)m_\mathrm{lc}$ cannot be sympathetically cooled.
+\begin{enumerate}
+    \item The \emph{energy transfer per collision}, derived using elastic, two-body kinematics for ions moving along Mathieu trajectories in the RFQ field. This term incorporates the mass ratio, the trap parameters, and the kinetic energy.
+    \item The Coulomb \emph{collision rate}, modeled using a differential cross-section of the Rutherford scattering.
+\end{enumerate}
+
+The resulting model yields a sympathetic cooling rate of the form
+
+$$ \frac{dW}{dt} \propto \frac{W_\mathrm{sc} - W_\mathrm{lc}}{(W_\mathrm{sc} W_\mathrm{lc})^{3/2}} $$
+
+where $W_i \propto T_i$ and $i \in \{\mathrm{lc}, \mathrm{sc}\}$. This equation correctly captures the behavior observed in their simulations. As shown in figure~\ref{fig:babaWaki}, the cooling becomes ineffective both at very low and very high temperatures, and is strongly suppressed for $m_\mathrm{sc} < 0.54\,m_\mathrm{lc}$.
 
 \begin{figure}
 \begin{subfigure}{0.48\textwidth}
     \centering
     \includegraphics[width=\linewidth]{graphics/BabaWaki-CoolingRate.pdf}
-    \caption{ cooling rate's dependence on the temperatures of both the laser cooled (lc) and sympathetically cooled (sc) ions\cite{BabaWakiSympatheticCooling}. $W_\mathrm{sc} \propto T_\mathrm{sc}$ is the sympathetically cooled ions' total kinetic energy.}
-	\label{fig:babaWakiCoolingRate}
+    \caption{Cooling rate as a function of both $T_\mathrm{sc}$ and $T_\mathrm{lc}$. $W_\mathrm{sc} \propto T_\mathrm{sc}$. The mass ratio used in this calculation - $m_\mathrm{sc}/m_\mathrm{lc} = 29/24 \approx 1.32$ is somewhat similar to our mass ratio - $222/174 \approx 1.28$.}
+    \label{fig:babaWakiCoolingRate}
 \end{subfigure}
 ~
 \begin{subfigure}{0.48\textwidth}
     \centering
     \includegraphics[width=\linewidth]{graphics/BabaWaki-simulations.pdf}
-    \caption{Molecular dynamics (MD) simulation results of sympathetic cooling, for several different $m_\mathrm{sc}$ values. Heating instead of cooling is demonstrated when $m_\mathrm{sc}$ is below a certain threshold.}
-	\label{fig:babaWakiSimulations}
+    \caption{MD simulation results for various $m_\mathrm{sc}$ values. Only ions heavier than roughly $0.54\,m_\mathrm{lc}$ are cooled effectively. Lighter ions are heated.}
+    \label{fig:babaWakiSimulations}
 \end{subfigure}
-\caption{Baba \& Waki's two main results.}
+\caption{Key results from Baba \& Waki's model, for $m_\mathrm{lc} = 24\,\mathrm{amu}$ (mass of \ce{^{24}Mg^+}). Their simulation and analytical work establish a critical mass ratio for effective sympathetic cooling in linear RFQ ion traps.}
 \label{fig:babaWaki}
 \end{figure}
 
-We also tried to model the cooling rate, with simpler differential equations. Our modeling attempts considered a perfect, static $T = 0\ \mathrm{K}$ crystal, and collisions of sympathetically cooled ions in it. We had a good model for the size of the perfect ion crystal\cite{Madelung1991}, based also on trap's secular frequencies, and not $(a_i, q_i)$ Mathieu parameters like in Baba \& Waki's model. We tried to use the secular frequencies also to estimate the collision rate, and hence the temperature decay.
-
-In the next chapter we will see why any model that derives a differential equation that includes \emph{scalar} thermodynamic variables such as the temperature, is likely to not fit our simulation results. More explicitly, these models fail to describe a \emph{hysteresis} phenomenon we observe - something that is hard to describe in a differential equation of temperatures.
+Their model incorporates many key physical ingredients: Coulomb interactions, energy partitioning, and trap-specific parameters. However, like other temperature-based differential equation models, it cannot reproduce more complex dynamical phenomena we observed in our simulations - phenomena that occur in a mixed gas-crystal phases. Moreover, we will see in the following chapter a \emph{hysteresis} phenomenon in the temperature evolution - something that explicitly disagrees with the results of figure~\ref{fig:babaWakiCoolingRate}.
 
 \section{Simulations Parameters \& Convergence}
 

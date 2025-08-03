@@ -67,7 +67,7 @@ This is not only a matter of breaking the cylindrical symmetry of the trap, as e
     \label{tbl:laserAngles-cooling-rates}
 \end{table}
 
-If obliged to use one laser, using $e^-$ gives slightly better results in comparison to $r^-$, but the latter is parallel to the optical table, and hence is slightly easier to setup technically in the lab. This is why we chose $r^-$ for the next scan, in which we also added \ce{CHDBrI^+} ions and modulated the intensity ($\Omega$), in multiple initial temperatures.
+Using 3 lasers which are all mixing the principal axes seems to work best. However, if obliged to use only one laser, using $e^-$ gives slightly better results in comparison to $r^-$. The latter however, is parallel to the optical table, and hence is slightly easier to setup technically in the lab. This is why we chose $r^-$ for the next scan, in which we also added \ce{CHDBrI^+} ions and modulated the intensity ($\Omega$), in multiple initial temperatures.
 
 \section{Scanning \texorpdfstring{$\Omega$}{Omega} \& Initial Temperatures with \ce{CHDBrI^+}}\label{sec:results/sympathetic-omega-dep}
 
@@ -168,15 +168,13 @@ A more intriguing phenomenon we noticed in the $\Omega/\Gamma \geq 1$ lines of f
 \label{fig:sympathetic-Ti-dep4m222}
 \end{figure}
 
-We see in figure~\ref{fig:sympathetic-omega-dep:T:m222} that when the \ce{CHDBrI^+}'s temperature starts at $T_i = 10\ \mathrm{K}$, it descends slower when it reaches $T_i = 5\ \mathrm{K}$ - slower then if it had started at $T_i = 5\ \mathrm{K}$ initially! We identify this phenomenon as \emph{hysteresis} - the \ce{CHDBrI^+}'s cooling rate seem to depend on the initial temperature on long time scales, and that limits their cooling rate.
+We see in figure~\ref{fig:sympathetic-omega-dep:T:m222} that when the \ce{CHDBrI^+}'s temperature starts at $T_i = 10\ \mathrm{K}$, the rate is moderated when it reaches $T_i = 5\ \mathrm{K}$, whereas the rate is higher when it starts at $T_i = 5\ \mathrm{K}$ initially! We identify this phenomenon as \emph{hysteresis} - the \ce{CHDBrI^+}'s cooling rate seem to depend on the initial temperature on long time scales, and that limits their cooling rate.
 
-Our attempts to fit our results to the models presented in section~\ref{sec:theory/models} failed due to the hysteresis. We managed to identify the root cause for the conservation of energy, when we looked at the animations, as described in the next section.
+Our attempts to fit our results to the models presented in section~\ref{sec:theory/models} failed due to this hysteresis. We managed to identify the root cause for the conservation of energy, when we looked at the animations, as described in the next section.
 
 \section{Angular Momentum Conservation}
 
 As depicted in figure~\ref{fig:angular-momentum-conserved}, we noticed that many gas-phase \ce{CHDBrI^+} ions are rotating around the crystal. Their rotation axis is the $z$ axis, which is also the symmetry axis of our cylindrically symmetric trap, meaning $f_x = f_y > f_z$.
-
-This collective movement around the $z$ axis limits the cooling rate because the ions don't have any reason to collide with the ion crystal, and thereby lose kinetic energy. This is the core of our disagreement with Baba \& Waki's model described in section~\ref{sec:theory/models} - the angular momentum, and no other vector like variables are treated in their model.
 
 \begin{figure}
 	\centering
@@ -184,6 +182,10 @@ This collective movement around the $z$ axis limits the cooling rate because the
 	\caption{A snapshot of an animation in which one can clearly see the ions are rotating around the $z$ axis - which is also the symmetry axis of the cylindrically shaped trap.}
 	\label{fig:angular-momentum-conserved}
 \end{figure}
+
+This collective movement around the $z$ axis limits the sympathetic cooling rate because the rotating ions can rotate for long periods of time, not collide with the ion crystal and thereby not lose kinetic energy. This is the main missing piece in Baba \& Waki's model described in section~\ref{sec:theory/models} - the angular momentum is not treated explicitly in their model, and this behavior is not detected.
+
+Baba \& Waki's sympathetic cooling rate depicted in figure~\ref{fig:babaWakiCoolingRate}, does state that for very low $T_\mathrm{lc}$ the sympathetic cooling rate is suppressed. However we identify it to be strongly dependent on the \emph{way} the sympathetic cooled ions' velocities are distributed (with or without a collective rotation around the $z$ axis), and not only because $T_\mathrm{lc}$ or $T_\mathrm{sc}$ is low. Most importantly, what limits the cooling rate is the changes the velocities' distribution goes through, and that depends on the initial conditions for time scales of at least $10\,\mathrm{ms}$ - hence we identify this as hysteresis.
 
 Since the sympathetic cooling rate naturally and evidently depends strongly on the collision rates, we tried to increase the secular frequencies, to increase the collision rates. We scanned multiple sets of trap frequencies, all with a cylindrically symmetry, and the results are described in the next section.
 
