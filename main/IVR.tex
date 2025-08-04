@@ -25,7 +25,7 @@ To answer this we computed all of these combinations, up to a certain point, and
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{graphics/IVR-CHDBrI.pdf}
-	\caption{IVR histogram computed for \ce{CHDBrI^+}, given the eigen modes also given in table~\ref{tbl:CHDBrI-vibrations}. The different colors represent two different computational methods\cite{IVR_article}. Dashed lines represent the input vibrational modes, and their colors match the colors of the ascending histogram lines.}
+	\caption{IVR histogram computed for \ce{CHDBrI^+}, given the eigen modes also given in table~\ref{tbl:CHDBrI-vibrations}. The different colors represent two different computational methods~\cite{IVR_article}. Dashed lines represent the input vibrational modes, and their colors match the colors of the ascending histogram lines.}
 	\label{fig:IVR_CHDBrI}
 \end{figure}
 
@@ -35,13 +35,13 @@ We compared with the same method the IVR histograms of different molecular ions 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{graphics/IVR-molecules-comparison.pdf}
-	\caption{A comparison of IVR histograms for all molecules mentioned in our ab-initio calculations\cite{IVR_article}. All eigen modes were computed with the \texttt{B97} method.}
+	\caption{A comparison of IVR histograms for all molecules mentioned in our ab-initio calculations~\cite{IVR_article}. All eigen modes were computed with the \texttt{B97} method.}
 	\label{fig:IVR-molecules-comparison}
 \end{figure}
 
 \section{Technical Notes}
 
-The source code for computing all possible energy combinations and plotting them, is available at \url{https://gitlab.com/doronbehar/IVR-calculator}. It consists mainly of 2 Python scripts, one for generating the data, and the other for plotting it. The main Python dependencies are Numpy\cite{numpy} \& Matplotlib\cite{Matplotlib} and for generating IVR data, \texttt{progressbar2}\footnote{\url{https://pypi.org/project/progressbar2/}} is required too.
+The source code for computing all possible energy combinations and plotting them, is available at \url{https://gitlab.com/doronbehar/IVR-calculator}. It consists mainly of 2 Python scripts, one for generating the data, and the other for plotting it. The main Python dependencies are Numpy~\cite{numpy} \& Matplotlib~\cite{Matplotlib} and for generating IVR data, \texttt{progressbar2}\footnote{\url{https://pypi.org/project/progressbar2/}} is required too.
 
 \subsection{\texttt{./calc.py}}
 

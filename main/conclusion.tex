@@ -1,6 +1,6 @@
 \chapter{Conclusion \& Outlook}
 
-Our software \yotam{what do you mean by 'our software'} tool has enabled us to explore phenomena that were hard to anticipate, and hard to model. These include:
+The software developed for this thesis has enabled us to explore phenomena that were hard to anticipate, and hard to analytically model. These include:
 
 \begin{itemize}
 	\item Choosing wisely laser cooling intrusion angles is significant.
@@ -10,15 +10,12 @@ Our software \yotam{what do you mean by 'our software'} tool has enabled us to e
 	\item Increasing the trap's secular frequencies, helps slightly overcome the angular momentum conservation limit, by inducing more frequent collisions with the cooled crystallized laser cooled ions.
 \end{itemize}
 
-Additionally, Baba \& Waki's model for sympathetic cooling in quadrupole traps\cite{BabaWakiSympatheticCooling}, doesn't derive equations that could anticipate a hysteresis phenomenon. Their model, and other models we found\cite{Plasma2T1,Plasma2T2} deal only with temperatures, and hence cannot anticipate a phenomenon like angular momentum conservation.
-\yotam{change to more positive way on work of other peopel}
+Additionally, Baba \& Waki's analytical model~\cite{BabaWakiSympatheticCooling}, provide useful insight into the temperature dynamics of sympathetic cooling. However, since their model focuses primarily on temperature evolution, they do not account for conserved quantities such as angular momentum, and therefore cannot describe the phenomenon of hysteresis we observed.
 
 \section*{Outlook}
 
-\yotam{this sentence should be the last one - not the first one in the outlook}
-Our software tool is available as free software at \url{https://gitlab.com/doronbehar/lab-ion-trap-simulations}, and can serve our group to continue optimize our sympathetic cooling. We believe that cooling in a completely anisotropic traps could help sympathetically cool our chiral molecule even faster, but our limited research period has precluded us from investigating this too.
-\yotam{the last sentence is not scientific, change that it can be further optimized ...}
-
-We also believe \yotam{what?} that even with cylindrically symmetric traps, it should be possible to model sympathetic cooling in a way that takes into account angular momentum conservation\yotam{belive based on what?}. We believe this should be approachable if one would consider a perfect $T = 0\ \mathrm{K}$ ion crystal at the origin, and a dilute ion cloud of different mass around it. A good model for the size of the ion crystal is available in literature\cite{Madelung1991}, and can be easily accommodated also for non-spherically symmetric traps.
-
-Our software can also be used for studying single-species laser cooling in ion traps, and for optimizing it too. An optimal detuning should depend on the temperature, according to expression~\ref{eq:laser-cool-force} which depends on the atoms' velocities. It'd be interesting to try to find a time dependent detuning modulation that would optimize this even further. Similarly a time dependent modulation for the intensity, might also optimize the cooling rate.
+\begin{itemize}
+  \item The software will support future efforts to optimize sympathetic cooling in our group.
+  \item The software can simulate cooling in anisotropic traps, which may further enhance efficiency. Additionally, incorporating angular momentum conservation in cylindrically symmetric traps might be feasible by modeling a $T = 0\ \mathrm{K}$ ion crystal surrounded by a dilute cloud of different-mass ions. A reliable model for the ion crystal size is available in the literature~\cite{Madelung1991} and can be generalized to non-spherical traps.
+  \item The software can also be applied to optimize single-species laser cooling. Given that the cooling force~\ref{eq:laser-cool-force} depends on velocity, it would be interesting to explore time-dependent modulations of detuning or intensity to further enhance cooling performance.
+\end{itemize}

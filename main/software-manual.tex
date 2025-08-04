@@ -6,7 +6,7 @@ The following sections will simply describe each file in the repository, hopeful
 
 \section{\texttt{flake.nix}: Setting up a Development Environment}
 
-Before we'll begin describing the actual Python scripts, it is important to setup a proper development environment for running the scripts. The best software I recommend for managing the development environment on a per-project basis, is the package manager \textit{Nix}\cite{Nix}. Nix is a functional package manager\cite{NixThesis}, meaning it is capable of producing (packages and) development environments from a pure set of inputs. The intention is to increase the likelihood that the resulted development environment will be reproducible\cite{SoftwareReproducitilityThesis} on any computer running Nix.
+Before we'll begin describing the actual Python scripts, it is important to setup a proper development environment for running the scripts. The best software I recommend for managing the development environment on a per-project basis, is the package manager \textit{Nix}\cite{Nix}. Nix is a functional package manager~\cite{NixThesis}, meaning it is capable of producing (packages and) development environments from a pure set of inputs. The intention is to increase the likelihood that the resulted development environment will be reproducible~\cite{SoftwareReproducitilityThesis} on any computer running Nix.
 
 The main file that defines the development environment is \texttt{flake.nix}. If you have \texttt{nix} installed you should be able to run \texttt{nix develop}\footnote{Don't forget to enable the (currently, as of writing) \texttt{experimental-features = nix-command flakes}. See the relevant \href{https://nix.dev/manual/nix/stable/contributing/experimental-features}{Nix' Manual page} for more details.} in a command line shell and enter a Bash shell that would be capable of running any script in the repository just like I did - with the same versions of Python dependencies, and same LAMMPS version and build variant.
 
@@ -236,7 +236,7 @@ The basic recovery usage of it is:
 parallel ./sim-continue.py ::: scan*.h5.now-scanned
 \end{verbatim}
 
-Where the \texttt{.now-scanned} suffixed files are scan files that were not finished (or when finished but not renamed, as described in section~\ref{ssec:manual/parallelized-simulating}). In principal \texttt{./sim-continue.py} accepts only a single \texttt{.h5} file, so GNU parallel\cite{GNUParallel} can very useful with it.
+Where the \texttt{.now-scanned} suffixed files are scan files that were not finished (or when finished but not renamed, as described in section~\ref{ssec:manual/parallelized-simulating}). In principal \texttt{./sim-continue.py} accepts only a single \texttt{.h5} file, so GNU parallel~\cite{GNUParallel} can very useful with it.
 
 The next subsections, explain how to use \texttt{./sim-continue.py} with successfully finished scans - scan files ending with \texttt{.h5}, and a few details regarding the \texttt{.h5} file naming schema.
 
@@ -409,7 +409,7 @@ T & The temperature of the clouds [Kelvin] & \makecell[tl]{\texttt{--part}} \\
 \hline
 size & Cloud size [mm] & \makecell[tl]{\texttt{--axis} \\ \texttt{--part}} \\
 \hline
-coolFreq & The cooling frequency [kHz], as calculated by cjekel's PWLF (PieceWise Linear Fit) algorithm\cite{pwlf} & \makecell[tl]{\texttt{--regime}} \\
+coolFreq & The cooling frequency [kHz], as calculated by cjekel's PWLF (PieceWise Linear Fit) algorithm~\cite{pwlf} & \makecell[tl]{\texttt{--regime}} \\
 \hline
 cloudFreq & The cloud's collective movement most dominant frequency [kHz] & \makecell[tl]{\texttt{--axis} \\ \texttt{--freqMethod} \\ \texttt{--freqOperator}} \\
 \hline
@@ -426,7 +426,7 @@ $E_c$ & Coulomb energies\footnote{See also section~\ref{ssec:h5doctor_coulomb}.}
 \hline
 \texttt{--part} & The simulation part in comparison to cooling time point to use in the calculation (options: \texttt{stabilizing}, \texttt{cooling}, \texttt{s-f}, \texttt{f/s}; default: \texttt{stabilizing}) \\
 \hline
-\texttt{--regime} & The index of the cooling regime that was detected by cjekel's PWLF (PieceWise Linear Fit) algorithm\cite{pwlf} (options: \texttt{0}, \texttt{1}; default: \texttt{0}) \\
+\texttt{--regime} & The index of the cooling regime that was detected by cjekel's PWLF (PieceWise Linear Fit) algorithm~\cite{pwlf} (options: \texttt{0}, \texttt{1}; default: \texttt{0}) \\
 \hline
 \texttt{--axis} & The axis for which to focus the calculation upon (options: \texttt{x}, \texttt{y}, \texttt{z}; default: \texttt{x}) \\
 \hline
@@ -538,7 +538,7 @@ All other Python files in the repository collect functions related to a certain 
 \hline
 \texttt{boltzmann.py}           & Implement and tests various temperature computations, and temperatures-dependent distributions.                                                        & Given trap secular frequencies and other parameters, can print and plot statistics of distributions.                                                                                                                                                 \\
 \hline
-\texttt{coulomb.py}             & Implement Coulomb energies calculation, using Freud's\cite{freud} \texttt{locality.AABBQuery} - allowing to iterate all nearest-neighbors efficiently. & Can calculate \& plot data like presented in section~\ref{sec:theory/init-coulomb} and in appendix~\ref{chap:coulomb}.                                                                                                                                      \\
+\texttt{coulomb.py}             & Implement Coulomb energies calculation, using Freud'sA\cite{freud} \texttt{locality.AABBQuery} - allowing to iterate all nearest-neighbors efficiently. & Can calculate \& plot data like presented in section~\ref{sec:theory/init-coulomb} and in appendix~\ref{chap:coulomb}.                                                                                                                                      \\
 \hline
 \texttt{laser\_cool.py}         & Implement laser cooling related functions.                                                                                                             & Opens a Matplotlib plot solving the equation of motion of a single particle under a harmonic force and the laser cooling force. Including sliders for various parameters that affect the results, similarly to figure~\ref{fig:pure-mathieu-fft}.    \\
 \hline
@@ -548,7 +548,7 @@ All other Python files in the repository collect functions related to a certain 
 \hline
 \texttt{physical\_constants.py} & Put all physical and technical parameters in the same place.                                                                                           & Does nothing.                                                                                                                                                                                                                                        \\
 \hline
-\texttt{pwlfWrapper.py}         & Wraps the PWLF algorithm to ease handling of the fit parameters' uncertainties\cite{uncertainties}.                                                                        & Does nothing.                                                                                                                                                                                                                                        \\
+\texttt{pwlfWrapper.py}         & Wraps the PWLF algorithm to ease handling of the fit parameters' uncertainties~\cite{uncertainties}.                                                                        & Does nothing.                                                                                                                                                                                                                                        \\
 \hline
 \texttt{bolg.py}                & Implements an algorithm (written by Claude.ai), that performs an opposite of file path globbing (hence the name). Used for picking figures' titles.    & Tests the algorithm using simply file paths arguments.                                                                                                                                                                                               \\
 \end{tabularx}
