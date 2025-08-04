@@ -2,6 +2,7 @@
 
 % TODO: Make sure this is phrased good after the whole intro is fully reviewed.
 
+\yotam{no need for this mini-intro}
 In this chapter, we will first describe why we are interested in studying chiral molecules (section~\ref{sec:intro/about-chirality}), and why we chose chiral molecular ions for our measurement (section~\ref{sec:intro/why-molecular-ions}). Then we will discuss why we need to cool them fast (section~\ref{sec:intro/why-cool-fast}), how our ion trap (section~\ref{sec:intro/ion-trap}) and detection scheme (section~\ref{sec:intro/VMI}) further motivate optimizing the cooling time. In section~\ref{sec:intro/simulation} we will describe briefly how we performed simulations of trapping and cooling, both in terms of software, and the models of trapping and cooling.
 
 \section{Motivation}
@@ -18,6 +19,7 @@ The word chirality is derived from the Greek word for 'hand'. We define an objec
 Chirality is a fundamental property of many molecules in nature, referring to their existence in two mirror-image forms called \emph{enantiomers}. A striking demonstration of chirality can be found in the molecule \emph{limonene}, which can be found in citrus fruits and silver fir (Abies alba). The two enantiomers of limonene have identical molecular formulas and with mirrored structure, yet they interact differently with olfactory receptors in the human nose\cite{LimoneneSmell}. This difference in perception, caused solely by molecular chirality, demonstrates how profoundly chirality can influence biological interactions.
 
 Despite the structural symmetry allowed by chemistry, nature consistently uses only one enantiomer in living organisms in many biologically relevant molecules. This phenomenon is known as \emph{homochirality}, and it is not mandated by fundamental physics, yet it is universally observed across all known forms of life. Figure~\ref{fig:homo-chirality} illustrates several such examples.
+\yotam{I do not see how this paragraph, or to be more general alomst everything above contribute to the discussion. The reader should understand very quickly what are you doing and why... not reading stories about biology}
 
 \begin{figure}
 \centering
@@ -45,7 +47,7 @@ The origin of this asymmetry is still an open question. Some researchers suggest
 
 In most chiral molecules (e.g \ce{CHBrClF}\cite{DeltaPVCalculationExample}), calculations predict that $\Delta_\mathrm{PV} \ll 1 \mathrm{Hz}$, where the vibrational modes are in the mid \& far IR regime - $16-18$ orders of magnitude larger. Performing such a measurement is challenging, but using molecular ions, we could enhance the precision thanks to long trapping durations and longer coherence times. Furthermore, cooling the molecular ions will reduce thermal Doppler effect, and increase coherence time even more.
 
-As a bonus, when one chooses to use chiral molecular ions for measuring $\Delta_\mathrm{PV}$, the energy shift is usually enhanced\cite{EduardusCHDBrI}. In particular, for \ce{CHDBrI^+}, we found a maximal $\Delta_\mathrm{PV} \approx 1.8 \mathrm{Hz}$\cite{EduardusCHDBrI} whereas the maximal $\Delta_\mathrm{PV}$ in the neutral is approximately $0.25 \mathrm{Hz}$, as depicted in figure~\ref{fig:EduardusCHDBrI}.
+As a bonus\yotam{why bonus, it is not a lottery...You want to say that there are two reason for ions: long coherence time, i.e. better accuracy, second larger effect. Overall larfer $\Delta_{\rm PV}/E$}, when one chooses to use chiral molecular ions for measuring $\Delta_\mathrm{PV}$, the energy shift is usually enhanced\cite{EduardusCHDBrI}. In particular, for \ce{CHDBrI^+}, we found a maximal $\Delta_\mathrm{PV} \approx 1.8 \mathrm{Hz}$\cite{EduardusCHDBrI} \yotam{is it your work? if not, change to: In particular, the expceted effect in CHDBrI is $\Delta=XYZ$~\cite{}.This is larger than the estimated effect in  neutral molecule which is about 0.25Hz~\cite{}.  } whereas the maximal $\Delta_\mathrm{PV}$ in the neutral is approximately $0.25 \mathrm{Hz}$, as depicted in figure~\ref{fig:EduardusCHDBrI}.
 
 \begin{figure}
 	\centering
@@ -63,19 +65,23 @@ As a bonus, when one chooses to use chiral molecular ions for measuring $\Delta_
 	\label{fig:EduardusCHDBrI}
 \end{figure}
 
+\yotam{remove this sentence - it means nothing}
 Cooling molecules, and molecular ions in particular is not a trivial task, and it is discussed in the next section.
 
 \subsection{How to Cool a Molecular Ion?}
 
 To date, there are no general methods to directly cool any molecule below $1\mathrm{K}$. Some atoms can be cooled to this regime of temperatures using laser cooling, which relies upon closed cycling transition. Molecules however, are significantly more challenging to laser cool because they have many more rotational and vibrational degrees of freedom. In recent years some specific molecules, designed specifically for this task, \emph{have} been laser cooled\cite{DiatomicLaserCool,MoleculeLaserCooled}. Our molecule however is already specific, and is more complex, thus it requires an alternative solution.
+\yotam{this paragraph is problematic. You claim that your molecule is not good to laser cooling but do not explain why. I would make this paragrpah shorter and write that why it cannot be cooled via laser cooling.}
+\yotam{I would not use the term 'our molecule' but just write its name}
 
-The solution we went with is to use sympathetic cooling - a technique where two different ion species are co-trapped, and only one species is directly laser cooled. The laser-cooled (lc) ions absorb kinetic energy from the sympathetically cooled (sc) ions through Coulomb collisions, thereby cooling their external degrees of freedom indirectly.\footnote{For a comparative sympathetic cooling method, see Hudson's review of sympathetic cooling of molecular ions using laser cooled \emph{neutral} atoms\cite{HudsonSympatheticCooling}.}
+The solution we went with is to use sympathetic cooling - a technique where two different ion species are co-trapped, and only one species is directly laser cooled\yotam{refernce for it?}. The laser-cooled (lc)\yotam{should be capital letters LC} ions absorb kinetic energy from the sympathetically cooled (sc) ions through Coulomb collisions, thereby cooling their external degrees of freedom indirectly.\footnote{For a comparative sympathetic cooling method, see Hudson's review of sympathetic cooling of molecular ions using laser cooled \emph{neutral} atoms\cite{HudsonSympatheticCooling}.\yotam{this footnote should be in the main text as it is what you are using!!!}}
 
-For efficient sympathetic cooling there are two criteria that the laser cooled ions must meet: (1) They need to have a cycling transition that can be used for laser cooling, and (2) their mass needs to be close to the mass of the sympathetically cooled ions\cite{BabaWakiSympatheticCooling}\footnote{Baba \& Waki's article focused on finding a low bound on $m_\mathrm{sc}/m_\mathrm{lc}$ that would still allow sympathetic cooling. We will refer more to their research in chapter~\ref{chap:theory} and chapter~\ref{chap:results}.}. We chose \ce{Yb^+}, with a mass of $m_\mathrm{lc} = 174\mathrm{amu}$, where \ce{CHDBrI^+}'s mass is $m_\mathrm{sc} = 222\mathrm{amu}$. Other ions we considered that are known to have been laser cooled, are \ce{Ca^+} \& \ce{Be^+}, but \ce{Yb^+}'s mass fits best.
+For efficient sympathetic cooling there are two criteria that the laser cooled ions must meet: (1) They need to have a cycling transition that can be used for laser cooling, and (2) their mass needs to be close to the mass of the sympathetically cooled ions\cite{BabaWakiSympatheticCooling}\footnote{Baba \& Waki's article focused on finding a low bound on $m_\mathrm{sc}/m_\mathrm{lc}$ that would still allow sympathetic cooling. We will refer more to their research in chapter~\ref{chap:theory} and chapter~\ref{chap:results}.\yotam{this footnote means nothing... better to avoid footnotes aas all. It is just make the reading harder}}. We chose \ce{Yb^+}, with a mass of $m_\mathrm{lc} = 174\mathrm{amu}$, where \ce{CHDBrI^+}'s mass is $m_\mathrm{sc} = 222\mathrm{amu}$. Other ions we considered that are known to have been laser cooled, are \ce{Ca^+} \& \ce{Be^+}, but \ce{Yb^+}'s mass fits best.
+\yotam{I guees because Yb is the heaviest, you should write it}
 
 \subsection{Why Cool the Molecular Ions Fast?}\label{sec:intro/why-cool-fast}
 
-To measure $\Delta_\mathrm{PV}$, we decided use Ramsey Ramsey spectroscopy\cite{IVR_article,EduardusCHDBrI,ItayErezThesis}, due to numerous advantages. However with molecular ions, we can't use fluorescence for state detection due to too low ion number, so we chose instead to use photo-dissociation, as depicted in figure~\ref{fig:photo-dissociation}. The important implication of using photo-dissociation state detection after every Ramsey sequence, is that we need to reload new molecules before every Ramsey sequence. The preparation, which includes reloading the molecules and cooling them, and the Ramsey sequence are depicted in figure~\ref{fig:ramsey-sequence}.
+To measure $\Delta_\mathrm{PV}$, we decided use Ramsey Ramsey spectroscopy\cite{IVR_article,EduardusCHDBrI,ItayErezThesis}\yotam{are these your work? if not, it is not your decition. Change to : $\Delta_{\rm PV}$ is planned to be measure by using Ramsey spectroscopy~\cite{XYZ} because of the following advantages.}, due to numerous advantages. However with molecular ions, we can't \yotam{change to 'cannot'} use fluorescence for state detection due to too low ion number, so we chose instead to use photo-dissociation, as depicted in figure~\ref{fig:photo-dissociation}. The important implication of using photo-dissociation state detection after every Ramsey sequence, is that we need to reload new molecules before every Ramsey sequence. The preparation, which includes reloading the molecules and cooling them, and the Ramsey sequence are depicted in figure~\ref{fig:ramsey-sequence}.
 
 \begin{figure}
 	\centering
@@ -110,6 +116,7 @@ The basic challenge of trapping charged particles is to overcome the limitation 
 \end{equation}
 
 Meaning that we cannot get a point in space in which the potential is at a minima in all spatial dimensions. As depicted in figure~\ref{fig:ion-trap-basics}, we can artificially overcome this limitation by imposing a force resembling a saddle-point, and oscillate the sign of it. If the oscillation if fast enough, a mass in the center will not have enough time to escape the origin in the direction of the maxima, before it will become a minima. In the context of ion trapping, the oscillation frequency is usually in the RF regime, and is denoted $\omega_\mathrm{rf} \equiv 2\pi f_\mathrm{rf}$.
+\yotam{is there a canonical citation for that?}
 
 \begin{figure}
 	\centering
@@ -128,7 +135,7 @@ Meaning that we cannot get a point in space in which the potential is at a minim
 	\label{fig:ion-trap-basics}
 \end{figure}
 
-A full analysis of the equations of motions for a single trapped ion, along with a few more results relevant especially for our purposes, are available in section~\ref{sec:theory/mathieu-inversly}. On time scales much longer then the RF period, the ion's motion under such an oscillating potential, is of lower frequency denoted $\omega_\mathrm{sec} = 2\pi f_\mathrm{sec}$, as depicted in figure~\ref{fig:micromotion-illustrated}.
+A full analysis of the equations of motions for a single trapped ion, along with a few more results relevant especially for our purposes, are available in section~\ref{sec:theory/mathieu-inversly}\yotam{why you need this sentence - you already have a table of contents}. On time scales much longer then the RF period, the ion's motion under such an oscillating potential, is of lower frequency denoted $\omega_\mathrm{sec} = 2\pi f_\mathrm{sec}$, as depicted in figure~\ref{fig:micromotion-illustrated}.
 
 \begin{figure}
     \centering
@@ -137,11 +144,11 @@ A full analysis of the equations of motions for a single trapped ion, along with
 	\label{fig:micromotion-illustrated}
 \end{figure}
 
-Typical ion traps induce secular frequencies of $\sim 100\ \mathrm{kHz}$, with RF frequencies of at least a few $\mathrm{MHz}$. Our ion trap however, is uniquely designed\cite{ElianaThesis} to apply a \emph{range} of secular frequencies of usually less then $10\ \mathrm{kHz}$, with typical RF frequencies of $100\ \mathrm{kHz}$ or $50\ \mathrm{kHz}$. This flexibility invites researching the effect of different secular frequencies over the cooling efficiency.
+Typical ion traps induce secular frequencies of $\sim 100\ \mathrm{kHz}$, with RF frequencies of at least a few $\mathrm{MHz}$. Our ion trap however, is uniquely designed~\cite{ElianaThesis} to apply a \emph{range} of secular frequencies of usually less then $10\ \mathrm{kHz}$, with typical RF frequencies of $100\ \mathrm{kHz}$ or $50\ \mathrm{kHz}$. This flexibility invites researching the effect of different secular frequencies over the cooling efficiency.
 
-\subsection{Our Velocity Map Imaging}\label{sec:intro/VMI}
+\subsection{Our \yotam{change to 'The'} Velocity Map Imaging}\label{sec:intro/VMI}
 
-Another motivating point for cooling the ions in general, is our detection scheme based upon a Velocity Map Imaging (VMI) system optimized\cite{ElianaThesis} for our research. The basic idea depicted in figure~\ref{fig:VMI} is to shutdown the ion trap's electric fields after the photo-dissociation is done, and then focus the fragments to a detector of charged particles with spatial resolution. The key feature is that different kinetic energies are mapped to different points in the detector, allowing you to infer the kinetic energy distribution of the particles you had before releasing them. This mapping has limited resolution and was optimized as much as possible\cite{ElianaThesis}. 
+Another motivating point for cooling the ions in general, is our detection scheme based upon a Velocity Map Imaging (VMI) system optimized~\cite{ElianaThesis} \yotam{add $\Tilde{}$ before citation} for our research. The basic idea depicted in figure~\ref{fig:VMI} is to shutdown the ion trap's electric fields after the photo-dissociation is done, and then focus the fragments to a detector of charged particles with spatial resolution. The key feature is that different kinetic energies are mapped to different points in the detector, allowing you to infer the kinetic energy distribution of the particles you had before releasing them. This mapping has limited resolution and was optimized as much as possible\cite{ElianaThesis}. 
 
 \begin{figure}
 	\centering
@@ -154,16 +161,20 @@ Another motivating point for cooling the ions in general, is our detection schem
 
 Since the main mechanism of sympathetic cooling is Coulomb interactions, we chose to simulate trapping and cooling with LAMMPS\cite{LAMMPS}. It is a time propagation software package, capable of utilizing the GPU for simulating numerous classical models relevant in many contexts. In our case, we selected a simple model of charged point particles with only long-range Coulomb interactions.
 
-Given $N$ particles and $C$ available GPU cores, the amount of Coulomb interactions LAMMPS is capable of computing all at once is $N(N-1)/(2C)$. With 1000 ions, and our GPU, we found that the bottleneck of such simulations is writing the results to disk, and not the computing the Coulomb interactions\footnote{More technical details on how we save results to disk throughout a simulation are available in chapter~\ref{chap:software}.}.
+Given $N$ particles and $C$ available GPU cores, the amount of Coulomb interactions LAMMPS is capable of computing all at once is $N(N-1)/(2C)$. With 1000 ions, and our GPU, we found that the bottleneck of such simulations is writing the results to disk, and not the computing the Coulomb interactions\footnote{More technical details on how we save results to disk throughout a simulation are available in chapter~\ref{chap:software}.\yotam{move to the main text, it is not a footnote}}.
 
 \subsection{Initial Conditions}
 
-To gather conclusions from the simulations as accurately as possible, we wanted to initiate the simulation in a state that is thermodynamically stable as much as possible, to avoid two undesired phenomena: (1) 'Sloshing', which is the collective movement of the ion cloud in high amplitudes around the origin, and (2) 'breathing', which is a collective and periodic expansion and contraction of the ion cloud. The challenge of choosing initial conditions is discussed in detail in chapter~\ref{chap:theory}.
+\yotam{I do not see why you need all of these sub-sub-sub-sections for one or two paragraphs... it does not help to anythings and make the reading harder}
+To gather conclusions from the simulations as accurately as possible, we wanted to initiate the simulation in a state that is thermodynamically stable as much as possible, to avoid two undesired phenomena: (1) 'Sloshing', which is the collective movement of the ion cloud in high amplitudes around the origin, and (2) 'breathing', which is a collective and periodic expansion and contraction of the ion cloud. The challenge of choosing initial conditions is discussed in detail in chapter~\ref{chap:theory}\yotam{no need for this sentence... }.
 
 \subsection{Temperatures Measurements}
 
 Another detail taken care of thoroughly in this work, is the temperature measurements. Apparently, given a 2D array of a velocity distribution of $N$ ions in space, there are many different ways to compute the temperature. These are described in detail in chapter~\ref{chap:theory} too.
+\yotam{this paragraph add nothing to the discussion - I would remove it}
 
 \subsection{Convergence}\label{sec:theory/convergence}
 
-In every numerical simulation based research, one has to make sure their results converge, and that is mainly dictated by the time step. Convergence means that lowering the time steps, the results stay qualitatively the same. LAMMPS is particularly convenient for controlling the time step, and tuning it such that simulations don't take too long, but do converge. In chapter~\ref{chap:theory} we also discuss how we picked the time step of the simulations, with respect to the trapping model, and we prove that our time step choice is adequate to ensure convergence.
+\yotam{I do not see why you need this - all you want to write in whole section 1.2 it that you are using that LAMMPS with initial condition minimize the effects of 1 and 2, all other are trivial and do not need to be in the intro}
+In every numerical simulation based research, one has to make sure their results converge, and that is mainly dictated by the time step. Convergence means that lowering the time steps, the results stay qualitatively the same.
+LAMMPS is particularly convenient for controlling the time step, and tuning it such that simulations don't take too long, but do converge. In chapter~\ref{chap:theory} we also discuss how we picked the time step of the simulations, with respect to the trapping model, and we prove that our time step choice is adequate to ensure convergence.
