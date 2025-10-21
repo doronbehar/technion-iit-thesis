@@ -73,177 +73,6 @@
 \tableofcontents
 \end{frame}
 
-\section{Why ions?}
-
-\begin{frame}{In \ce{CHDBrI} \& \ce{CHDBrI^+}}
-\begin{columns}
-
-\begin{column}{0.25\textwidth}
-\vspace{-2.4em}
-\begin{table}[h!]
-\centering
-\input{artifacts/CHDBrI-vibrations.tex}
-\end{table}
-\vspace{-1.7em}
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{graphics/CHDBrI-labeled.pdf}
-\end{figure}
-
-\end{column}
-
-\begin{column}{0.75\textwidth}
-$\Leftarrow$ Vibrational Modes \#
-
-\vspace{1em}
-
-\centering Maximal $\Delta_\mathrm{PV} \approx 1.8\ \mathrm{Hz}$! ($\nu_6 \approx 33.3\ \mathrm{THz}$)
-
-\begin{figure}
-    \includegraphics[width=0.8\linewidth]{graphics/CHDBrI-DeltaPV-ions-vs-neutrals.pdf}
-    \caption{\small{Eduardus et al. 2023, ChemComm}}
-\end{figure}
-\end{column}
-
-\end{columns}
-\end{frame}
-
-\section{Why cool? Why minimize cooling time?}
-
-\begin{frame}{Ramsey Spectroscopy}
-
-\begin{itemize}
-    \item No need for tuning of ultra-narrow CW-IR lasers, only tuning $\delta$ - trapping duration.
-    \item Directly map decoherence in time domain.
-\end{itemize}
-
-\vspace{2em}
-
-\begin{figure}
-\centering
-\includegraphics[width=\linewidth]{graphics/Ramsey_fringes_pulse_sequence.pdf}
-\end{figure}
-
-\end{frame}
-
-\begin{frame}{Ramsey Spectroscopy on Molecular Ions}{Implications}
-\begin{columns}
-
-\begin{column}{0.6\textwidth}
-\begin{itemize}
-    \item[$+$] Trappable for long times \& can be coherent if cooled.
-    \item[$-$] Can't use fluorescence for state detection due to too low ion number.
-    \item[$-$] Instead, use Photo-dissociation which requires \textbf{reloading molecule for every Ramsey sequence repetition}.
-\end{itemize}
-\end{column}
-
-\begin{column}{0.4\textwidth}
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{graphics/Photo-Dissociation.pdf}
-\end{figure}
-\end{column}
-
-\end{columns}
-\end{frame}
-
-\begin{frame}{Ramsey Spectroscopy Statistical Uncertainty}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{graphics/Ramsey-critical-point-marked.pdf}
-\end{figure}
-
-\vspace{-2em}
-$$\frac{N}{N_0} = \frac{1}{2} \left(e^{-t/\tau} \cos(2 \pi ft + \phi) + 1\right),\ \boxed{\delta f \propto \frac{1}{\tau\sqrt{N}}}$$
-
-\end{frame}
-
-\begin{frame}{Cooling a Molecular Ion}{Directly? No way!}
-\begin{columns}
-
-\begin{column}{0.4\textwidth}
-
-\begin{table}[h!]
-\centering
-\begin{tabular}{ll|c}
-\specialrule{1.8pt}{0pt}{0pt}
-\multicolumn{2}{c|}{\textbf{Mode}} & $\nu [\mathrm{cm}^{-1}]$ \\
-\specialrule{1.8pt}{0pt}{0pt}
-1 & CBrI scissors & 149 \\
-2 & Cl stretch    & 524 \\
-3 & CBr stretch   & 620 \\
-4 & CHD rock      & 710 \\
-5 & CD wag        & 797 \\
-6 & CH wag        & 1104 \\
-7 & CHD scissors  & 1275 \\
-8 & CD stretch    & 2354 \\
-9 & CH stretch    & 3214 \\
-\specialrule{1.8pt}{0pt}{0pt}
-\end{tabular}
-\end{table}
-
-\end{column}
-
-\begin{column}{0.6\textwidth}
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{graphics/molecules-levels.png}
-    \caption{Too many degrees of freedom :(}
-\end{figure}
-\end{column}
-
-\end{columns}
-\end{frame}
-
-\begin{frame}{Solution: Sympathetic Cooling}
-\begin{columns}
-
-\begin{column}{0.6\textwidth}
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{graphics/Basic-SympatheticCooling.pdf}
-\end{figure}
-\end{column}
-
-\begin{column}{0.4\textwidth}
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{graphics/DavidStar-SC.pdf}
-    \caption{Yansong Meng \& Lijun Du (2021)}
-\end{figure}
-\end{column}
-
-\end{columns}
-\end{frame}
-
-\begin{frame}{What Sympathetic Cooler Species to Use?}
-\begin{columns}
-
-\begin{column}{0.7\textwidth}
-\begin{figure}
-    \centering
-    \includegraphics[width=0.8\linewidth]{graphics/Tsc-for-different-mass-ratios.pdf}
-    \caption{\small{$\mathrm{sc} \equiv \text{sympathetically cooled}$, $\mathrm{lc} \equiv \text{laser cooled}$}}
-\end{figure}
-\vspace{-1em}
-\small{From: Baba \& Waki (Japan) 2002}
-\end{column}
-
-\begin{column}{0.3\textwidth}
-
-$$\begin{array}{lcl}
-     \mathrm{sc} & \equiv & \ce{CHDBrI^+} \\
-     \mathrm{lc} & \equiv & \ce{Yb^+} \\
-     m_\mathrm{sc} & \approx & 222\ \mathrm{amu} \\ 
-     m_\mathrm{lc} & \approx & 174\ \mathrm{amu} \\
-\end{array}$$
-
-\end{column}
-
-\end{columns}
-\end{frame}
-
 \section{Simulation details \& Theoretical Background}
 
 \begin{frame}{Simulating with LAMMPS}
@@ -394,10 +223,10 @@ If \ce{Yb^+} has $\vec{\omega}_\mathrm{sec}$, what is $\vec{\omega}_\mathrm{sec}
 
 $$ \omega_\mathrm{sec(target)} \neq \omega_\mathrm{sec(cooler)}\sqrt{\frac{m_\mathrm{cooler}}{m_\mathrm{target}}} $$
 
-But:
+Because:
 $$(\tilde{a},\tilde{q}) \propto \frac{1}{m_\mathrm{cooler}}$$
 
-Truth:
+So:
 $$\omega_\mathrm{sec(target)} \leftarrow (\tilde{a},\tilde{q})\cdot\frac{m_\mathrm{cooler}}{m_\mathrm{target}}$$
 
 \end{column}
@@ -461,7 +290,7 @@ $$\left\langle\mathbf{F}_\mathrm{rad}\right\rangle(\mathbf{v}; \mathbf{k}) \unco
 
 \section{Main Results: Optimizations}
 
-\subsection{Choosing Laser angle(s)}
+\subsection{Choosing Laser angle(s) (only \ce{Yb^+})}
 
 \begin{frame}{Choosing Laser Angle(s)}
 \begin{table}[h]
@@ -505,7 +334,7 @@ $$\left\langle\mathbf{F}_\mathrm{rad}\right\rangle(\mathbf{v}; \mathbf{k}) \unco
 \end{table}
 \end{frame}
 
-\subsection{Limitations of sympathetic cooling}
+\subsection{Rogue \ce{Yb^+} due to crystallized \ce{CHDBrI^+}}
 
 \begin{frame}{Adding \ce{CHDBrI^+} to Simulations}
 % Say: By varying Omega and taking T_i = 5K, or taking T_i and any Omega, the Yb can stuck outside
@@ -565,6 +394,8 @@ Higher $\Omega$ cools fast
 \includegraphics[width=\linewidth]{graphics/T@sympathetic-omega-dep@m=222.pdf}
 \end{figure}
 \end{frame}
+
+\subsection{$T_i$ Dependence \& Angular Momentum Conservation}
 
 \begin{frame}{$T(t)$ of \ce{CHDBrI^+} - $T_\mathrm{initial}$ Significance}{Does $T_\mathrm{CHDBrI+}$ has Memory?}
 \begin{figure}
@@ -908,6 +739,175 @@ $$\frac{h\pi \Gamma\hat{k}}{\lambda} \left[\frac{\Omega^2/2}{\Gamma^2/4 + \Omega
 
 $$\text{In our system: } \alpha = \frac{I_2}{I_0} \approx 0.7$$
 
+\end{frame}
+
+\section{Why ions?}
+
+\begin{frame}{In \ce{CHDBrI} \& \ce{CHDBrI^+}}
+\begin{columns}
+
+\begin{column}{0.25\textwidth}
+\vspace{-2.4em}
+\begin{table}[h!]
+\centering
+\input{artifacts/CHDBrI-vibrations.tex}
+\end{table}
+\vspace{-1.7em}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{graphics/CHDBrI-labeled.pdf}
+\end{figure}
+
+\end{column}
+
+\begin{column}{0.75\textwidth}
+$\Leftarrow$ Vibrational Modes \#
+
+\vspace{1em}
+
+\centering Maximal $\Delta_\mathrm{PV} \approx 1.8\ \mathrm{Hz}$! ($\nu_6 \approx 33.3\ \mathrm{THz}$)
+
+\begin{figure}
+    \includegraphics[width=0.8\linewidth]{graphics/CHDBrI-DeltaPV-ions-vs-neutrals.pdf}
+    \caption{\small{Eduardus et al. 2023, ChemComm}}
+\end{figure}
+\end{column}
+
+\end{columns}
+\end{frame}
+
+\section{Why cool? Why minimize cooling time?}
+
+\begin{frame}{Ramsey Spectroscopy}
+
+\begin{itemize}
+    \item No need for tuning of ultra-narrow CW-IR lasers, only tuning $\delta$ - trapping duration.
+    \item Directly map decoherence in time domain.
+\end{itemize}
+
+\vspace{2em}
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{graphics/Ramsey_fringes_pulse_sequence.pdf}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Ramsey Spectroscopy on Molecular Ions}{Implications}
+\begin{columns}
+
+\begin{column}{0.6\textwidth}
+\begin{itemize}
+    \item[$+$] Trappable for long times \& can be coherent if cooled.
+    \item[$-$] Can't use fluorescence for state detection due to too low ion number.
+    \item[$-$] Instead, use Photo-dissociation which requires \textbf{reloading molecule for every Ramsey sequence repetition}.
+\end{itemize}
+\end{column}
+
+\begin{column}{0.4\textwidth}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{graphics/Photo-Dissociation.pdf}
+\end{figure}
+\end{column}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{Ramsey Spectroscopy Statistical Uncertainty}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{graphics/Ramsey-critical-point-marked.pdf}
+\end{figure}
+
+\vspace{-2em}
+$$\frac{N}{N_0} = \frac{1}{2} \left(e^{-t/\tau} \cos(2 \pi ft + \phi) + 1\right),\ \boxed{\delta f \propto \frac{1}{\tau\sqrt{N}}}$$
+
+\end{frame}
+
+\begin{frame}{Cooling a Molecular Ion}{Directly? No way!}
+\begin{columns}
+
+\begin{column}{0.4\textwidth}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{ll|c}
+\specialrule{1.8pt}{0pt}{0pt}
+\multicolumn{2}{c|}{\textbf{Mode}} & $\nu [\mathrm{cm}^{-1}]$ \\
+\specialrule{1.8pt}{0pt}{0pt}
+1 & CBrI scissors & 149 \\
+2 & Cl stretch    & 524 \\
+3 & CBr stretch   & 620 \\
+4 & CHD rock      & 710 \\
+5 & CD wag        & 797 \\
+6 & CH wag        & 1104 \\
+7 & CHD scissors  & 1275 \\
+8 & CD stretch    & 2354 \\
+9 & CH stretch    & 3214 \\
+\specialrule{1.8pt}{0pt}{0pt}
+\end{tabular}
+\end{table}
+
+\end{column}
+
+\begin{column}{0.6\textwidth}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{graphics/molecules-levels.png}
+    \caption{Too many degrees of freedom :(}
+\end{figure}
+\end{column}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{Solution: Sympathetic Cooling}
+\begin{columns}
+
+\begin{column}{0.6\textwidth}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{graphics/Basic-SympatheticCooling.pdf}
+\end{figure}
+\end{column}
+
+\begin{column}{0.4\textwidth}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{graphics/DavidStar-SC.pdf}
+    \caption{Yansong Meng \& Lijun Du (2021)}
+\end{figure}
+\end{column}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{What Sympathetic Cooler Species to Use?}
+\begin{columns}
+
+\begin{column}{0.7\textwidth}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{graphics/Tsc-for-different-mass-ratios.pdf}
+    \caption{\small{$\mathrm{sc} \equiv \text{sympathetically cooled}$, $\mathrm{lc} \equiv \text{laser cooled}$}}
+\end{figure}
+\vspace{-1em}
+\small{From: Baba \& Waki (Japan) 2002}
+\end{column}
+
+\begin{column}{0.3\textwidth}
+$$\begin{array}{lcl}
+     \mathrm{sc} & \equiv & \ce{CHDBrI^+} \\
+     \mathrm{lc} & \equiv & \ce{Yb^+} \\
+     m_\mathrm{sc} & \approx & 222\ \mathrm{amu} \\ 
+     m_\mathrm{lc} & \approx & 174\ \mathrm{amu} \\
+\end{array}$$
+\end{column}
+
+\end{columns}
 \end{frame}
 
 \end{document}
