@@ -75,6 +75,16 @@ seminarOnce:
 seminarClean:
 	rm -f *.aux *.fdb_latexmk *.fls *.log *.out *.snm *.toc
 
+defense:
+# Ignore rc file of the project
+	$(LATEXMK) -norc -view=none -pdf -pvc --interaction=nonstopmode defense.tex
+
+defenseOnce:
+	$(LATEXMK) -norc -view=none -pdf --interaction=nonstopmode defense.tex
+
+defenseClean:
+	rm -f *.aux *.fdb_latexmk *.fls *.log *.out *.snm *.toc
+
 cleanFigures:
 	@for image_file in $$(ls graphics/); do \
 	    if ! grep -q $$image_file aux/*.log *.log 2>/dev/null; then \
