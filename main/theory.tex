@@ -1,6 +1,6 @@
 \chapter{Theory}\label{chap:theory}
 
-This chapter will iterate the theoretical background necessary for understanding how we trap (section~\ref{sec:theory/trapping}) and cool (section~\ref{sec:theory/cooling}) our ions, and how we analyzed the simulation results. With respect to trapping, we present 2 small innovations in the field, which are (1) inverse solution of the Mathieu equation (section~\ref{sec:theory/mathieu-inversly}, and (2) non-trivial dependence of mass to secular frequencies (section~\ref{sec:theory/non-trivial-mass-dep}, which is particularly relevant for thermodynamically stable initial conditions.
+This chapter will iterate the theoretical background necessary for understanding how we trap (section~\ref{sec:theory/trapping}) and cool (section~\ref{sec:theory/cooling}) our ions, and how we analyzed the simulation results. With respect to trapping, I want to highlight two points, which are (1) inverse solution of the Mathieu equation (section~\ref{sec:theory/mathieu-inversly}) and (2) non-trivial dependence of mass to secular frequencies (section~\ref{sec:theory/non-trivial-mass-dep}) which is particularly relevant for thermodynamically stable initial conditions.
 
 \section{Trapping}\label{sec:theory/trapping}
 
@@ -13,17 +13,25 @@ LAMMPS\cite{LAMMPS}, is not designed for solving the Laplace equation (\ref{eq:l
     \label{eq:mathieu-source}
 \end{equation}
 
-For the $i^\mathrm{th}$ spatial dimension, and the dimensions of $a_i$ \& $q_i$ are naturally $\mathrm{Volt}/\mathrm{distance^2}$. The 1D equation of motion you get for a single ion under this field is:
+For the $i^\mathrm{th}$ spatial dimension, and the dimensions of the \textit{abstract} parameters $a_i$ \& $q_i$ are naturally $\mathrm{Volt}/\mathrm{distance^2}$. The 1D equation of motion you get for a single ion under this field is:
 
 \begin{equation}
-    (a + 2 q \cos(2 \tau)) x = \partial_\tau^2{x}
+    (\tilde{a}_i + 2 \tilde{q}_i \cos(2 \tau)) x_i = \partial_\tau^2{x}_i
+    \label{eq:mathieu-classic}
 \end{equation}
 
-Where $2\tau \equiv \omega_\mathrm{rf} t$, and $a_i$, $q_i$ and $x_i$ were rescaled to be dimensionless and therefore given no $i$ subscript to reflect that. This is called the Mathieu equation~\cite{MathieuOriginal}, and I'll present here how I solved it, in a way that is more tailored for semi-numerical calculations.
+Where $2\tau \equiv \omega_\mathrm{rf} t$, and:
+
+\begin{equation}
+a_i/\tilde{a}_i = q_i/\tilde{q}_i = m \omega_\mathrm{rf}^2/e
+\label{eq:aq_tilde_relation}
+\end{equation}
+
+with $e$ the charge of the ion. This is called the Mathieu equation~\cite{MathieuOriginal}, and I'll present here how I solved it, in a way that is more tailored for semi-numerical calculations, without involving physical parameters like the trap's geometry and voltages.
 
 \subsection{Solving the Mathieu Equation in 1D}
 
-Substituting the following expression as a solution:
+The solution used in this work is obtained by substituting the following expression to equation~\ref{eq:mathieu-classic}. This expression is based upon the parametrization found in literature~\cite{ionTrapBook,MathieuEquationStandardParams}, but with $n$ substituted by $n/2$. This parametrization is cleaner and hence more natural for programming.
 
 \begin{equation}
 x(\tau) = e^{i\beta\tau}\sum_{n=-\infty}^\infty \gamma_n e^{i n \tau} + e^{-i\beta\tau}\sum_{n=-\infty}^\infty \gamma_n e^{-i n \tau}
@@ -80,9 +88,18 @@ Where similarly to \ref{eq:gamma_n-relation}:
 
 $$D_n = \frac{a - \left(\beta + n\right)^2}{q}$$
 
-One can easily see that $D_n$ increases $\sim n^2$, which promises the target $\beta$ solution might converge if a finite matrix will be used. To require a non-trivial solution, we simply require the matrix to have a $0$ determinant, thus supplying us an equation for $\beta$ that can be solved easily numerically, for matrix size $2N+1$. Inserting the $\beta$ into the matrix, and inspecting the kernel of it, will give us the $\gamma_n$ coefficients of the solution, and we'd be able to easily verify they indeed decrease with $|n|$, and are that $\gamma_0$ is the most dominant.
+One can easily see that $D_n$ increases $\sim n^2$, which promises the target $\beta$ solution might converge if a finite matrix will be used. To require a non-trivial solution, we simply require the matrix to have a $0$ determinant, thus supplying us an equation for $\beta$ that can be solved easily numerically, for matrix size $2N+1$.
 
-The verification of this solution was implemented in a Matplotlib~\cite{Matplotlib} based interactive plot, presented in figures \ref{fig:pure-mathieu-coefficients} \& \ref{fig:pure-mathieu-fft}.
+Inserting the $\beta$ into the matrix, and inspecting the kernel of it, will give us the $\gamma_n$ coefficients of the solution, and we'd be able to easily verify they indeed decrease with $|n|$, and that $\gamma_0$ is the most dominant.
+
+The verification of this solution was implemented in a Matplotlib~\cite{Matplotlib} based interactive plot, presented in figures \ref{fig:pure-mathieu-coefficients} \& \ref{fig:pure-mathieu-fft}. A common approximation for a solution is:
+
+\begin{equation}
+\beta_i \approx \sqrt{\tilde{a}_i + \tilde{q}_i^2/2}
+\label{eq:beta_by_aq_approx}
+\end{equation}
+
+But it wasn't used in these plots at all. In the next section however, this approximation \emph{was} helpful.
 
 \begin{figure}
     \centering
@@ -94,7 +111,7 @@ The verification of this solution was implemented in a Matplotlib~\cite{Matplotl
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{graphics/pure-mathieu-kernel.pdf}
-    \caption{Matplotlib interactive plot demonstrating the fast decay of the Mathieu equation's solution's $\gamma_n$ (normalized) coefficients, as $|n|$ increases. The dashed $\beta$ line represents the $\beta$ which zeros the matrix determinant.}
+    \caption{Matplotlib interactive plot demonstrating the fast decay of the Mathieu equation's solution's $\gamma_n$ (normalized) coefficients, as $|n$ increases. The dashed $\beta$ line represents the $\beta$ which zeros the matrix determinant.}
     \label{fig:pure-mathieu-coefficients}
 \end{figure}
 
@@ -109,15 +126,35 @@ Now that we know how to solve the Mathieu equation given $(a_i, q_i)$, and get a
     \label{eq:laplace}
 \end{equation}
 
-So we have now 5 equations, and 6 unknowns. The last equation required to determine a single possible solution, can be:
+So we have now 5 equations, and 6 unknowns. A single solution to this system of equations can be obtained by adding a 6th equation, based on our ion trap geometry: Using SIMION~\cite{SIMION} simulations of our trap geometry, we found that the RF potential along the $z$-axis is approximately $2$ orders of magnitude weaker than in the radial directions. Therefore, we demanded also:
 
 \begin{equation}
     q_z = 0
+    \label{eq:q_z0}
 \end{equation}
 
-Which is a fair assumption, based on the geometry of our trap, and the typical voltages we put on our electrodes~\cite{ElianaThesis}. The best way I found to present the solution to this system of equations, is via a Mathieu stability diagram.
+The approximation in equation~\ref{eq:beta_by_aq_approx} for all 3 axes, along with equations~\ref{eq:laplace} and~\ref{eq:q_z0}, can be used to compute analytically an \emph{approximated} expression of three $\left\{\tilde{a}_i, \tilde{q}_i\right\}$ pairs, in terms of all three $\beta_i$:
 
-Most Mathieu stability diagrams found in literature, assume that geometry dictates $a_x = a_y$, and like us, that $q_z = 0$\cite{BabaWakiSympatheticCooling,ClassicIonTrapAnalysis,ClassicIonTrapAnalysis2}. Thanks to equation \ref{eq:laplace}, this suggests that one can plot a single Mathieu stability diagram for a 3 dimensional trap using a single Mathieu stability diagram for $(a_r,q_r)$ where $a_r \equiv a_x = a_y = -a_z/2$ and $q_r = q_x = -q_y$ as axes. I find these stability diagrams confusing\footnote{See examples at \cite{AkermanThesis,ClassicIonTrapAnalysis3}.}, as they need to also take care of correctly mirroring $q_x = -q_y$ to satisfy stability in both $x$ \& $y$ spatial dimensions (where the $z$ axis is trivially stable). Figure~\ref{fig:mathieu-stability} presents a much simpler approach to show the stability of a 3 dimensional trap, without even imposing cylindrical symmetry which shouldn't be physically impossible.
+\begin{equation}
+\begin{pmatrix}
+\tilde{a}_x & \tilde{a}_y & \tilde{a}_z \\
+\tilde{q}_x & \tilde{q}_y & \tilde{q}_z
+\end{pmatrix}
+\approx
+\begin{pmatrix}
+\frac{1}{2}\left( +\beta_x^2 - \beta_y^2 - \beta_z^2 \right) &
+\frac{1}{2}\left( -\beta_x^2 + \beta_y^2 - \beta_z^2 \right) &
++\beta_z^2
+\\
+\sqrt{\beta_x^2 + \beta_y^2 + \beta_z^2} &
+-\sqrt{\beta_x^2 + \beta_y^2 + \beta_z^2} &
+0
+\end{pmatrix}
+\end{equation}
+
+These expressions were used in the software as an initial guess for the numerical optimizer.
+
+The best way I found to illustrate the exact solution to this system of equations, is via a Mathieu stability diagram. Most Mathieu stability diagrams found in literature, assume that geometry dictates $a_x = a_y$, and like us, that $q_z = 0$\cite{BabaWakiSympatheticCooling,ClassicIonTrapAnalysis,ClassicIonTrapAnalysis2}. Thanks to equation \ref{eq:laplace}, this suggests that one can plot a single Mathieu stability diagram for a 3 dimensional trap using a single Mathieu stability diagram for $(a_r,q_r)$ where $a_r \equiv a_x = a_y = -a_z/2$ and $q_r = q_x = -q_y$ as axes. These stability diagrams~\cite{AkermanThesis,ClassicIonTrapAnalysis3,ionTrapBook} need to take care of correctly mirroring $q_x = -q_y$ to satisfy stability in both $x$ \& $y$ spatial dimensions (where the $z$ axis is trivially stable). Figure~\ref{fig:mathieu-stability} presents a different approach to show the stability of a 3 dimensional trap, without even imposing cylindrical symmetry which shouldn't be physically impossible.
 
 \begin{figure}
     \centering
@@ -168,23 +205,37 @@ More importantly, we expect time dependent temperature measurements to be offset
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{graphics/T-stabilizes-example.pdf}
-    \caption{Several temperature measurements of \ce{Yb^+}, without laser cooling, and $6\ \mathrm{ms}$ stabilization time. RF heating is observed for $T_\mathrm{initial} = 5\ \mathrm{ms}$.}
+    \caption{Several time dependent temperatures of \ce{Yb^+}, without laser cooling, and $6\ \mathrm{ms}$ stabilization time. Temperatures were calculated as described in section~\ref{sec:intro/-y-options}. RF heating is observed for $T_\mathrm{initial} = 5\ \mathrm{K}$.}
     \label{fig:T-stabilizes-example}
 \end{figure}
 
 \subsection{A Non-Trivial Secular Frequency Mass Dependence}\label{sec:theory/non-trivial-mass-dep}
 
-To the best of my knowledge, there aren't any discussions in literature on the secular frequency related implications encountered when 2 different masses are trapped in the same Ion trap. This detail is particularly relevant to us, as we are interested in sympathetic cooling, and initiating our simulations in thermodynamic equilibrium, according to equation~\ref{eq:position-probability}.
+All analysis we found in literature of two different masses in an ion trap, uses an approximated expression of an RF averaged, perfectly harmonic potential~\cite{,Simple1IonLaserCoolingModel_article1,Simple1IonLaserCoolingModel_article2,Simple1IonLaserCoolingModel_article3}, also often called pondermotive potential~\cite{Simplistic2ionsTrapModel_Book}. In such a potential, given a:
 
-Let's discuss this question in 1 spatial dimension: Given a $(a,q)$ pair producing a dimensionless secular frequency $\beta_0$ for mass $m_{cooler}$, what would be the secular frequency experienced by a mass $m_{target}$ experiencing the same forces? In a pure harmonic oscillator, the same $k = m_{cooler} \omega_{\mathrm{sec(cooler)}}^2 = m_{cooler} (\beta_0 \omega_\mathrm{rf}/2)^2$ is applied to any mass, and we get a secular frequency for $m_{target}$ of:
+\begin{equation}
+k = m_{cooler} \omega_{\mathrm{sec(cooler)}}^2
+\end{equation}
+
+Applied to any mass, in a spatial dimension, we get a secular frequency for $m_{target}$ of:
 
 \begin{equation}
     \omega_\mathrm{sec(target)} = \omega_\mathrm{sec(cooler)}\sqrt{\frac{m_{cooler}}{m_{target}}} 
 \end{equation}
 
-Is that true in an RF quadrupole trap? The process of generating a dimensionless $(a,q)$ from the original equation of motion (equation \ref{eq:mathieu-source}) involves dividing the equation by the mass, meaning that $(a,q)\propto 1/m_{cooler}$. Hence the real secular frequency of $m_{target}$ can be obtained by calculating $\beta_{target}$ given the pair:
+We tried to avoid this approximation, and predict more accurately the secular frequencies experienced by the target mass when we know the secular frequencies experienced by the cooler mass. This detail is particularly relevant to us, as we wish to initiate our simulations in thermodynamic equilibrium, according to equation~\ref{eq:position-probability}.
 
-$$(a,q)\cdot \frac{m_{cooler}}{m_{target}}$$
+According to equations~\ref{eq:mathieu-source} and~\ref{eq:aq_tilde_relation}:
+
+\begin{equation}
+(\tilde{a}_i,\tilde{q}_i) \propto 1/m_{cooler}.
+\end{equation}
+
+Hence the real secular frequency of $m_{target}$ can be obtained by calculating $\beta_{target}$ given the pair:
+
+\begin{equation}
+(\tilde{a}_i,\tilde{q}_i)\cdot \frac{m_{cooler}}{m_{target}}
+\end{equation}
 
 The dependence of $\beta_{target}$ as a function of the mass ratio is depicted in figure~\ref{fig:mathieu-mass-dep}. This insight invites defining 2 decoupled, boolean parameters for the simulation, named \texttt{micromotion} \& \texttt{naive\_freqs}. Table~\ref{tbl:naive_freqs-micromotion} is a truth table explaining what trapping forces are applied in each combination of these parameters, and a separate definition of these parameters is laid out below.
 
@@ -256,7 +307,7 @@ Where:
     \item $\gamma$, is the cooling transition's lifetime in Hz dimensions. The more commonly used $\mathrm{rad}/\mathrm{s}$ scaled lifetime is usually denoted as $\Gamma = 2\pi \gamma$.
     \item $d$ is the laser's detuning normalized to $\Gamma$. Sometimes the not normalized detuning in the dimensions of $\mathrm{rad}/\mathrm{sec}$ is denoted as $\delta$ and with it we can denote $d \equiv \delta/\Gamma$.
     \item $\mathbf{v}$ is the velocity of the cooled atom.
-    \item $\omega$ is the laser's Rabi frequency normalized to $\Gamma/2\pi$. Very similarly to $d$ and $\delta$ the following can be stated: $\omega \equiv \Omega/\Gamma$.
+    \item $\omega$ is the laser's \emph{dimensionless} Rabi frequency. Given a Rabi frequency $\Omega$ in units of $\mathrm{rad}/s$, $\omega \equiv \Omega/\Gamma$.
 \end{itemize}
 
 Apparently, applying such a force on a trapped particle induces an offset that is particularly relevant in ion traps like ours - ion traps of $\mathrm{kHz}$ secular frequencies. This offset is calculated in the next section, and was verified in simulations too in figure~\ref{fig:laser-cool-offset3D}. We also describe how we overcame this offset as much as we could, in the section afterwards.
@@ -393,7 +444,15 @@ Now that we know how to fully characterise laser cooling and ion trapping, we wi
 
 \section{State of the art Sympathetic Cooling Models}\label{sec:theory/models}
 
-Among the literature we surveyed, the only theoretical model we found that explicitly treats sympathetic cooling between two ion species confined in an ion trap is the one developed by Baba \& Waki~\cite{BabaWakiSympatheticCooling}. Other works tend to focus either on laser cooling of single-species crystals~\cite{Simple1IonLaserCoolingModel}, or on plasma-like behavior~\cite{Plasma2T1,Plasma2T2} where temperatures evolve through bulk approximations. In contrast, Baba \& Waki's model directly addresses the exchange of energy between a laser-cooled species and a second, sympathetically cooled species, both in the gas-phase regime of a linear radio-frequency quadrupole (RFQ) trap.
+Among the literature we surveyed, the only theoretical model we found that resembles the most to our simulations, is the one developed by Baba \& Waki~\cite{BabaWakiSympatheticCooling}. Other works deal with:
+
+\begin{itemize}
+    \item Laser cooling of single-species crystals~\cite{Simple1IonLaserCoolingModel}
+    \item Plasma-like behavior~\cite{Plasma2T1,Plasma2T2} where temperatures evolve through bulk approximations
+    \item Two ions altogether - single ion per species, under a pseudo-potential approximation~\cite{1CoolingIon1CooledIonModel}
+\end{itemize}
+
+In contrast, Baba \& Waki's model directly addresses the exchange of energy between a laser-cooled species and a second, sympathetically cooled species, both in the gas-phase regime of a linear radio-frequency quadrupole (RFQ) trap, without using a pseudo-potential.
 
 Their work combines detailed molecular dynamics (MD) simulations with a simplified analytical model based on binary energy exchange. In their simulations, $35$ laser-cooled (lc) \ce{^{24}Mg^+} ions form a cold, dense cloud in the trap. When $5$ sympathetically cooled (sc) ions of various masses are introduced with higher initial kinetic energies, their behavior depends critically on their mass: $m_\mathrm{sc} \gtrsim (0.54 \pm 0.04) m_\mathrm{lc}$ are efficiently cooled, while lighter ions are instead heated. This mass threshold arises from the structure of micromotion in the linear RFQ trap, which lacks radio-frequency confinement in the axial $z$ direction.
 
@@ -436,9 +495,7 @@ To fully define a simulation, one has to define a few more parameters, laid out 
 
 \subsection{Time Periods}
 
-We define two time periods for a simulation called \emph{cooling} and \emph{stabilizing}. The cooling time period has trivial meaning and increasing it can be usually interesting but obviously it takes more time. The stabilization time is the time since $t=0$ up to the point where the laser cooling force enters.
-
-For researching cooling parameters, and for most initial temperatures, there is no need for more then $5-7\mathrm{ms}$ of stabilizing time, just to let the thermodynamic instabilities of the initial conditions minimize. Figure~\ref{fig:T-stabilizes-example} can serve as a good example in which the width of $T(t)$ before the laser cooling starts, decreases enough after $6 \mathrm{ms}$, which is good enough for several initial temperatures.
+We define two subsequent time periods for a simulation called \emph{stabilization} and \emph{cooling} times between which the cooling laser is turned on. For researching cooling parameters, and for most initial temperatures, there is no need for more then $5-7\mathrm{ms}$ of stabilizing time, just to let the thermodynamic instabilities of the initial conditions minimize. Figure~\ref{fig:T-stabilizes-example} can serve as a good example in which the width of $T(t)$ before the laser cooling starts, decreases enough after $6 \mathrm{ms}$, which is good enough for several initial temperatures.
 
 Another usage for varying the stabilization time, is for measuring the eigenfrequencies of the trap, without cooling ($0$ cooling time), and all cooling parameters irrelevant.
 

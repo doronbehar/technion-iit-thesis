@@ -4,7 +4,7 @@ Before trapping both \ce{Yb^+} and \ce{CHDBrI^+}, we wanted to make sure we are 
 
 \section{Laser Cooling Intrusion Angle(s) \& Trap Geometry}\label{sec:results/laserAngles}
 
-When our experimentalists first tried to cool the \ce{Yb^+}, they had less then a total of $1\mathrm{mW}$ of power. This summons testing: Is using 1 laser enough? If so, which intrusion angle to use it with? If we split the all our power to multiple laser beams, which angles to use?
+When our experimentalists first tried to cool the \ce{Yb^+}, they had less then a total of $1\mathrm{mW}$ of power. This summons testing: Is using 1 laser enough? If so, which intrusion angle to use it with? If we split all our power to multiple laser beams, which angles to use? Is recycling laser power worth the technical beams-alignment effort?
 
 In the case of 1 laser beam, the naive choice might be to use the $z$ axis, which is the symmetry axis of the trap, and in which there is also no micromotion. It turns out that using the $z$ axis is actually the worst choice of them all, and in fact you \emph{do} want the laser beam to mix the principal axes of the trap as much as possible. The next sections describe how we parameterized this, and why we think mixing the principal axes helps.
 
@@ -51,20 +51,19 @@ This is not only a matter of breaking the cylindrical symmetry of the trap, as e
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{graphics/laserAngles-dependence--thesis.pdf}
-    \caption{Temperatures as a function of time, for several different laser angles groups. For laser angle group $e^+,e^-,e^*$, the per-laser-beam intensity $\Omega/\Gamma = 0.55$ sums up to $\Omega/\Gamma = 1$.}
+    \caption{Temperatures as a function of time, for several different laser angles groups. The per-laser-beam intensity $\Omega/\Gamma = 0.55$ sums up to $\Omega/\Gamma = 1$. The laser angle group $e^+,e^-,e^*$ lines demonstrate the difference between recycling laser power and splitting the laser beams upfront.}
     \label{fig:laserAngles-temperatures}
 \end{figure}
 
 \begin{table}
-    \begin{tabular}{ccccc}
-    \hline
-    $e^+, e^-, e^*$ & $e^-$ & $r^-$ & $x$ & $z$ \\
-    \hline
-    $1.3(0.0)\ \mathrm{kHz}$ & $980.7(28.1)\ \mathrm{Hz}$ & $806.3(8.4)\ \mathrm{Hz}$ & $348.8(8.0)\ \mathrm{Hz}$ & $353.0(22.2)\ \mathrm{Hz}$ \\
-    \hline
-    \end{tabular}
-    \caption{Cooling rates computed with a linear fits to $\mathrm{Log}(T(t))$ lines presented in figure~\ref{fig:laserAngles-temperatures}.}
-    \label{tbl:laserAngles-cooling-rates}
+\centering
+\begin{tabular}{l|c|c|c|c|c}
+Power    & $e^+, e^-, e^*$          & $e^-$                                   & $r^-$                                      & $x$                                & $z$                                     \\ \hline
+Recycled & $2.3(1)\ \mathrm{kHz}$   & \multirow{2}{*}{$981(28)\ \mathrm{Hz}$} & \multirow{2}{*}{$806(8)\ \mathrm{Hz}$} & \multirow{2}{*}{$349(8)\ \mathrm{Hz}$} & \multirow{2}{*}{$353(22)\ \mathrm{Hz}$} \\ \cline{1-2}
+Split    & $1.3(0.0)\ \mathrm{kHz}$ &                                         &                                            &                                    &                                         \\ \hline
+\end{tabular}
+\caption{Cooling rates computed with a linear fits to $\mathrm{Log}(T(t))$ lines presented in figure~\ref{fig:laserAngles-temperatures}. Whether the laser power is recycled or split upfront is naturally relevant only to a case with multiple lasers.}
+\label{tbl:laserAngles-cooling-rates}
 \end{table}
 
 Using 3 lasers which are all mixing the principal axes seems to work best. However, if obliged to use only one laser, using $e^-$ gives slightly better results in comparison to $r^-$. The latter however, is parallel to the optical table, and hence is slightly easier to setup technically in the lab. This is why we chose $r^-$ for the next scan, in which we also added \ce{CHDBrI^+} ions and modulated the intensity ($\Omega$), in multiple initial temperatures.
@@ -123,6 +122,8 @@ In the examples above both species started at $10\ \mathrm{K}$, but if we start 
 \caption{The temperatures of \ce{Yb^+}, reaching lower temperatures when they started colder in comparison to results in figure~\ref{fig:Yb-cooling-limit:T_i10}}
 \end{figure}
 
+To avoid rogue \ce{Yb^+}, one can suggest to cool all \ce{Yb^+} ions slower (with e.g lower laser intensity), so that the \ce{CHDBrI^+} ions will be adsorbed more gradually. This indeed might increase the total number of crystallized ions after a long time. However we focus in this research on improving sympathetic cooling on time scales of roughly $50\ \mathrm{ms}$, so we decided to stick with the attempt to cool the \ce{Yb^+} ions as fast as we can.
+
 After observing these results we realized we might not be able to completely crystallize all \ce{Yb^+} ions with only a single laser. However, this may not be a devastating issue for sympathetically cooling the \ce{CHDBrI^+} ions, as it might still be possible to cool it efficiently. The sympathetic cooling results, also with only $r^-$ laser are shown in the next section.
 
 \subsection{Sympathetic Cooling with Varying Intensities}
@@ -136,12 +137,11 @@ In figure~\ref{fig:sympathetic-omega-dep:T:m222} we can see the \ce{CHDBrI^+} io
 \label{fig:sympathetic-omega-dep:T:m222}
 \end{figure}
 
-The existence of rogue \ce{Yb^+} ions, might suggest that for cooling the \ce{CHDBrI^+} ions efficiently, we might want to cool the \ce{Yb^+} ions not as fast as possible - with say $\Omega = 0.4\Gamma$. This indeed might increase the total number of crystallized \ce{CHDBrI^+} after a long time. However we focus in this research on improving the cooling on time scales of roughly $50\ \mathrm{ms}$, so we decided to stick with the attempt to cool the \ce{Yb^+} ions as fast as we can.
-
 A more intriguing phenomenon we noticed in the $\Omega/\Gamma \geq 1$ lines of figure~\ref{fig:sympathetic-omega-dep:T:m222}, is the inconsistent cooling rates (slopes). More explicitly, the descent is steeper when you start colder, and seems to decay independently of temperature you start at. To illustrate this phenomena more clearly, we took the $\Omega/\Gamma = 1$ lines, and continued the $T_i = 10\ \mathrm{K}$ simulation for $20$ more $\mathrm{ms}$. In figure~\ref{fig:sympathetic-Ti-dep4m222}, we show both lines while giving the $T_i = 5\ \mathrm{K}$ line a simple time offset of $37.0\ \mathrm{ms}$, such that the lines meet when $T_i = 5\ \mathrm{K}$ starts cooling.
 
 \begin{figure}
 \centering
+\begin{subfigure}{\linewidth}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Generated with uncommited changes! git stash diff is as follows:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -164,7 +164,32 @@ A more intriguing phenomenon we noticed in the $\Omega/\Gamma \geq 1$ lines of f
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \includegraphics[width=\linewidth]{graphics/T@sympathetic-Ti-dep@m=222.pdf}
-\caption{The dependence of the sympathetic cooling rate as a function of the initial temperature $T_i$, obtained with $\Omega/\Gamma = 1$, and a time offset for the line at $T_i = 5\ \mathrm{K}$.}
+\caption{The temperatures as a function of time, with a time offset for $T_i = 5\ \mathrm{K}$, to demonstrate the different cooling rate.}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Generated with uncommited changes! git stash diff is as follows:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% diff --git i/histogram-plot.py w/histogram-plot.py
+% index d22e074..5656123 100755
+% --- i/histogram-plot.py
+% +++ w/histogram-plot.py
+% @@ -66,6 +66,10 @@ class HistogramPlot(PlotterBase):
+%              displayed_coords=self.displayed_coords,
+%              dataset=self.analyzed_data,
+%          ):
+% +            if label_key[0].startswith("$T_i = 5") and " 11 " in label_key[1]:
+% +                continue
+% +            if label_key[0].startswith("$T_i = 10") and " 1 " in label_key[1]:
+% +                continue
+%              self.ax.plot(
+%                  subset["bin_centers"].values,
+%                  subset["counts"].values,
+\includegraphics[width=\linewidth]{graphics/histogram@sympathetic-Ti-dep@m=222.pdf}
+\caption{Comparison of the kinetic energies distributions of \ce{CHDBrI^+}, for $T_i = 5.0 \mathrm{K}$ on the 2nd half of the stabilization time period, notated as $|\leftarrow 1 \rightarrow|$, and for $T_i = 10.0 \mathrm{K}$ at the end of the cooling period, notated as $|\leftarrow 11 \rightarrow|$. Both of these histograms produce temperatures of roughly $5 \mathrm{K}$.}
+\label{fig:histograms-Ti-comparison}
+\end{subfigure}
+\caption{The dependence of the sympathetic cooling rate as a function of the initial temperature $T_i$, obtained with $\Omega/\Gamma = 1$}
 \label{fig:sympathetic-Ti-dep4m222}
 \end{figure}
 
@@ -232,11 +257,11 @@ When comparing $f_r = (5.5,5.5,1)$ v.s $f_r = (8.5,8.5,1.5)$, we don't see such 
 \begin{figure}
 	\centering
 	\includegraphics[width=\linewidth]{graphics/T@trap-comparison.pdf}
-	\caption{Comparison of \ce{CHDBrI^+} temperatures, with $T_i \in\{5, 10\}\mathrm{K}$, and many different traps varied by color. As always, ion trap's frequencies are in $\mathrm{kHz}$.}
+	\caption{Comparison of \ce{CHDBrI^+} temperatures, with $T_i \in\{5, 10\}\mathrm{K}$, and many different traps varied by color. As always, ion trap's frequencies are in $\mathrm{kHz}$. RF Heating is also observed for the strong traps, especially when we start at $T_i = 5\mathrm{K}$, and is explained well in literature~\cite{RFHeating1,RFHeating2}.}
 	\label{fig:trap-comparison:T:m222}
 \end{figure}
 
-These results are summarized in figure~\ref{fig:trap_dependence_summary} in the following way: We normalize the final temperatures ($T_f$) of the \ce{CHDBrI^+} ions to the temperatures before cooling.\footnote{denoted $T_s$, not $T_i$ - see section~\ref{sec:intro/time-parts}.} This gives us a scalar out of every simulation, which is plotted as a function of the trap frequencies, with colors per $T_i$. The bare difference we see between the points of $f_r = (15, 15, 2.5)$ v.s $f_r = (17,17,3)$, is well explained also by the rogue \ce{Yb^+} ions discussed earlier, observed consistently in all simulations with $T_i \geq 10\ \mathrm{K}$.
+These results are summarized in figure~\ref{fig:trap_dependence_summary} in the following way: We normalize the final temperatures ($T_f$) of the \ce{CHDBrI^+} ions to the temperatures before cooling.\footnote{denoted $T_s$, not $T_i$ - see section~\ref{sec:intro/time-parts}.} This gives us a dimensionless scalar out of every simulation, which is plotted as a function of the trap frequencies, with colors per $T_i$. The bare difference we see between the points of $f_r = (15, 15, 2.5)$ v.s $f_r = (17,17,3)$, is well explained also by the rogue \ce{Yb^+} ions discussed earlier, observed consistently in all simulations with $T_i \geq 10\ \mathrm{K}$.
 
 \begin{figure}
 \centering
